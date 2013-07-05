@@ -50,7 +50,7 @@ def add_annotation(request, pk):
         annotation.content = request.GET.get('content')
     if 'location' in request.GET:
         annotation.location = request.GET.get('location')
-    annotation.user = request.user
+    annotation.author = request.user
     annotation.save()
     return HttpResponse(
         simplejson.dumps({
