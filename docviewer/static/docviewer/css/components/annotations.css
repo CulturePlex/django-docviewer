@@ -181,6 +181,21 @@
     .docviewer-annotationTitle:hover {
       /*text-decoration: underline;*/
     }
+  .docviewer-annotationUser{
+    float:left;
+    display:inline;
+/*    font-weight:bold;*/
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:12px;
+    color:#000;
+    padding:0;
+    max-width: 75%;
+    /*cursor: pointer;*/
+    cursor: text;
+  }
+    .docviewer-annotationUser:hover {
+      /*text-decoration: underline;*/
+    }
 
   .docviewer-permalink {
     zoom: 1;
@@ -496,6 +511,9 @@
   display:block;
 }
 .docviewer-pageNote .docviewer-annotationTitle{
+  margin-bottom:10px;
+}
+.docviewer-pageNote .docviewer-annotationUser{
   margin-bottom:10px;
 }
 

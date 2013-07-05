@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
@@ -189,6 +190,10 @@ class Annotation(models.Model):
     location = models.CommaSeparatedIntegerField(_('Coordinates'), max_length=50)
     page = models.PositiveIntegerField(_('Page ID'))
     content = models.TextField(_('Content'))
+    author = models.ForeignKey(User, related_name='annotations')
+    
+    def __unicode__(self):
+        return self.title
 
 
 from django.db.models.signals import post_delete, post_save

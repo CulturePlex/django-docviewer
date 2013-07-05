@@ -277,6 +277,10 @@
   text-decoration:underline;
 }
 
+.docviewer-navigation .docviewer-trigger:hover .docviewer-navAnnotationUser {
+/*  text-decoration:underline;*/
+}
+
 .docviewer-navigation .docviewer-navPageNumber {
   color:#666;
   font-size:10px;
