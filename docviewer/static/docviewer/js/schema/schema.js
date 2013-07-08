@@ -43,7 +43,7 @@ docviewer.Schema.prototype.loadAnnotation = function(anno) {
   anno.id     = anno.id || _.uniqueId();
   anno.title  = anno.title || 'Untitled Note';
   anno.text   = anno.content || '';
-  anno.author   = anno.author || 'no-author';
+  anno.author = anno.author.username || 'no-author';
   anno.access = anno.access || 'public';
   anno.type   = anno.location && anno.location.image ? 'region' : 'page';
   if (anno.type === 'region') {

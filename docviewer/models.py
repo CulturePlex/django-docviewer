@@ -194,6 +194,9 @@ class Annotation(models.Model):
     
     def __unicode__(self):
         return self.title
+    
+    def get_author(self):
+        return self.author.username
 
 
 from django.db.models.signals import post_delete, post_save

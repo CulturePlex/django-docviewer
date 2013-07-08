@@ -1,3 +1,5 @@
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from django.views.generic.detail import BaseDetailView
 from django.core.urlresolvers import reverse
 from docviewer.models import Document, Page, Annotation
@@ -132,9 +134,12 @@ class JsonDocumentView(BaseDetailView):
 
         json['sections'] = list(document.sections_set.all().values('title', 'page'))
 
-        json['annotations'] = list(document.annotations_set.all().values('location', 'title', 'id', 'page', 'content'))
+        json['annotations'] = list(document.annotations_set.all().values('location', 'title', 'id', 'page', 'content', 'author'))
 
         for annotation in json['annotations']:
             annotation['location'] = {"image": annotation['location']}
+            user_id = annotation['author']
+            user = get_object_or_404(User, pk=user_id)
+            annotation['author'] = {'username': user.username}
 
         return HttpResponse(simplejson.dumps(json), content_type="application/json")
