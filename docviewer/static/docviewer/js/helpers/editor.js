@@ -17,7 +17,6 @@ _.extend(docviewer.Schema.helpers,{
     }
   },
   saveAnnotation : function(e, option) {
-    debugger;
     var target = this.viewer.$(e.target);
     var annoEl = target.closest(this.annotationClassName);
     var anno   = this.getAnnotationModel(annoEl);
