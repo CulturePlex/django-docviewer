@@ -134,12 +134,14 @@ class JsonDocumentView(BaseDetailView):
 
         json['sections'] = list(document.sections_set.all().values('title', 'page'))
 
-        json['annotations'] = list(document.annotations_set.all().values('location', 'title', 'id', 'page', 'content', 'author'))
+        annotations_all = document.annotations_set.all()
+#        annotations_public = annotations_all.exclude(Q(private=True)
+#                                                 & ~Q(author=request.user))
+#        json['annotations'] = list(annotations_public.values('location', 'title', 'id', 'page', 'content', 'author', 'author__username'))
+        json['annotations'] = list(annotations_all.values('location', 'title', 'id', 'page', 'content', 'author', 'author__username'))
 
         for annotation in json['annotations']:
             annotation['location'] = {"image": annotation['location']}
-            user_id = annotation['author']
-            user = get_object_or_404(User, pk=user_id)
-            annotation['author'] = {'username': user.username}
+            annotation['author'] = {'username': annotation['author__username']}
 
         return HttpResponse(simplejson.dumps(json), content_type="application/json")
