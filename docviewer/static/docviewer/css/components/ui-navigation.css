@@ -279,7 +279,7 @@
 
 .docviewer-navigation .docviewer-trigger .docviewer-navAnnotationUser {
 /*  text-decoration:underline;*/
-/*  color:gray;*/
+  color:gray;
   font-weight:normal;
 }
 

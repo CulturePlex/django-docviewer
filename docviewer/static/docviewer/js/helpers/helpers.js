@@ -85,7 +85,7 @@ docviewer.Schema.helpers = {
       collection.delegate('.docviewer-pageNumber', 'click', _.bind(this.permalinkPage, this, 'document'));
       collection.delegate('.docviewer-textCurrentPage', 'click', _.bind(this.permalinkPage, this, 'text'));
       collection.delegate('.docviewer-annotationTitle', 'click', _.bind(this.permalinkAnnotation, this));
-      collection.delegate('.docviewer-annotationAuthor', 'click', _.bind(this.permalinkAnnotation, this));
+//      collection.delegate('.docviewer-annotationAuthor', 'click', _.bind(this.permalinkAnnotation, this));
       collection.delegate('.docviewer-permalink', 'click', _.bind(this.permalinkAnnotation, this));
 
       // Thumbnails
