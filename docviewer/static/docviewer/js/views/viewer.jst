@@ -34,7 +34,7 @@
               </div>
               <div class="docviewer-textPage">
                 <span class="docviewer-textCurrentPage"></span>
-                <pre class="docviewer-textContents"></pre>
+                <pre class="docviewer-textContents" id="plain-text-area"></pre>
               </div>
             </div>
             <%= pages %>
@@ -98,7 +98,8 @@
                 <a href="#">Cancel text edition</a>
               </div>
               <div id="form-edition" class="docviewer-editBox">
-                <form action="#" method="get" class="docviewer-editAnnotation">
+                <form action="#" method="get" class="docviewer-editText">
+                    <textarea id="edition-content" class="docviewer-textInput"></textarea>
                     <input id="edition-button" class="docviewer-editButton" type="button" value="Save text">
                 </form>
               </div>

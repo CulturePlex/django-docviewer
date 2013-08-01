@@ -20,6 +20,9 @@ span#fixed-div{
   padding: 0px 15px;
   display: none;
 }
+input.docviewer-textInput, .docviewer-textInput {
+  display: block;
+}
 input.docviewer-editInput, .docviewer-editInput {
   display: block;
   border: 1px solid #999;
@@ -87,7 +90,7 @@ input:-moz-placeholder { font-style:italic }
   cursor:pointer;
   border:1px solid #666;
 }
-#form-annotation, #cancel-annotation{
+#form-annotation, #cancel-annotation, #form-edition, #cancel-edition {
   display: none;
 }
 #annotation-area{

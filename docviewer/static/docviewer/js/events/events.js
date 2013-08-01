@@ -71,7 +71,7 @@ docviewer.Schema.events = {
     var processText = function(text) {
 
       var pageNumber = parseInt(pageIndex,10)+1;
-      me.viewer.$('.docviewer-textContents').replaceWith('<pre class="docviewer-textContents">' + text + '</pre>');
+      me.viewer.$('.docviewer-textContents').replaceWith('<pre class="docviewer-textContents" id="plain-text-area">' + text + '</pre>');
       me.elements.currentPage.text(pageNumber);
       me.elements.textCurrentPage.text('p. '+(pageNumber));
       me.models.document.setPageIndex(pageIndex);

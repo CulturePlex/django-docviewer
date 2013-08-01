@@ -256,28 +256,35 @@
   }
 
   /** Hide the annotation area when the page changes */
-  function hide_anno_on_page_change() {
-    mydocviewer.states.events.observerPage = function () {
-      if (mydocviewer.state !== 'ViewDocument') { return; }
-      var anno = $('#annotation-area');
-      if (anno.length === 0) { return; }
-      if (mydocviewer.api.currentPage() >= annotation_page - 1 &
-          mydocviewer.api.currentPage() <= annotation_page + 1) {
-        anno.show();
-      } else {
-        anno.hide();
-      }
-    };
-    mydocviewer.states.helpers.addObserver("observerPage");
-  }
+//  function hide_anno_on_page_change() {
+//    mydocviewer.states.events.observerPage = function () {
+//      if (mydocviewer.state !== 'ViewDocument') { return; }
+//      var anno = $('#annotation-area');
+//      if (anno.length === 0) { return; }
+//      if (mydocviewer.api.currentPage() >= annotation_page - 1 &
+//          mydocviewer.api.currentPage() <= annotation_page + 1) {
+//        anno.show();
+//      } else {
+//        anno.hide();
+//      }
+//    };
+//    mydocviewer.states.helpers.addObserver("observerPage");
+//  }
 
   /** Hide the annotation area when the page changes */
-  function hide_anno_on_page_change() {
+  function hide_anno_edit_on_page_change() {
     mydocviewer.states.events.observerPage = function () {
-      if (mydocviewer.state !== 'ViewDocument') {
+      var state = mydocviewer.state;
+      if (state !== 'ViewDocument') {
         $('#annotation-options').hide();
+        if (state !== 'ViewText') {
+          $('#edition-options').hide();
+        } else {
+          $('#edition-options').show();
+        }
       } else {
         $('#annotation-options').show();
+        $('#edition-options').hide();
         var anno = $('#annotation-area');
         if (anno.length === 0) { return; }
         if (mydocviewer.api.currentPage() >= annotation_page - 1 &
@@ -289,6 +296,47 @@
       }
     };
     mydocviewer.states.helpers.addObserver("observerPage");
+  }
+
+
+  /** Enable the events that allows the edition of text. */
+  function enable_edition_mode() {
+    $('#add-edition').hide();
+    $('#cancel-edition').show();
+    $('#form-edition').show();
+    editText();
+  }
+
+  /** Disable the events that allows the edition of text. */
+  function disable_edition_mode() {
+    $('#add-edition').show();
+    $('#cancel-edition').hide();
+    $('#form-edition').hide();
+    uneditText();
+  }
+
+  function editText() {
+    var pre = document.getElementById('plain-text-area');
+    var text = pre.textContent;
+    var parent = pre.parentNode;
+    var tempDiv = document.createElement('div');
+    
+    tempDiv.innerHTML = '<textarea class="docviewer-textContents" id="plain-text-area" rows="4" cols="50">' + text + '</textarea>'
+
+    var input = tempDiv.childNodes[0];
+    parent.replaceChild(input, pre);
+  }
+
+  function uneditText() {
+    var textarea = document.getElementById('plain-text-area');
+    var text = textarea.textContent;
+    var parent = textarea.parentNode;
+    var tempDiv = document.createElement('div');
+    
+    tempDiv.innerHTML = '<pre class="docviewer-textContents" id="plain-text-area">' + text + '</pre>'
+
+    var input = tempDiv.childNodes[0];
+    parent.replaceChild(input, textarea);
   }
 
 
@@ -311,7 +359,19 @@
         $(ev.target).parents(".docviewer-annotation")[0].dataset.id
       );
     });
-    hide_anno_on_page_change();
+    
+    $("#add-edition").live('click', function (ev) {
+      enable_edition_mode();
+    });
+    $("#cancel-edition").live('click', function (ev) {
+      disable_edition_mode();
+    });
+    $('#edition-button').live('click', function (ev) {
+//      ev.preventDefault();
+//      add_edition();
+    });
+    
+    hide_anno_edit_on_page_change();
   });
 
 }());

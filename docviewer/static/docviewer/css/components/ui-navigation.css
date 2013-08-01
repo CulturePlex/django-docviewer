@@ -27,6 +27,7 @@
 .docviewer-storyLink,
 .docviewer-pdfLink,
 .docviewer-printNotesLink,
+.docviewer-editionLink,
 .docviewer-annotationLink {
   padding-left: 0;
   padding-bottom: 4px;
@@ -36,6 +37,7 @@
 .docviewer-pdfLink a,
 .docviewer-printNotesLink a,
 .docviewer-contributor,
+.docviewer-editionLink a,
 .docviewer-annotationLink a {
   font: normal 11px Arial, sans-serif;
   text-decoration: none;
@@ -49,6 +51,7 @@
 .docviewer-storyLink a:hover,
 .docviewer-pdfLink a:hover,
 .docviewer-printNotesLink a:hover,
+.docviewer-editionLink a:hover,
 .docviewer-annotationLink a:hover {
   text-decoration:underline;
 }
