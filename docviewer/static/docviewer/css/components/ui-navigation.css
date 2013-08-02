@@ -56,6 +56,14 @@
   text-decoration:underline;
 }
 
+textarea.docviewer-textContents#plain-text-area {
+  width: 598px;
+  max-width:598px;
+  height: 969px;
+  max-height:969px;
+  overflow: auto;
+}
+
 .docviewer-previous, .docviewer-next {
   border: 1px solid #bbb; border-top-color: #ccc; border-bottom-color: #999;
   background-image:url(../../img/embed/controlsArrows.png);

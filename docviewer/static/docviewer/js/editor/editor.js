@@ -321,7 +321,7 @@
     var parent = pre.parentNode;
     var tempDiv = document.createElement('div');
     
-    tempDiv.innerHTML = '<textarea class="docviewer-textContents" id="plain-text-area" rows="4" cols="50">' + text + '</textarea>'
+    tempDiv.innerHTML = '<textarea class="docviewer-textContents" id="plain-text-area">' + text + '</textarea>'
 
     var input = tempDiv.childNodes[0];
     parent.replaceChild(input, pre);
