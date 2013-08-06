@@ -173,7 +173,7 @@ _.extend(docviewer.Schema.helpers, {
     this.highlightMatch(this.viewer.searchResponse.highlighted-1);
   },
   highlightNextMatch: function(e){
-    e.preventDefault(e);
+    e.preventDefault();
     this.highlightMatch(this.viewer.searchResponse.highlighted+1);
   },
 

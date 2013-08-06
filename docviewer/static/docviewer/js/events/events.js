@@ -62,7 +62,6 @@ docviewer.Schema.events = {
   },
 
   loadText: function(pageIndex,afterLoad){
-
     pageIndex = (!pageIndex) ? this.models.document.currentIndex() : parseInt(pageIndex,10);
     this._previousTextIndex = pageIndex;
 
