@@ -145,3 +145,37 @@ class JsonDocumentView(BaseDetailView):
             annotation['author'] = {'username': annotation['author__username']}
 
         return HttpResponse(simplejson.dumps(json), content_type="application/json")
+
+
+#def update_annotation(request, pk):
+#    """
+#    Update an annotation
+#    """
+#    annotation = Annotation.objects.get(id=request.GET.get('id'))
+#    if 'title' in request.GET:
+#        if (request.GET.get('title').strip()) == "":
+#            annotation.title = "Untitled"
+#        else:
+#            annotation.title = request.GET.get('title')
+#    if 'content' in request.GET:
+#        annotation.content = request.GET.get('content')
+#    annotation.save()
+#    return HttpResponse(
+#        simplejson.dumps({'status': 'ok'}), content_type="application/json")
+
+
+def save_text(request, pk):
+    """
+    Save the text
+    """
+    annotation = Annotation.objects.get(id=request.GET.get('id'))
+    if 'title' in request.GET:
+        if (request.GET.get('title').strip()) == "":
+            annotation.title = "Untitled"
+        else:
+            annotation.title = request.GET.get('title')
+    if 'content' in request.GET:
+        annotation.content = request.GET.get('content')
+    annotation.save()
+    return HttpResponse(
+        simplejson.dumps({'status': 'ok'}), content_type="application/json")

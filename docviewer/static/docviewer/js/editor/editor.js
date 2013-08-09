@@ -138,7 +138,7 @@
       },
       dataType: 'json',
       error: function (payload) {
-        alert("Error en el ajax request");
+        alert("Ajax request error");
       },
       type: 'GET'
     });
@@ -314,30 +314,48 @@
     $('#form-edition').hide();
     uneditText();
   }
-
+  
   function editText() {
-    var pre = document.getElementById('plain-text-area');
-    var text = pre.textContent;
-    var parent = pre.parentNode;
-    var tempDiv = document.createElement('div');
-    
-    tempDiv.innerHTML = '<textarea class="docviewer-textContents" id="plain-text-area">' + text + '</textarea>'
-
-    var input = tempDiv.childNodes[0];
-    parent.replaceChild(input, pre);
+    var uri = document.documentURI;
+    var ind = uri.indexOf("viewer/");
+    var aux = uri.substring(ind+7);
+    ind = aux.indexOf("/");
+    var id = aux.substring(0,ind);
+    docviewer.viewers["doc-"+id].api.enterEditPageTextMode()
   }
-
+  
   function uneditText() {
-    var textarea = document.getElementById('plain-text-area');
-    var text = textarea.textContent;
-    var parent = textarea.parentNode;
-    var tempDiv = document.createElement('div');
-    
-    tempDiv.innerHTML = '<pre class="docviewer-textContents" id="plain-text-area">' + text + '</pre>'
-
-    var input = tempDiv.childNodes[0];
-    parent.replaceChild(input, textarea);
+    var uri = document.documentURI;
+    var ind = uri.indexOf("viewer/");
+    var aux = uri.substring(ind+7);
+    ind = aux.indexOf("/");
+    var id = aux.substring(0,ind);
+    docviewer.viewers["doc-"+id].api.leaveEditPageTextMode()
   }
+
+//  function editText() {
+//    var pre = document.getElementById('plain-text-area');
+//    var text = pre.textContent;
+//    var parent = pre.parentNode;
+//    var tempDiv = document.createElement('div');
+//    
+//    tempDiv.innerHTML = '<textarea class="docviewer-textContents" id="plain-text-area">' + text + '</textarea>'
+
+//    var input = tempDiv.childNodes[0];
+//    parent.replaceChild(input, pre);
+//  }
+
+//  function uneditText() {
+//    var textarea = document.getElementById('plain-text-area');
+//    var text = textarea.textContent;
+//    var parent = textarea.parentNode;
+//    var tempDiv = document.createElement('div');
+//    
+//    tempDiv.innerHTML = '<pre class="docviewer-textContents" id="plain-text-area">' + text + '</pre>'
+
+//    var input = tempDiv.childNodes[0];
+//    parent.replaceChild(input, textarea);
+//  }
 
 
   /** Bind the event to its respectives elements. */

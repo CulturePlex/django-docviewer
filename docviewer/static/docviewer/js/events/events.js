@@ -71,12 +71,12 @@ docviewer.Schema.events = {
 
       var pageNumber = parseInt(pageIndex,10)+1;
       var elem = me.viewer.$('.docviewer-textContents');
-      if(elem.is('pre')) {
+//      if(elem.is('pre')) {
           elem.replaceWith('<pre class="docviewer-textContents" id="plain-text-area">' + text + '</pre>');
-      }
-      else if(elem.is('textarea')) {
-          elem.replaceWith('<textarea class="docviewer-textContents" id="plain-text-area">' + text + '</textarea>');
-      }
+//      }
+//      else if(elem.is('textarea')) {
+//          elem.replaceWith('<textarea class="docviewer-textContents" id="plain-text-area">' + text + '</textarea>');
+//      }
       me.elements.currentPage.text(pageNumber);
       me.elements.textCurrentPage.text('p. '+(pageNumber));
       me.models.document.setPageIndex(pageIndex);
@@ -86,6 +86,7 @@ docviewer.Schema.events = {
           !(pageNumber in me.models.document.originalPageText)) {
         me.models.document.originalPageText[pageNumber] = text;
       }
+      
       if (me.viewer.openEditor == 'editText') {
         me.viewer.$('.docviewer-textContents').attr('contentEditable', true).addClass('docviewer-editing');
       }
