@@ -20,10 +20,7 @@ span#fixed-div{
   padding: 0px 15px;
   display: none;
 }
-input.docviewer-textInput, .docviewer-textInput {
-  display: block;
-}
-input.docviewer-editInput, .docviewer-editInput {
+input.docviewer-editInput, .docviewer-editInput, input.docviewer-textInput, .docviewer-textInput {
   display: block;
   border: 1px solid #999;
   border-radius: 8px; -webkit-border-radius: 8px; -moz-border-radius: 8px;
@@ -63,7 +60,7 @@ border-radius: 12px;
 -webkit-border-radius: 12px;
 -moz-border-radius: 12px;
 }
-.docviewer-editInput:focus {
+.docviewer-editInput:focus, docviewer-textInput:focus {
   background: white;
 }
 .docviewer-editBox{

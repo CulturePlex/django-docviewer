@@ -168,10 +168,6 @@ docviewer.Api.prototype = {
     if (this.viewer.openEditor == 'editText') {
       this.viewer.$('.docviewer-textContents').attr('contentEditable', true).addClass('docviewer-editing');
     }
-    else {
-      this.viewer.$('.docviewer-textContents').attr('contentEditable', false).removeClass('docviewer-editing');
-      self.viewer.events.loadText();
-    }
   },
 
   // Redraw the UI. Call redraw(true) to also redraw annotations and pages.
@@ -334,6 +330,7 @@ docviewer.Api.prototype = {
   leaveEditPageTextMode : function() {
     this.viewer.openEditor = null;
     this.resetPageText();
+    this.viewer.events.loadText();
   }
 
 };
