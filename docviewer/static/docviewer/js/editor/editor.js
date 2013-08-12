@@ -333,29 +333,98 @@
     docviewer.viewers["doc-"+id].api.leaveEditPageTextMode()
   }
 
-//  function editText() {
-//    var pre = document.getElementById('plain-text-area');
-//    var text = pre.textContent;
-//    var parent = pre.parentNode;
-//    var tempDiv = document.createElement('div');
-//    
-//    tempDiv.innerHTML = '<textarea class="docviewer-textContents" id="plain-text-area">' + text + '</textarea>'
-
-//    var input = tempDiv.childNodes[0];
-//    parent.replaceChild(input, pre);
+//  /** Ajax request to update an annotation. */
+//  function update_annotation(id, field, value) {
+//    var adata = { };
+//    adata.id = id;
+//    adata[field] = value;
+//    $.ajax({
+//      type: "GET",
+//      url: "update_annotation/",
+//      data: adata,
+//      success: function (payload) {
+//        animate_msg("Annotation updated");
+//        value.trim();
+//      },
+//      dataType: 'json',
+//      error: function (payload) {
+//        animate_msg("Error en el ajax request");
+//      }
+//    });
 //  }
 
-//  function uneditText() {
-//    var textarea = document.getElementById('plain-text-area');
-//    var text = textarea.textContent;
-//    var parent = textarea.parentNode;
-//    var tempDiv = document.createElement('div');
-//    
-//    tempDiv.innerHTML = '<pre class="docviewer-textContents" id="plain-text-area">' + text + '</pre>'
+  /** Ajax request to save text. */
+  function save_text(id, field, value) {
+    var adata = { };
+    adata.id = id;
+    adata[field] = value;
+    $.ajax({
+      type: "GET",
+      url: "update_annotation/",
+      data: adata,
+      success: function (payload) {
+        animate_msg("Annotation updated");
+        value.trim();
+      },
+      dataType: 'json',
+      error: function (payload) {
+        animate_msg("Error en el ajax request");
+      }
+    });
+  }
 
-//    var input = tempDiv.childNodes[0];
-//    parent.replaceChild(input, textarea);
+//  /** Bind the events for editing the content of an annotation. */
+//  function bind_content_events() {
+//    var content = "",
+//      empty = $('<span/>', {
+//        'class': 'empty',
+//        text: 'Click here to add a description'
+//      });
+//    $('div.docviewer-annotationBody').live('click', function (ev) {
+//      var body = ev.target;
+//      if (ev.target.className === "empty") {
+//        body = ev.target.parentElement;
+//        $(ev.target).remove();
+//      }
+//      content = body.innerText;
+//      body.contentEditable = 'true';
+//      $(body).focus();
+//    });
+//    $('.docviewer-annotationBody').live('blur', function (ev) {
+//      if (content !== ev.target.innerText) {
+//        update_annotation(
+//          $(ev.target).parents(".docviewer-annotation")[0].dataset.id,
+//          'content',
+//          ev.target.innerText.trim()
+//        );
+//      }
+//      if (ev.target.innerText.trim() === "") {
+//        $(ev.target).empty();
+//        $(ev.target).append(empty);
+//      }
+//      ev.target.contentEditable = 'false';
+//    });
+//    $('.docviewer-annotationBody').live('keypress', function (ev) {
+//      if (ev.keyCode === 13) {
+//        ev.target.blur();
+//      }
+//    });
 //  }
+
+  /** Bind the events for updating the text. */
+  function bind_text_events() {
+    $('.plain-text-area.docviewer-editing').live('blur', function (ev) {
+    var uri = document.documentURI;
+    var ind = uri.indexOf("viewer/");
+    var aux = uri.substring(ind+7);
+    ind = aux.indexOf("/");
+    var id = aux.substring(0,ind);
+    var viewer = docviewer.viewers["doc-"+id];
+    var currentPage = viewer.api.currentPage()
+    var text = $('#plain-text-area-'+currentPage).text();
+    viewer.schema.text[currentPage-1] = text;
+    });
+  }
 
 
   /** Bind the event to its respectives elements. */
@@ -378,6 +447,7 @@
       );
     });
     
+    bind_text_events();
     $("#add-edition").live('click', function (ev) {
       enable_edition_mode();
     });
