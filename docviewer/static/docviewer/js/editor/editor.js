@@ -354,76 +354,38 @@
 //  }
 
   /** Ajax request to save text. */
-  function save_text(id, field, value) {
-    var adata = { };
-    adata.id = id;
-    adata[field] = value;
+  function save_text(id, text) {
+    var tdata = {};
+    tdata.id = id;
+    tdata['text'] = text;
     $.ajax({
       type: "GET",
-      url: "update_annotation/",
-      data: adata,
+      url: "save_text/",
+      data: tdata,
       success: function (payload) {
-        animate_msg("Annotation updated");
-        value.trim();
+        animate_msg("Text saved");
       },
       dataType: 'json',
       error: function (payload) {
-        animate_msg("Error en el ajax request");
+        animate_msg("ajax error saving text");
       }
     });
   }
 
-//  /** Bind the events for editing the content of an annotation. */
-//  function bind_content_events() {
-//    var content = "",
-//      empty = $('<span/>', {
-//        'class': 'empty',
-//        text: 'Click here to add a description'
-//      });
-//    $('div.docviewer-annotationBody').live('click', function (ev) {
-//      var body = ev.target;
-//      if (ev.target.className === "empty") {
-//        body = ev.target.parentElement;
-//        $(ev.target).remove();
-//      }
-//      content = body.innerText;
-//      body.contentEditable = 'true';
-//      $(body).focus();
-//    });
-//    $('.docviewer-annotationBody').live('blur', function (ev) {
-//      if (content !== ev.target.innerText) {
-//        update_annotation(
-//          $(ev.target).parents(".docviewer-annotation")[0].dataset.id,
-//          'content',
-//          ev.target.innerText.trim()
-//        );
-//      }
-//      if (ev.target.innerText.trim() === "") {
-//        $(ev.target).empty();
-//        $(ev.target).append(empty);
-//      }
-//      ev.target.contentEditable = 'false';
-//    });
-//    $('.docviewer-annotationBody').live('keypress', function (ev) {
-//      if (ev.keyCode === 13) {
-//        ev.target.blur();
-//      }
-//    });
-//  }
-
   /** Bind the events for updating the text. */
   function bind_text_events() {
     $('.plain-text-area.docviewer-editing').live('blur', function (ev) {
-    var uri = document.documentURI;
-    var ind = uri.indexOf("viewer/");
-    var aux = uri.substring(ind+7);
-    ind = aux.indexOf("/");
-    var id = aux.substring(0,ind);
-    var viewer = docviewer.viewers["doc-"+id];
-    var currentPage = viewer.api.currentPage()
-    var text = $('#plain-text-area-'+currentPage).text();
-    viewer.schema.text[currentPage-1] = text;
+        var uri = document.documentURI;
+        var ind = uri.indexOf("viewer/");
+        var aux = uri.substring(ind+7);
+        ind = aux.indexOf("/");
+        var id = aux.substring(0,ind);
+        var viewer = docviewer.viewers["doc-"+id];
+        var currentPage = viewer.api.currentPage();
+        var text = $('#plain-text-area-'+currentPage).text();
+        viewer.schema.text[currentPage-1] = text;
     });
+    
   }
 
 
@@ -455,8 +417,15 @@
       disable_edition_mode();
     });
     $('#edition-button').live('click', function (ev) {
-//      ev.preventDefault();
-//      add_edition();
+      var uri = document.documentURI;
+      var ind = uri.indexOf("viewer/");
+      var aux = uri.substring(ind+7);
+      ind = aux.indexOf("/");
+      var id = aux.substring(0,ind);
+      var viewer = docviewer.viewers["doc-"+id];
+      var currentPage = viewer.api.currentPage();
+      var text = $('#plain-text-area-'+currentPage).text();
+      save_text(id, text);
     });
     
     hide_anno_edit_on_page_change();
