@@ -168,6 +168,14 @@ class Page(models.Model):
         f.close()
         return data.decode('ascii', 'ignore')
 
+    def save_text(self, text):
+        path = "%s/%s_%s.txt" % (
+            self.document.get_root_path(), self.document.slug, self.page)
+        f = codecs.open(path, 'w')
+        text = text.decode('ascii', 'ignore')
+        f.write(text)
+        f.close()
+
     def get_image(self, size):
         return "%s/%s/%s_%s.%s" % (
             self.document.get_root_url(), size, self.document.slug,

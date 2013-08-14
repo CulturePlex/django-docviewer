@@ -83,9 +83,12 @@ def save_text(request, pk):
     """
     Save the text
     """
-    if 'text' in request.POST:
-        text = request.POST.get('text')
-        print text
+    document = Document.objects.get(id=pk)
+    for k in request.POST:
+        num_page = int(k)
+        page = document.pages_set.get(page=num_page)
+        text = request.POST[k]
+        page.save_text(text)
     return HttpResponse(
         simplejson.dumps({'status': 'ok'}), content_type="application/json")
 

@@ -328,16 +328,24 @@ var modified_pages = [];
   }
 
   /** Ajax request to save text. */
-  function save_text(id, text) {
-    var tdata = {};
-    tdata.id = id;
-    tdata['text'] = text;
+  function save_text(num_page_list) {
+    var id = window.location.pathname.split('/')[2]
+    var viewer = docviewer.viewers["doc-"+id];
+    
+    var text_dict = {};
+    for (var i=0; i<num_page_list.length; i++) {
+      var n = num_page_list[i];
+      var text = viewer.schema.text[n-1];
+      text_dict[n] = text;
+    }
+    
     $.ajax({
       type: "POST",
       url: "save_text/",
-      data: tdata,
+      data: text_dict,
       success: function (payload) {
         animate_msg("Text saved");
+        $('.docviewer-textView span').text('Text');
       },
       dataType: 'json',
       error: function (payload) {
@@ -349,25 +357,34 @@ var modified_pages = [];
   /** Bind the events for updating the text. */
   function bind_text_events() {
     $('.plain-text-area.docviewer-editing').live('blur', function (ev) {
-        var id = window.location.pathname.split('/')[2]
-        var viewer = docviewer.viewers["doc-"+id];
-        var currentPage = viewer.api.currentPage();
-        var text = $('#plain-text-area-'+currentPage).text();
-        if (viewer.schema.text[currentPage-1] != text) {
-            viewer.schema.text[currentPage-1] = text;
-            modified_pages.push(currentPage);
+      var id = window.location.pathname.split('/')[2]
+      var viewer = docviewer.viewers["doc-"+id];
+      var currentPage = viewer.api.currentPage();
+      var text = $('#plain-text-area-'+currentPage).text();
+      if (viewer.schema.text[currentPage-1] != text) {
+        viewer.schema.text[currentPage-1] = text;
+        modified_pages.push(currentPage);
+      }
+      else {
+        if (modified_pages.length == 0) {
+          $('.docviewer-textView span').text('Text');
+          asterisk();
         }
-        else
-            $('.docviewer-textView span').text('Text');
-            asterisk();
+      }
     });
     asterisk();
   }
 
   function asterisk() {
-    $('.plain-text-area.docviewer-editing').live('keydown', function (ev) {
+    $('.plain-text-area.docviewer-editing').live('keyup', function (ev) {
+      var id = window.location.pathname.split('/')[2]
+      var viewer = docviewer.viewers["doc-"+id];
+      var currentPage = viewer.api.currentPage();
+      var text = $('#plain-text-area-'+currentPage).text();
+      if (viewer.schema.text[currentPage-1] != text) {
         $('.docviewer-textView span').text('Text*');
         $('.plain-text-area.docviewer-editing').die('keydown');
+      }
     });
   }
 
@@ -399,11 +416,7 @@ var modified_pages = [];
       disable_edition_mode();
     });
     $('#edition-button').live('click', function (ev) {
-      var id = window.location.pathname.split('/')[2]
-      var viewer = docviewer.viewers["doc-"+id];
-      var currentPage = viewer.api.currentPage();
-      var text = $('#plain-text-area-'+currentPage).text();
-      save_text(id, text);
+      save_text(modified_pages);
     });
     
     hide_anno_edit_on_page_change();
