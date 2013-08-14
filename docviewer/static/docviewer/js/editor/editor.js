@@ -15,7 +15,7 @@
 /*jslint forin:true, noarg:true, noempty:true, eqeqeq:true, bitwise:true, strict:false, undef:true, curly:true, browser:true, indent:2, maxerr:50
 */
 
-
+var modified_pages = [];
 
 (function () {
   "use strict";
@@ -316,21 +316,14 @@
   }
   
   function editText() {
-    var uri = document.documentURI;
-    var ind = uri.indexOf("viewer/");
-    var aux = uri.substring(ind+7);
-    ind = aux.indexOf("/");
-    var id = aux.substring(0,ind);
+    var id = window.location.pathname.split('/')[2]
     docviewer.viewers["doc-"+id].api.enterEditPageTextMode()
   }
   
   function uneditText() {
-    var uri = document.documentURI;
-    var ind = uri.indexOf("viewer/");
-    var aux = uri.substring(ind+7);
-    ind = aux.indexOf("/");
-    var id = aux.substring(0,ind);
+    var id = window.location.pathname.split('/')[2]
     docviewer.viewers["doc-"+id].api.leaveEditPageTextMode()
+    $('.docviewer-textView span').text('Text');
   }
 
 //  /** Ajax request to update an annotation. */
@@ -375,15 +368,19 @@
   /** Bind the events for updating the text. */
   function bind_text_events() {
     $('.plain-text-area.docviewer-editing').live('blur', function (ev) {
-        var uri = document.documentURI;
-        var ind = uri.indexOf("viewer/");
-        var aux = uri.substring(ind+7);
-        ind = aux.indexOf("/");
-        var id = aux.substring(0,ind);
+        var id = window.location.pathname.split('/')[2]
         var viewer = docviewer.viewers["doc-"+id];
         var currentPage = viewer.api.currentPage();
         var text = $('#plain-text-area-'+currentPage).text();
-        viewer.schema.text[currentPage-1] = text;
+        if (viewer.schema.text[currentPage-1] != text) {
+            viewer.schema.text[currentPage-1] = text;
+            modified_pages.push(currentPage);
+        }
+        else
+            $('.docviewer-textView span').text('Text');
+    });
+    $('.plain-text-area.docviewer-editing').live('keypress', function (ev) {
+        $('.docviewer-textView span').text('Text*');
     });
     
   }
@@ -417,11 +414,7 @@
       disable_edition_mode();
     });
     $('#edition-button').live('click', function (ev) {
-      var uri = document.documentURI;
-      var ind = uri.indexOf("viewer/");
-      var aux = uri.substring(ind+7);
-      ind = aux.indexOf("/");
-      var id = aux.substring(0,ind);
+      var id = window.location.pathname.split('/')[2]
       var viewer = docviewer.viewers["doc-"+id];
       var currentPage = viewer.api.currentPage();
       var text = $('#plain-text-area-'+currentPage).text();
