@@ -316,35 +316,16 @@ var modified_pages = [];
   }
   
   function editText() {
-    var id = window.location.pathname.split('/')[2]
-    docviewer.viewers["doc-"+id].api.enterEditPageTextMode()
+    var id = window.location.pathname.split('/')[2];
+    docviewer.viewers["doc-"+id].api.enterEditPageTextMode();
   }
   
   function uneditText() {
     var id = window.location.pathname.split('/')[2]
-    docviewer.viewers["doc-"+id].api.leaveEditPageTextMode()
+    docviewer.viewers["doc-"+id].api.leaveEditPageTextMode();
     $('.docviewer-textView span').text('Text');
+    asterisk();
   }
-
-//  /** Ajax request to update an annotation. */
-//  function update_annotation(id, field, value) {
-//    var adata = { };
-//    adata.id = id;
-//    adata[field] = value;
-//    $.ajax({
-//      type: "GET",
-//      url: "update_annotation/",
-//      data: adata,
-//      success: function (payload) {
-//        animate_msg("Annotation updated");
-//        value.trim();
-//      },
-//      dataType: 'json',
-//      error: function (payload) {
-//        animate_msg("Error en el ajax request");
-//      }
-//    });
-//  }
 
   /** Ajax request to save text. */
   function save_text(id, text) {
@@ -352,7 +333,7 @@ var modified_pages = [];
     tdata.id = id;
     tdata['text'] = text;
     $.ajax({
-      type: "GET",
+      type: "POST",
       url: "save_text/",
       data: tdata,
       success: function (payload) {
@@ -378,13 +359,17 @@ var modified_pages = [];
         }
         else
             $('.docviewer-textView span').text('Text');
+            asterisk();
     });
-    $('.plain-text-area.docviewer-editing').live('keypress', function (ev) {
-        $('.docviewer-textView span').text('Text*');
-    });
-    
+    asterisk();
   }
 
+  function asterisk() {
+    $('.plain-text-area.docviewer-editing').live('keydown', function (ev) {
+        $('.docviewer-textView span').text('Text*');
+        $('.plain-text-area.docviewer-editing').die('keydown');
+    });
+  }
 
   /** Bind the event to its respectives elements. */
   $(document).ready(function () {

@@ -76,6 +76,20 @@ def remove_annotation(request, pk):
         {'status': 'ok'}), content_type="application/json")
 
 
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
+#@ensure_csrf_cookie
+@csrf_exempt
+def save_text(request, pk):
+    """
+    Save the text
+    """
+    if 'text' in request.POST:
+        text = request.POST.get('text')
+        print text
+    return HttpResponse(
+        simplejson.dumps({'status': 'ok'}), content_type="application/json")
+
+
 class SearchDocumentView(View):
 
     def get(self, request, **kwargs):
@@ -146,30 +160,3 @@ class JsonDocumentView(BaseDetailView):
 
         return HttpResponse(simplejson.dumps(json), content_type="application/json")
 
-
-#def update_annotation(request, pk):
-#    """
-#    Update an annotation
-#    """
-#    annotation = Annotation.objects.get(id=request.GET.get('id'))
-#    if 'title' in request.GET:
-#        if (request.GET.get('title').strip()) == "":
-#            annotation.title = "Untitled"
-#        else:
-#            annotation.title = request.GET.get('title')
-#    if 'content' in request.GET:
-#        annotation.content = request.GET.get('content')
-#    annotation.save()
-#    return HttpResponse(
-#        simplejson.dumps({'status': 'ok'}), content_type="application/json")
-
-
-def save_text(request, pk):
-    """
-    Save the text
-    """
-    if 'text' in request.GET:
-        text = request.GET.get('text')
-        print text
-    return HttpResponse(
-        simplejson.dumps({'status': 'ok'}), content_type="application/json")
