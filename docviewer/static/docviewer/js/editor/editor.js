@@ -314,6 +314,14 @@ var modified_pages = [];
     $('#form-edition').hide();
     uneditText();
   }
+
+  /** End the events that allows the edition of text. */
+  function end_edition_mode() {
+    $('#add-edition').show();
+    $('#cancel-edition').hide();
+    $('#form-edition').hide();
+    endEditText();
+  }
   
   function editText() {
     var id = window.location.pathname.split('/')[2];
@@ -321,15 +329,22 @@ var modified_pages = [];
   }
   
   function uneditText() {
-    var id = window.location.pathname.split('/')[2]
+    var id = window.location.pathname.split('/')[2];
     docviewer.viewers["doc-"+id].api.leaveEditPageTextMode();
+    $('.docviewer-textView span').text('Text');
+    asterisk();
+  }
+  
+  function endEditText() {
+    var id = window.location.pathname.split('/')[2];
+    docviewer.viewers["doc-"+id].api.endEditPageTextMode();
     $('.docviewer-textView span').text('Text');
     asterisk();
   }
 
   /** Ajax request to save text. */
   function save_text(num_page_list) {
-    var id = window.location.pathname.split('/')[2]
+    var id = window.location.pathname.split('/')[2];
     var viewer = docviewer.viewers["doc-"+id];
     
     var text_dict = {};
@@ -346,6 +361,14 @@ var modified_pages = [];
       success: function (payload) {
         animate_msg("Text saved");
         $('.docviewer-textView span').text('Text');
+        var id = window.location.pathname.split('/')[2];
+        var viewer = docviewer.viewers["doc-"+id];
+        for (var i=0; i<num_page_list.length; i++) {
+          var n = num_page_list[i];
+          var text = viewer.schema.text[n-1];
+          viewer.models.document.originalPageText[n] = text;
+        }
+        end_edition_mode();
       },
       dataType: 'json',
       error: function (payload) {
@@ -357,7 +380,7 @@ var modified_pages = [];
   /** Bind the events for updating the text. */
   function bind_text_events() {
     $('.plain-text-area.docviewer-editing').live('blur', function (ev) {
-      var id = window.location.pathname.split('/')[2]
+      var id = window.location.pathname.split('/')[2];
       var viewer = docviewer.viewers["doc-"+id];
       var currentPage = viewer.api.currentPage();
       var text = $('#plain-text-area-'+currentPage).text();
@@ -377,7 +400,7 @@ var modified_pages = [];
 
   function asterisk() {
     $('.plain-text-area.docviewer-editing').live('keyup', function (ev) {
-      var id = window.location.pathname.split('/')[2]
+      var id = window.location.pathname.split('/')[2];
       var viewer = docviewer.viewers["doc-"+id];
       var currentPage = viewer.api.currentPage();
       var text = $('#plain-text-area-'+currentPage).text();

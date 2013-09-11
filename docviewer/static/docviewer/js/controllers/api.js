@@ -331,6 +331,11 @@ docviewer.Api.prototype = {
     this.viewer.openEditor = null;
     this.resetPageText();
     this.viewer.events.loadText();
+  },
+
+  endEditPageTextMode : function() {
+    this.viewer.openEditor = null;
+    this.viewer.events.loadText();
   }
 
 };
