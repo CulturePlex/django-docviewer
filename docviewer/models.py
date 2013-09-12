@@ -172,7 +172,7 @@ class Page(models.Model):
         path = "%s/%s_%s.txt" % (
             self.document.get_root_path(), self.document.slug, self.page)
         f = codecs.open(path, 'w')
-        text = text.decode('ascii', 'ignore')
+        text = unicode(text).encode('utf-8')
         f.write(text)
         f.close()
 
