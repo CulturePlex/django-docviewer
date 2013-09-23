@@ -16,6 +16,7 @@
 */
 
 var modified_pages = [];
+var comment = "";
 
 (function () {
   "use strict";
@@ -272,19 +273,22 @@ var modified_pages = [];
 //  }
 
   /** Hide the annotation area when the page changes */
-  function hide_anno_edit_on_page_change() {
+  function hide_anno_edit_his_on_page_change() {
     mydocviewer.states.events.observerPage = function () {
       var state = mydocviewer.state;
       if (state !== 'ViewDocument') {
         $('#annotation-options').hide();
         if (state !== 'ViewText') {
           $('#edition-options').hide();
+          $('#history-versions').hide();
         } else {
           $('#edition-options').show();
+          $('#history-versions').show();
         }
       } else {
         $('#annotation-options').show();
         $('#edition-options').hide();
+        $('#history-versions').hide();
         var anno = $('#annotation-area');
         if (anno.length === 0) { return; }
         if (mydocviewer.api.currentPage() >= annotation_page - 1 &
@@ -343,7 +347,7 @@ var modified_pages = [];
   }
 
   /** Ajax request to save text. */
-  function save_text(num_page_list) {
+  function save_text(num_page_list, comment) {
     var id = window.location.pathname.split('/')[2];
     var viewer = docviewer.viewers["doc-"+id];
     
@@ -439,10 +443,14 @@ var modified_pages = [];
       disable_edition_mode();
     });
     $('#edition-button').live('click', function (ev) {
-      save_text(modified_pages);
+      save_text(modified_pages, comment);
     });
     
-    hide_anno_edit_on_page_change();
+//    $('#edition-button').live('click', function (ev) {
+//      save_text(modified_pages);
+//    });
+    
+    hide_anno_edit_his_on_page_change();
   });
 
 }());

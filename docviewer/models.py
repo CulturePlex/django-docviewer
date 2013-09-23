@@ -12,6 +12,8 @@ import codecs
 import shutil
 import uuid
 
+from jsonfield import JSONField
+
 from docviewer.settings import IMAGE_FORMAT, DOCUMENT_ROOT, DOCUMENT_URL
 from docviewer.tasks import task_generate_document
 
@@ -158,23 +160,38 @@ class Page(models.Model):
     " Model used to index pages "
     document = models.ForeignKey(Document, related_name='pages_set')
     page = models.PositiveIntegerField()
+    modified = models.DateTimeField()
+    
+    def __unicode__(self):
+        return self.document.title + '-' + str(self.page)
 
     @property
     def text(self):
         path = "%s/%s_%s.txt" % (
-            self.document.get_root_path(), self.document.slug, self.page)
+            self.document.get_root_path(),
+            self.document.slug,
+            self.page,)
         f = codecs.open(path, 'r')
         data = f.read()
         f.close()
         return data.decode('ascii', 'ignore')
 
-    def save_text(self, text):
+    def save_text(self, text, timestamp):
         path = "%s/%s_%s.txt" % (
-            self.document.get_root_path(), self.document.slug, self.page)
+            self.document.get_root_path(),
+            self.document.slug,
+            self.page)
         f = codecs.open(path, 'w')
         text = unicode(text).encode('utf-8')
         f.write(text)
         f.close()
+        
+        path2 = "%s/%s_%s-%s.txt" % (
+            self.document.get_root_path(),
+            self.document.slug,
+            self.page,
+            timestamp)
+        shutil.copy2(path, path2)
 
     def get_image(self, size):
         return "%s/%s/%s_%s.%s" % (
@@ -202,6 +219,17 @@ class Annotation(models.Model):
     
     def __unicode__(self):
         return self.title
+
+
+class Edition(models.Model):
+    document = models.ForeignKey(Document, related_name='editions_set')
+    date = models.DateTimeField(_(u'Date'),)# auto_now_add=True)
+    modified_pages = JSONField(_(u'Modified pages'))
+    comment = models.TextField(_('Comment'))
+    author = models.ForeignKey(User, related_name='editions')
+    
+    def __unicode__(self):
+        return str(self.date)
 
 
 from django.db.models.signals import post_delete, post_save

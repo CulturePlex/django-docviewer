@@ -1,5 +1,5 @@
 from django.contrib import admin
-from docviewer.models import Document, Annotation
+from docviewer.models import Document, Annotation, Page, Edition
 from docviewer.forms import DocumentForm
 from django.contrib.admin.views.main import ChangeList
 
@@ -34,3 +34,10 @@ class DocumentAdmin(admin.ModelAdmin):
 
 admin.site.register(Document, DocumentAdmin)
 admin.site.register(Annotation)
+
+
+class PageAdmin(admin.ModelAdmin):
+    list_display = ('document', 'page', 'modified')
+
+admin.site.register(Page, PageAdmin)
+admin.site.register(Edition)

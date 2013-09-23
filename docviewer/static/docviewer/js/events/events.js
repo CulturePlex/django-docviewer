@@ -101,10 +101,10 @@ docviewer.Schema.events = {
 
     this.viewer.$('.docviewer-textContents').text('');
 
-    var textURI = me.viewer.schema.document.resources.page.text.replace('{page}', pageIndex + 1);
+    var textURI = me.viewer.schema.document.resources.page.text.replace('{page}', pageIndex + 1) + '?' + (new Date()).getTime();console.log(textURI);
     var crossDomain = this.helpers.isCrossDomain(textURI);
     if (crossDomain) textURI += '?callback=?';
-    docviewer.jQuery[crossDomain ? 'getJSON' : 'get'](textURI, {}, handleResponse);
+    docviewer.jQuery[crossDomain ? 'getJSON' : 'get'](textURI, {}, handleResponse); //ver si ya tengo el texto antees de hacer esta peticion
   },
 
   resetTracker: function(){

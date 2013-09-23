@@ -2,13 +2,15 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.views.generic.detail import BaseDetailView
 from django.core.urlresolvers import reverse
-from docviewer.models import Document, Page, Annotation
+from docviewer.models import Document, Page, Annotation, Edition
 from django.utils.feedgenerator import rfc2822_date
 from django.http import HttpResponse
 from django.utils import simplejson
 from django.contrib.sites.models import Site
 from django.views.generic.base import View
 from haystack.query import SearchQuerySet
+
+from datetime import datetime
 
 SITE = Site.objects.get_current()
 
@@ -84,11 +86,23 @@ def save_text(request, pk):
     Save the text
     """
     document = Document.objects.get(id=pk)
+    edition = Edition(
+        document=document,
+        author=request.user,
+        comment='',
+        modified_pages={},
+        date=datetime.now(),
+    )
+    ts = edition.date
     for k in request.POST:
         num_page = int(k)
         page = document.pages_set.get(page=num_page)
         text = request.POST[k]
-        page.save_text(text)
+        page.modified = ts
+        page.save_text(text, ts)
+        edition.modified_pages[num_page] = 'link' + k
+    page.save()
+    edition.save()
     return HttpResponse(
         simplejson.dumps({'status': 'ok'}), content_type="application/json")
 

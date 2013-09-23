@@ -27,7 +27,7 @@
 .docviewer-storyLink,
 .docviewer-pdfLink,
 .docviewer-printNotesLink,
-.docviewer-editionLink,
+.docviewer-editionLink, .docviewer-historyLink
 .docviewer-annotationLink {
   padding-left: 0;
   padding-bottom: 4px;
@@ -37,7 +37,7 @@
 .docviewer-pdfLink a,
 .docviewer-printNotesLink a,
 .docviewer-contributor,
-.docviewer-editionLink a,
+.docviewer-editionLink a, .docviewer-historyLink a,
 .docviewer-annotationLink a {
   font: normal 11px Arial, sans-serif;
   text-decoration: none;
@@ -51,7 +51,7 @@
 .docviewer-storyLink a:hover,
 .docviewer-pdfLink a:hover,
 .docviewer-printNotesLink a:hover,
-.docviewer-editionLink a:hover,
+.docviewer-editionLink a:hover, .docviewer-historyLink a:hover,
 .docviewer-annotationLink a:hover {
   text-decoration:underline;
 }
@@ -166,14 +166,14 @@ textarea.docviewer-textContents#plain-text-area {
   padding: 10px;
 }
 
-.docviewer-contentsHeader,
+.docviewer-contentsHeader, .docviewer-editionHeader, .docviewer-historyHeader,
 .docviewer-descriptionHead{
   text-transform:uppercase;
   color:#666;
   font-family:Arial,Helvetica,sans-serif;
   font-size:12px;
   margin: 0 0 5px;
-  padding:0;
+  padding:10px 0 0 0;
   font-weight:bold;
   clear:left;
   display:block;
