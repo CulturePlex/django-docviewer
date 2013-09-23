@@ -13,6 +13,7 @@ import shutil
 import uuid
 
 from jsonfield import JSONField
+from datetime import datetime
 
 from docviewer.settings import IMAGE_FORMAT, DOCUMENT_ROOT, DOCUMENT_URL
 from docviewer.tasks import task_generate_document
@@ -143,7 +144,12 @@ class Document(TimeStampedModel, StatusModel):
                 self.page_count += 1
                 tmp_file = open("%s/%s" % (self.get_root_path(), f))
                 all_txt.write(tmp_file.read())
-                Page(document=self, page=RE_PAGE.match(f).group(1)).save()
+                page = Page(
+                    document=self,
+                    page=RE_PAGE.match(f).group(1),
+                    modified=datetime.now(),
+                )
+                page.save()
                 tmp_file.close()
         all_txt.close()
 
