@@ -66,9 +66,7 @@ def generate_document(doc_id, task_id=None):
     except Exception, e:
 
         try:
-            print "holaadsf"
-            print str(e)
-            document.task_error = "error - no puede guardar la excepcion str(e)"
+            document.task_error = "error - it can't save " + str(e)
             document.status = document.STATUS.failed
             document.save()
 

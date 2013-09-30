@@ -352,6 +352,8 @@ var comment = "";
     var viewer = docviewer.viewers["doc-"+id];
     
     var text_dict = {};
+    text_dict['comment'] = comment;
+    text_dict['textURI'] = viewer.schema.document.resources.page.text;
     for (var i=0; i<num_page_list.length; i++) {
       var n = num_page_list[i];
       var text = viewer.schema.text[n-1];

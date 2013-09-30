@@ -136,6 +136,7 @@ class Document(TimeStampedModel, StatusModel):
 
     def generate(self):
         # concatenate all text files
+        ts = datetime.now()
         all_txt = open("%s/%s.txt" % (self.get_root_path(), self.slug), "w")
         self.page_count = 0
         self.pages_set.all().delete()
@@ -147,7 +148,7 @@ class Document(TimeStampedModel, StatusModel):
                 page = Page(
                     document=self,
                     page=RE_PAGE.match(f).group(1),
-                    modified=datetime.now(),
+                    modified=ts,
                 )
                 page.save()
                 tmp_file.close()
@@ -229,7 +230,7 @@ class Annotation(models.Model):
 
 class Edition(models.Model):
     document = models.ForeignKey(Document, related_name='editions_set')
-    date = models.DateTimeField(_(u'Date'),)# auto_now_add=True)
+    date = models.DateTimeField(_(u'Date'), auto_now_add=True)
     modified_pages = JSONField(_(u'Modified pages'))
     comment = models.TextField(_('Comment'))
     author = models.ForeignKey(User, related_name='editions')

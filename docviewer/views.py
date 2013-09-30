@@ -86,21 +86,23 @@ def save_text(request, pk):
     Save the text
     """
     document = Document.objects.get(id=pk)
-    edition = Edition(
+    edition = Edition.objects.create(
         document=document,
         author=request.user,
-        comment='',
+        comment=request.POST.get('comment', ''),
         modified_pages={},
-        date=datetime.now(),
+#        date=datetime.now(),
     )
     ts = edition.date
+    text_URI = request.POST.get('textURI', '')
     for k in request.POST:
-        num_page = int(k)
-        page = document.pages_set.get(page=num_page)
-        text = request.POST[k]
-        page.modified = ts
-        page.save_text(text, ts)
-        edition.modified_pages[num_page] = 'link' + k
+        if k != 'comment' and k != 'textURI':
+            num_page = int(k)
+            page = document.pages_set.get(page=num_page)
+            text = request.POST[k]
+            page.modified = ts
+            page.save_text(text, ts)
+            edition.modified_pages[num_page] = text_URI.replace('{page}', k) + '-' + str(ts);
     page.save()
     edition.save()
     return HttpResponse(

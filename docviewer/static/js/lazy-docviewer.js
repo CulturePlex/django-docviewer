@@ -4,7 +4,7 @@ $(window).load(function() {
       docviewer.jQuery.support.cors = true;
 			$('.docviewer').each(function() {
 						if (typeof($(this).attr('id')) === 'undefined') {
-						debugger;
+//						debugger;
 							$(this).attr('id', 'docviewer-' + docviewer_index);
 							var id = $(this).attr('id');
 							docviewer_index++;
