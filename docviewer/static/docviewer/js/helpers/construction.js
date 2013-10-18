@@ -7,6 +7,12 @@ _.extend(docviewer.Schema.helpers, {
 		return _.size(this.models.annotations.byId) > 0;
 	},
 
+	showEditions : function() {
+		if (this.viewer.options.showEditions === false)
+			return false;
+		return _.size(this.models.editions.byId) > 0;
+	},
+
 	renderViewer : function() {
 		var doc = this.viewer.schema.document;
 		var pagesHTML = this.constructPages();
@@ -29,6 +35,12 @@ _.extend(docviewer.Schema.helpers, {
 						+ '">Original Document (PDF) &raquo;</a>'
 				: '';
 
+		var textURL = doc.resources.text;
+		textURL = textURL && this.viewer.options.text !== false
+				? '<a target="_blank" href="' + textURL
+						+ '">Document text &raquo;</a>'
+				: '';
+
 		var contributorList = '';
 		if (this.viewer.schema.document.contributor !== null
 				&& this.viewer.schema.document.contributor !== '') {
@@ -44,6 +56,7 @@ _.extend(docviewer.Schema.helpers, {
 		var showAnnotations = this.showAnnotations();
 		var printNotesURL = (showAnnotations)
 				&& doc.resources.print_annotations;
+		var showEditions = this.showEditions();
 
 		var viewerOptions = {
 			options : this.viewer.options,
@@ -51,6 +64,7 @@ _.extend(docviewer.Schema.helpers, {
 			header : headerHTML,
 			footer : footerHTML,
 			pdf_url : pdfURL,
+			text_url : textURL,
 			contributors : contributorList,
 			story_url : storyURL,
 			print_notes_url : printNotesURL,
@@ -80,7 +94,7 @@ _.extend(docviewer.Schema.helpers, {
 	displayNavigation : function() {
 		var doc = this.viewer.schema.document;
 		var missing = (!doc.description
-				&& !_.size(this.viewer.schema.data.annotationsById) && !this.viewer.schema.data.sections.length);
+				&& !_.size(this.viewer.schema.data.annotationsById) && !this.viewer.schema.data.sections.length); //&& !_.size(this.viewer.schema.data.annotationsById)
 		this.viewer.$('.docviewer-supplemental').toggleClass(
 				'docviewer-noNavigation', missing);
 	},
@@ -100,7 +114,7 @@ _.extend(docviewer.Schema.helpers, {
 	renderNavigation : function() {
 		var me = this;
 		var chapterViews = [], bolds = [], expandIcons = [], expanded = [], navigationExpander = JST
-				.navigationExpander({}), nav = [], notes = [], chapters = [];
+				.navigationExpander({}), nav = [], notes = [], chapters = [], bolds_edit = [], notes_edit = [], nav_edit = [];
 		var boldsId = this.viewer.models.boldsId
 				|| (this.viewer.models.boldsId = _.uniqueId());
 
@@ -108,7 +122,7 @@ _.extend(docviewer.Schema.helpers, {
 		 * ---------------------------------------------------- start the nav
 		 * helper methods
 		 */
-		var getAnnotionsByRange = function(rangeStart, rangeEnd) {
+		var getAnnotationsByRange = function(rangeStart, rangeEnd) {
 			var annotations = [];
 			for (var i = rangeStart, len = rangeEnd; i < len; i++) {
 				if (notes[i]) {
@@ -117,6 +131,17 @@ _.extend(docviewer.Schema.helpers, {
 				}
 			}
 			return annotations.join('');
+		};
+		
+		var getEditionsByRange = function(rangeStart, rangeEnd) {
+			var editions = [];
+			for (var i = rangeStart, len = rangeEnd; i < len; i++) {
+				if (notes[i]) {
+					editions.push(notes[i]);
+					nav[i] = '';
+				}
+			}
+			return editions.join('');
 		};
 
 		var createChapter = function(chapter) {
@@ -140,6 +165,19 @@ _.extend(docviewer.Schema.helpers, {
 			}
 			return renderedAnnotations.join('');
 		};
+
+		var createNavEditions = function() {
+			var renderedEditions = [];
+			var editions = me.viewer.schema.data.editionsById;
+			var keys = Object.keys(editions);
+			
+			for (var k = 0; k < keys.length; k++) {
+				var edition = editions[keys[k]];
+				renderedEditions.push(JST.editionNav(edition));
+				bolds.push(" #docviewer-historyMarker-" + edition.id);
+			}
+			return renderedEditions.join('');
+		};
 		/*
 		 * ---------------------------------------------------- end the nav
 		 * helper methods
@@ -154,6 +192,10 @@ _.extend(docviewer.Schema.helpers, {
 			}
 		}
 
+		if (this.showEditions()) {
+			editionView = createNavEditions();
+		}
+
 		var sections = this.viewer.schema.data.sections;
 		if (sections.length) {
 			for (var i = 0; i < sections.length; i++) {
@@ -164,13 +206,28 @@ _.extend(docviewer.Schema.helpers, {
 				section.endPage = nextSection
 						? nextSection.page - 1
 						: this.viewer.schema.data.totalPages;
-				var annotations = getAnnotionsByRange(section.pageNumber - 1,
+				var annotations = getAnnotationsByRange(section.pageNumber - 1,
 						section.endPage);
 
 				if (annotations != '') {
 					section.navigationExpander = navigationExpander;
 					section.navigationExpanderClass = 'docviewer-hasChildren';
 					section.noteViews = annotations;
+					nav[section.pageNumber - 1] = createChapter(section);
+				} else {
+					section.navigationExpanderClass = 'docviewer-noChildren';
+					section.noteViews = '';
+					section.navigationExpander = '';
+					nav[section.pageNumber - 1] = createChapter(section);
+				}
+
+				var editions = getEditionsByRange(section.pageNumber - 1,
+						section.endPage);
+
+				if (editions != '') {
+					section.navigationExpander = navigationExpander;
+					section.navigationExpanderClass = 'docviewer-hasChildren';
+					section.noteViews = editions;
 					nav[section.pageNumber - 1] = createChapter(section);
 				} else {
 					section.navigationExpanderClass = 'docviewer-noChildren';
@@ -187,6 +244,11 @@ _.extend(docviewer.Schema.helpers, {
 		var chaptersContainer = this.viewer
 				.$('div.docviewer-chaptersContainer');
 		chaptersContainer.html(navigationView);
+		
+		var edition_links = this.viewer
+				.$('div.docviewer-versionLinks');
+		edition_links.html(editionView);
+		
 		chaptersContainer.unbind('click').bind('click',
 				this.events.compile('handleNavigation'));
 		this.viewer.schema.data.sections.length
@@ -227,14 +289,19 @@ _.extend(docviewer.Schema.helpers, {
 
 		// Hide and show navigation flags:
 		var showAnnotations = this.showAnnotations();
+		var showEditions = this.showEditions();
 		var showPages = this.models.document.totalPages > 1;
 		var showSearch = (this.viewer.options.search !== false)
 				&& (this.viewer.options.text !== false);
-		var noFooter = (!showAnnotations && !showPages && !showSearch && !this.viewer.options.sidebar);
+		var noFooter = (!showAnnotations && !showPages && !showSearch && !this.viewer.options.sidebar && !showEditions);
 
 		// Hide annotations, if there are none:
 		var $annotationsView = this.viewer.$('.docviewer-annotationView');
 		$annotationsView[showAnnotations ? 'show' : 'hide']();
+
+		// Hide editions, if there are none:
+		var $editionsView = this.viewer.$('.docviewer-editionView');
+		$editionsView[showEditions ? 'show' : 'hide']();
 
 		// Hide the text tab, if it's disabled.
 		if (showSearch) {
@@ -254,7 +321,7 @@ _.extend(docviewer.Schema.helpers, {
 		}
 
 		// Hide the Documents tab if it's the only tab left.
-		if (!showAnnotations && !showPages && !showSearch) {
+		if (!showAnnotations && !showPages && !showSearch && !showEditions) {
 			this.viewer.$('.docviewer-views').hide();
 		}
 
@@ -270,7 +337,8 @@ _.extend(docviewer.Schema.helpers, {
 		if (showPages || this.viewer.options.sidebar) {
 			var navControls = JST.navControls({
 						totalPages : this.viewer.schema.data.totalPages,
-						totalAnnotations : this.viewer.schema.data.totalAnnotations
+						totalAnnotations : this.viewer.schema.data.totalAnnotations,
+						totalEditions : this.viewer.schema.data.totalEditions
 					});
 			this.viewer.$('.docviewer-navControlsContainer').html(navControls);
 		}
@@ -295,7 +363,7 @@ _.extend(docviewer.Schema.helpers, {
 		// Check if the zoom is showing, and if not, shorten the width of search
 		_.defer(_.bind(function() {
 					if ((this.elements.viewer.width() <= 700)
-							&& (showAnnotations || showPages || showSearch)) {
+							&& (showAnnotations || showPages || showSearch || showEditions)) {
 						this.viewer.$('.docviewer-controls')
 								.addClass('docviewer-narrowControls');
 					}

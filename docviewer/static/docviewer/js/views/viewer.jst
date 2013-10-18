@@ -61,6 +61,9 @@
               <% if (pdf_url) { %>
                 <div class="docviewer-pdfLink"><%= pdf_url %></div>
               <% } %>
+              <% if (text_url) { %>
+                <div class="docviewer-textLink"><%= text_url %></div>
+              <% } %>
               <% if (print_notes_url) { %>
                 <div class="docviewer-printNotesLink">
                   <a target="_blank" href="<%= print_notes_url %>">Print Notes &raquo;</a>
@@ -106,12 +109,16 @@
               </div>
             </div>
             
-<!--            <div class="docviewer-supplemental" id="history-versions">-->
-<!--              <div class="docviewer-historyHeader">History</div>-->
-<!--              <div class="docviewer-historyLink" id="version-0">-->
-<!--                <a href="#">Current version</a>-->
-<!--              </div>-->
-<!--            </div>-->
+            <div class="docviewer-supplemental" id="history-versions">
+              <div class="docviewer-historyHeader">History</div>
+              <div class="docviewer-historyLink" id="version-current">
+                <a href="#">Current version</a>
+              </div>
+              <div class="docviewer-versionLinks"></div>
+              <div class="docviewer-historyLink" id="version-original">
+                <a href="#">Original version</a>
+              </div>
+            </div>
             
           </div>
         </div>

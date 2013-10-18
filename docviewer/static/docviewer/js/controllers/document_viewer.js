@@ -72,6 +72,7 @@ docviewer.DocumentViewer.prototype.loadModels = function() {
   this.models.pages        = new docviewer.model.Pages(this);
   this.models.annotations  = new docviewer.model.Annotations(this);
   this.models.removedPages = {};
+  this.models.editions     = new docviewer.model.Editions(this);
 };
 
 // Transition to a given state ... unless we're already in it.

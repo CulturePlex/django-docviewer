@@ -11,6 +11,7 @@ from django.views.generic.base import View
 from haystack.query import SearchQuerySet
 
 from datetime import datetime
+from utils import datetime_to_string, format_datetime_string
 
 SITE = Site.objects.get_current()
 
@@ -101,9 +102,13 @@ def save_text(request, pk):
             page = document.pages_set.get(page=num_page)
             text = request.POST[k]
             page.modified = ts
-            page.save_text(text, ts)
-            edition.modified_pages[num_page] = text_URI.replace('{page}', k) + '-' + str(ts);
+            page.save_text(text, datetime_to_string(ts))
+            edition.modified_pages[num_page] = text_URI.replace(
+                '{page}',
+                '{}-{}'.format(k, datetime_to_string(ts))
+            )
     page.save()
+    edition.date_string = datetime_to_string(ts)
     edition.save()
     return HttpResponse(
         simplejson.dumps({'status': 'ok'}), content_type="application/json")
@@ -176,6 +181,13 @@ class JsonDocumentView(BaseDetailView):
         for annotation in json['annotations']:
             annotation['location'] = {"image": annotation['location']}
             annotation['author'] = {'username': annotation['author__username']}
+        
+        editions_all = document.editions_set.all()
+        json['editions'] = list(editions_all.values('id', 'date_string', 'modified_pages', 'comment', 'author', 'author__username'))
+
+        for edition in json['editions']:
+            edition['author'] = {'username': edition['author__username']}
+            edition['date_string_formatted'] = format_datetime_string(edition['date_string'])
 
         return HttpResponse(simplejson.dumps(json), content_type="application/json")
 

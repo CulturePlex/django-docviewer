@@ -57,7 +57,6 @@ def generate_document(doc_id, task_id=None):
 
     try:
         docsplit(document)
-
         document.generate()
         document.status = document.STATUS.ready
         document.task_id = None

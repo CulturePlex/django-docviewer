@@ -23,6 +23,8 @@ docviewer.Schema.prototype.importCanonicalDocument = function(json) {
   json.sections               = _.sortBy(json.sections || [], function(sec){ return sec.page; });
   json.annotations            = json.annotations || [];
   json.canonicalURL           = json.canonical_url;
+  
+  json.editions            = json.editions || [];
 
   this.document               = docviewer.jQuery.extend(true, {}, json);
   // Everything after this line is for back-compatibility.
@@ -33,7 +35,12 @@ docviewer.Schema.prototype.importCanonicalDocument = function(json) {
   this.data.chapters          = [];
   this.data.annotationsById   = {};
   this.data.annotationsByPage = {};
+  
+  this.data.totalEditions  = json.editions.length;
+  this.data.editionsById   = {};
+  this.data.editionsByPage = {};
   _.each(json.annotations, docviewer.jQuery.proxy(this.loadAnnotation, this));
+  _.each(json.editions, docviewer.jQuery.proxy(this.loadEdition, this));
 };
 
 // Load an annotation into the Schema, starting from the canonical format.
@@ -57,4 +64,18 @@ docviewer.Schema.prototype.loadAnnotation = function(anno) {
   var insertionIndex = _.sortedIndex(page, anno, function(a){ return a.y1; });
   page.splice(insertionIndex, 0, anno);
   return anno;
+};
+
+// Load an edition into the Schema
+docviewer.Schema.prototype.loadEdition = function(edit) {
+  if (edit.id) edit.server_id = edit.id;
+  var idx              = edit.page - 1;
+  edit.id              = edit.id || _.uniqueId();
+  edit.modified_pages  = edit.modified_pages || [];
+  edit.date            = edit.date || '';
+  edit.author          = edit.author.username || 'no-author';
+  edit.comment         = edit.comment || 'no-comment';
+  
+  this.data.editionsById[edit.id] = edit;
+  return edit;
 };

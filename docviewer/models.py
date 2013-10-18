@@ -118,7 +118,8 @@ class Document(TimeStampedModel, StatusModel):
     def process_file(self):
         file = open(os.path.join(settings.MEDIA_ROOT,self.docfile.name), 'r')
         filepath = "%s/%s.%s" % (
-            self.get_root_path(), self.slug,
+            self.get_root_path(),
+            self.slug,
             self.docfile_basename.split('.')[-1].lower())
         f = open(filepath, "w")
         f.write(file.read())
@@ -140,18 +141,33 @@ class Document(TimeStampedModel, StatusModel):
         all_txt = open("%s/%s.txt" % (self.get_root_path(), self.slug), "w")
         self.page_count = 0
         self.pages_set.all().delete()
+        pages = {}
         for f in os.listdir(self.get_root_path()):
             if f[-4:] == '.txt' and f != "%s.txt" % self.slug:
-                self.page_count += 1
-                tmp_file = open("%s/%s" % (self.get_root_path(), f))
-                all_txt.write(tmp_file.read())
-                page = Page(
-                    document=self,
-                    page=RE_PAGE.match(f).group(1),
-                    modified=ts,
-                )
-                page.save()
-                tmp_file.close()
+                k = int(RE_PAGE.match(f).group(1))
+                pages[k] = f
+        for k in pages:
+            f = pages[k]
+            self.page_count += 1
+            tmp_path = "%s/%s" % (self.get_root_path(), f)
+            tmp_file = open(tmp_path)
+            all_txt.write(tmp_file.read())
+            page = Page(
+                document=self,
+                page=RE_PAGE.match(f).group(1),
+                modified=ts,
+            )
+            page.save()
+            tmp_file.close()
+            
+            zeros = '{0:020}'.format(0)
+            filepath_orig = "%s/%s_%s-%s.txt" % (
+                self.document.get_root_path(),
+                self.document.slug,
+                k,
+                zeros
+            )
+            shutil.copy2(tmp_path, filepath_orig)
         all_txt.close()
 
     def get_thumbnail(self):
@@ -193,12 +209,12 @@ class Page(models.Model):
         f.write(text)
         f.close()
         
-        path2 = "%s/%s_%s-%s.txt" % (
+        path_ts = "%s/%s_%s-%s.txt" % (
             self.document.get_root_path(),
             self.document.slug,
             self.page,
             timestamp)
-        shutil.copy2(path, path2)
+        shutil.copy2(path, path_ts)
 
     def get_image(self, size):
         return "%s/%s/%s_%s.%s" % (
@@ -231,6 +247,7 @@ class Annotation(models.Model):
 class Edition(models.Model):
     document = models.ForeignKey(Document, related_name='editions_set')
     date = models.DateTimeField(_(u'Date'), auto_now_add=True)
+    date_string = models.CharField(_('Date string'), max_length=255)
     modified_pages = JSONField(_(u'Modified pages'))
     comment = models.TextField(_('Comment'))
     author = models.ForeignKey(User, related_name='editions')

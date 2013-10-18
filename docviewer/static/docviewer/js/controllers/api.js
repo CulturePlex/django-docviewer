@@ -206,6 +206,19 @@ docviewer.Api.prototype = {
     return anno;
   },
 
+  // Add a new edition to the document
+  addEdition : function(edit) {
+    edit = this.viewer.schema.loadEdition(anno);
+    this.viewer.models.editions.sortEditions();
+    return edit;
+  },
+
+  // Add a new edition to the document
+  addEdition : function(edit) {
+    edit = this.viewer.schema.addEdition(edit);
+    return edit;
+  },
+
   // Register a callback for when an annotation is saved.
   onAnnotationSave : function(callback) {
     this.viewer.models.annotations.saveCallbacks.push(callback);

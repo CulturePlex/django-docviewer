@@ -16,7 +16,6 @@
 */
 
 var modified_pages = [];
-var comment = "";
 
 (function () {
   "use strict";
@@ -129,7 +128,7 @@ var comment = "";
       data: adata,
       success: function (payload) {
         var zoomLevel = mydocviewer.models.pages.zoomLevel;
-        console.log(zoomLevel);
+//        console.log(zoomLevel);
         load_document(function () {
           mydocviewer.pageSet.zoom({zoomLevel: zoomLevel });
           mydocviewer.api.setCurrentPage(adata.page_id);
@@ -337,6 +336,8 @@ var comment = "";
     docviewer.viewers["doc-"+id].api.leaveEditPageTextMode();
     $('.docviewer-textView span').text('Text');
     asterisk();
+    modified_pages = [];
+    $('.docviewer-textInput').val("");
   }
   
   function endEditText() {
@@ -347,12 +348,12 @@ var comment = "";
   }
 
   /** Ajax request to save text. */
-  function save_text(num_page_list, comment) {
+  function save_text(num_page_list) {
     var id = window.location.pathname.split('/')[2];
     var viewer = docviewer.viewers["doc-"+id];
     
     var text_dict = {};
-    text_dict['comment'] = comment;
+    text_dict['comment'] = $('.docviewer-textInput').val();
     text_dict['textURI'] = viewer.schema.document.resources.page.text;
     for (var i=0; i<num_page_list.length; i++) {
       var n = num_page_list[i];
@@ -381,6 +382,9 @@ var comment = "";
         animate_msg("ajax error saving text");
       }
     });
+    
+    modified_pages = [];
+    $('.docviewer-textInput').val("");
   }
 
   /** Bind the events for updating the text. */
@@ -445,12 +449,8 @@ var comment = "";
       disable_edition_mode();
     });
     $('#edition-button').live('click', function (ev) {
-      save_text(modified_pages, comment);
+      save_text(modified_pages);
     });
-    
-//    $('#edition-button').live('click', function (ev) {
-//      save_text(modified_pages);
-//    });
     
     hide_anno_edit_his_on_page_change();
   });

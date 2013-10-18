@@ -26,6 +26,7 @@
 
 .docviewer-storyLink,
 .docviewer-pdfLink,
+.docviewer-textLink,
 .docviewer-printNotesLink,
 .docviewer-editionLink, .docviewer-historyLink
 .docviewer-annotationLink {
@@ -35,6 +36,7 @@
 
 .docviewer-storyLink a,
 .docviewer-pdfLink a,
+.docviewer-textLink a,
 .docviewer-printNotesLink a,
 .docviewer-contributor,
 .docviewer-editionLink a, .docviewer-historyLink a,
@@ -50,6 +52,7 @@
 
 .docviewer-storyLink a:hover,
 .docviewer-pdfLink a:hover,
+.docviewer-textLink a:hover,
 .docviewer-printNotesLink a:hover,
 .docviewer-editionLink a:hover, .docviewer-historyLink a:hover,
 .docviewer-annotationLink a:hover {
