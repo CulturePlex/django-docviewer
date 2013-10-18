@@ -192,7 +192,8 @@ _.extend(docviewer.Schema.helpers, {
 			}
 		}
 
-		if (this.showEditions()) {
+//		if (this.showEditions()) {
+		if (true) {
 			editionView = createNavEditions();
 		}
 
