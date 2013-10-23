@@ -421,6 +421,36 @@ var modified_pages = [];
     });
   }
 
+  /** Restore a document version. */
+  function restoreVersion(ts) {
+    $.ajax({
+      type: "POST",
+      url: "restore_version/",
+      data: {'ts': ts},
+      success: function (payload) {
+        animate_msg("Version restored");
+        var id = window.location.pathname.split('/')[2];
+        var viewer = docviewer.viewers["doc-"+id];
+        var mod_pags = payload.modified_pages;
+        var keys = Object.keys(mod_pags);
+        for (var k = 0; k < keys.length; k++) {
+          var n = keys[k];
+          var text = mod_pags[n];
+          viewer.schema.text[parseInt(n)-1] = text;
+          viewer.models.document.originalPageText[parseInt(n)] = text;
+        }
+        viewer.events.loadText();
+      },
+      dataType: 'json',
+      error: function (payload) {
+        animate_msg("ajax error restoring version");
+      }
+    });
+    
+    modified_pages = [];
+    $('.docviewer-textInput').val("");
+  }
+
   /** Bind the event to its respectives elements. */
   $(document).ready(function () {
     bind_content_events();
@@ -453,6 +483,10 @@ var modified_pages = [];
     });
     
     hide_anno_edit_his_on_page_change();
+    
+    $(".docviewer-historyLink").live('click', function (ev) {
+      restoreVersion(ev.currentTarget.id);
+    });
   });
 
 }());

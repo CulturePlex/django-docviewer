@@ -127,6 +127,22 @@ def save_text(request, pk):
         )
 
 
+#@ensure_csrf_cookie
+@csrf_exempt
+def restore_version(request, pk):
+    """
+    Restore a document version
+    """
+    ts = request.POST.get('ts', '99999999999999999999')
+    document = Document.objects.get(id=pk)
+    edition = document.editions_set.get(date_string=ts)
+    return HttpResponse(
+        simplejson.dumps(
+            {'status': 'ok', 'modified_pages': edition.modified_pages}),
+            content_type="application/json",
+        )
+        
+
 class SearchDocumentView(View):
 
     def get(self, request, **kwargs):
