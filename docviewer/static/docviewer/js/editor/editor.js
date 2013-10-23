@@ -368,14 +368,14 @@ var modified_pages = [];
       success: function (payload) {
         animate_msg("Text saved");
         $('.docviewer-textView span').text('Text');
-        var id = window.location.pathname.split('/')[2];
-        var viewer = docviewer.viewers["doc-"+id];
         for (var i=0; i<num_page_list.length; i++) {
           var n = num_page_list[i];
           var text = viewer.schema.text[n-1];
           viewer.models.document.originalPageText[n] = text;
         }
         end_edition_mode();
+        viewer.schema.loadEdition(payload.edition);
+        viewer.api.redraw(true);
       },
       dataType: 'json',
       error: function (payload) {

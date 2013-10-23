@@ -208,14 +208,8 @@ docviewer.Api.prototype = {
 
   // Add a new edition to the document
   addEdition : function(edit) {
-    edit = this.viewer.schema.loadEdition(anno);
+    edit = this.viewer.schema.loadEdition(edit);
     this.viewer.models.editions.sortEditions();
-    return edit;
-  },
-
-  // Add a new edition to the document
-  addEdition : function(edit) {
-    edit = this.viewer.schema.addEdition(edit);
     return edit;
   },
 

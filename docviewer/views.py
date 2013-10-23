@@ -110,8 +110,21 @@ def save_text(request, pk):
     page.save()
     edition.date_string = datetime_to_string(ts)
     edition.save()
+    
+    edit = {}
+    edit['id'] = edition.id
+    edit['date_string'] = edition.date_string
+    edit['modified_pages'] = edition.modified_pages
+    edit['comment'] = edition.comment
+    edit['author'] = {'username': edition.author.username}
+    edit['author__username'] = edition.author.username
+    edit['date_string_formatted'] = format_datetime_string(edition.date_string)
+    
     return HttpResponse(
-        simplejson.dumps({'status': 'ok'}), content_type="application/json")
+        simplejson.dumps(
+            {'status': 'ok', 'edition': edit}),
+            content_type="application/json",
+        )
 
 
 class SearchDocumentView(View):

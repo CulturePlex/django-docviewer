@@ -102,13 +102,10 @@ docviewer.Schema.events = {
     this.viewer.$('.docviewer-textContents').text('');
 
     var textURI2 = me.viewer.schema.document.resources.page.text.replace('{page}', pageIndex + 1);
-//    textURI2 = textURI2.substring(0, textURI2.length-4);
-//    var textURI = textURI2 + '-2013-09-23 15:43:23.017268.txt' + '?' + (new Date()).getTime();
     var textURI = textURI2 + '?' + (new Date()).getTime();
     var crossDomain = this.helpers.isCrossDomain(textURI);
     if (crossDomain) textURI += '?callback=?';
     docviewer.jQuery[crossDomain ? 'getJSON' : 'get'](textURI, {}, handleResponse); //ver si ya tengo el texto antes de hacer esta peticion
-//    console.log(textURI);
   },
 
   resetTracker: function(){
