@@ -194,7 +194,7 @@ class JsonDocumentView(BaseDetailView):
         for annotation in json['annotations']:
             annotation['location'] = {"image": annotation['location']}
             annotation['author'] = {'username': annotation['author__username']}
-        
+
         editions_all = document.editions_set.all()
         json['editions'] = list(editions_all.values('id', 'date_string', 'modified_pages', 'comment', 'author', 'author__username'))
 

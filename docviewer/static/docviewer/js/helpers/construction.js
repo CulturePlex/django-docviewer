@@ -169,7 +169,7 @@ _.extend(docviewer.Schema.helpers, {
 		var createNavEditions = function() {
 			var renderedEditions = [];
 			var editions = me.viewer.schema.data.editionsById;
-			var keys = Object.keys(editions);
+			var keys = Object.keys(editions).reverse();
 			
 			for (var k = 0; k < keys.length; k++) {
 				var edition = editions[keys[k]];
