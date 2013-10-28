@@ -146,6 +146,9 @@ class Document(TimeStampedModel, StatusModel):
             if f[-4:] == '.txt' and f != "%s.txt" % self.slug:
                 k = int(RE_PAGE.match(f).group(1))
                 pages[k] = f
+        mod_pags = {}
+        zeros = '0'*20
+        nines = '9'*20
         for k in pages:
             f = pages[k]
             self.page_count += 1
@@ -160,7 +163,6 @@ class Document(TimeStampedModel, StatusModel):
             page.save()
             tmp_file.close()
             
-            zeros = '{0:020}'.format(0)
             filepath_orig = "%s/%s_%s-%s.txt" % (
                 self.document.get_root_path(),
                 self.document.slug,
@@ -168,6 +170,26 @@ class Document(TimeStampedModel, StatusModel):
                 zeros
             )
             shutil.copy2(tmp_path, filepath_orig)
+            
+            text_url = 'http://localhost:8000'+self.document.text_page_url
+            mod_pags[self.page_count] = text_url.replace(
+                '%(page)s',
+                '{}-{}'.format(self.page_count, zeros)
+            )
+        Edition.objects.create(
+            document=self.document,
+            author=User.objects.get(id=1), #fix this
+            comment='original version',
+            modified_pages=mod_pags,
+            date_string = zeros
+        )
+        Edition.objects.create(
+            document=self.document,
+            author=User.objects.get(id=1), #fix this
+            comment='last version',
+            modified_pages=mod_pags,
+            date_string = nines
+        )
         all_txt.close()
 
     def get_thumbnail(self):
@@ -252,8 +274,19 @@ class Edition(models.Model):
     comment = models.TextField(_('Comment'))
     author = models.ForeignKey(User, related_name='editions')
     
+    @property
+    def previous(self):
+        editions = self.document.editions_set.order_by('-date_string')
+        for e in editions:
+            if e.date_string < self.date_string:
+                prev = e
+                break
+        else:
+            prev = self
+        return prev
+    
     def __unicode__(self):
-        return str(self.date)
+        return '{} -- {}'.format(self.document.title, str(self.date))
 
 
 from django.db.models.signals import post_delete, post_save

@@ -351,6 +351,7 @@ var modified_pages = [];
   function save_text(num_page_list) {
     var id = window.location.pathname.split('/')[2];
     var viewer = docviewer.viewers["doc-"+id];
+    var currentPage = viewer.api.currentPage();
     
     var text_dict = {};
     text_dict['comment'] = $('.docviewer-textInput').val();
@@ -375,11 +376,15 @@ var modified_pages = [];
         }
         end_edition_mode();
         viewer.schema.loadEdition(payload.edition);
-        viewer.api.redraw(true);
+        viewer.api.redrawEditions();
       },
       dataType: 'json',
       error: function (payload) {
         animate_msg("ajax error saving text");
+      },
+      complete: function (payload) {
+        viewer.api.setCurrentPage(currentPage);
+        viewer.events.loadText(currentPage-1);
       }
     });
     
@@ -423,27 +428,44 @@ var modified_pages = [];
 
   /** Restore a document version. */
   function restoreVersion(ts) {
+    var id = window.location.pathname.split('/')[2];
+    var viewer = docviewer.viewers["doc-"+id];
+    var currentPage = viewer.api.currentPage();
+    
     $.ajax({
       type: "POST",
       url: "restore_version/",
       data: {'ts': ts},
       success: function (payload) {
-        animate_msg("Version restored");
-        var id = window.location.pathname.split('/')[2];
-        var viewer = docviewer.viewers["doc-"+id];
+//        animate_msg("Version restored");
         var mod_pags = payload.modified_pages;
         var keys = Object.keys(mod_pags);
         for (var k = 0; k < keys.length; k++) {
-          var n = keys[k];
-          var text = mod_pags[n];
-          viewer.schema.text[parseInt(n)-1] = text;
-          viewer.models.document.originalPageText[parseInt(n)] = text;
+          (function(key) {
+              var n = keys[key];
+              var url = mod_pags[n];//+ "?x="+(new Date()).getTime();
+              var nump = parseInt(n);
+              $.ajax({
+                type: 'GET',
+                url: url,
+                success: function (data) {
+                  viewer.schema.text[nump-1] = data;
+                  viewer.models.document.originalPageText[nump] = data;
+                  viewer.events.loadText(nump-1);
+                },
+                error: function (data) {
+                    animate_msg("File not found.")
+              }})
+          })(k);
         }
-        viewer.events.loadText();
       },
       dataType: 'json',
       error: function (payload) {
         animate_msg("ajax error restoring version");
+      },
+      complete: function (payload) {
+        viewer.api.setCurrentPage(currentPage);
+        viewer.events.loadText(currentPage-1);
       }
     });
     

@@ -95,21 +95,29 @@ def save_text(request, pk):
 #        date=datetime.now(),
     )
     ts = edition.date
+    date_string = datetime_to_string(ts)
+    edition.date_string = date_string
     text_URI = request.POST.get('textURI', '')
+    edition.modified_pages = edition.previous.modified_pages
     for k in request.POST:
         if k != 'comment' and k != 'textURI':
             num_page = int(k)
             page = document.pages_set.get(page=num_page)
             text = request.POST[k]
             page.modified = ts
-            page.save_text(text, datetime_to_string(ts))
-            edition.modified_pages[num_page] = text_URI.replace(
+            page.save_text(text, date_string)
+            edition.modified_pages[k] = text_URI.replace(
                 '{page}',
                 '{}-{}'.format(k, datetime_to_string(ts))
             )
+    
+    nines = '9'*20
+    last_edition = Edition.objects.get(date_string=nines)
+    last_edition.modified_pages = edition.modified_pages
+    
     page.save()
-    edition.date_string = datetime_to_string(ts)
     edition.save()
+    last_edition.save()
     
     edit = {}
     edit['id'] = edition.id
@@ -211,7 +219,9 @@ class JsonDocumentView(BaseDetailView):
             annotation['location'] = {"image": annotation['location']}
             annotation['author'] = {'username': annotation['author__username']}
 
-        editions_all = document.editions_set.all()
+        zeros = '0'*20
+        nines = '9'*20
+        editions_all = document.editions_set.exclude(date_string=zeros).exclude(date_string=nines)
         json['editions'] = list(editions_all.values('id', 'date_string', 'modified_pages', 'comment', 'author', 'author__username'))
 
         for edition in json['editions']:

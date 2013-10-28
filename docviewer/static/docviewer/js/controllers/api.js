@@ -185,6 +185,21 @@ docviewer.Api.prototype = {
     }
   },
 
+  // Redraw the editions.
+  redrawEditions : function() {
+//    if (redrawAll) {
+//      this.viewer.models.annotations.renderAnnotations();
+//      this.viewer.models.document.computeOffsets();
+//    }
+    this.viewer.helpers.renderNavigation();
+//    this.viewer.helpers.renderComponents();
+//    if (redrawAll) {
+//      this.viewer.elements.window.removeClass('docviewer-coverVisible');
+//      this.viewer.pageSet.buildPages({noNotes : true});
+//      this.viewer.pageSet.reflowPages();
+//    }
+  },
+
   getAnnotationsBySortOrder : function() {
     return this.viewer.models.annotations.sortAnnotations();
   },

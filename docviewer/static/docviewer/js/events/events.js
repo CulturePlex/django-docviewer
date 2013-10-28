@@ -68,7 +68,6 @@ docviewer.Schema.events = {
     var me = this;
 
     var processText = function(text) {
-
       var pageNumber = parseInt(pageIndex,10)+1;
       me.viewer.$('.docviewer-textContents').replaceWith('<pre class="docviewer-textContents plain-text-area" id="plain-text-area-' + pageNumber + '">' + text + '</pre>');
       me.viewer.$('.plain-text-area').hide();
