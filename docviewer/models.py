@@ -171,7 +171,7 @@ class Document(TimeStampedModel, StatusModel):
             )
             shutil.copy2(tmp_path, filepath_orig)
             
-            text_url = 'http://localhost:8000'+self.document.text_page_url
+            text_url = self.document.text_page_url
             mod_pags[self.page_count] = text_url.replace(
                 '%(page)s',
                 '{}-{}'.format(self.page_count, zeros)
@@ -179,14 +179,14 @@ class Document(TimeStampedModel, StatusModel):
         Edition.objects.create(
             document=self.document,
             author=User.objects.get(id=1), #fix this
-            comment='original version',
+            comment='Original version',
             modified_pages=mod_pags,
             date_string = zeros
         )
         Edition.objects.create(
             document=self.document,
             author=User.objects.get(id=1), #fix this
-            comment='last version',
+            comment='Current version',
             modified_pages=mod_pags,
             date_string = nines
         )

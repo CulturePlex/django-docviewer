@@ -16,6 +16,7 @@
 */
 
 var modified_pages = [];
+var restore = false;
 
 (function () {
   "use strict";
@@ -281,7 +282,8 @@ var modified_pages = [];
           $('#edition-options').hide();
           $('#history-versions').hide();
         } else {
-          $('#edition-options').show();
+          if (restore == false)
+            $('#edition-options').show();
           $('#history-versions').show();
         }
       } else {
@@ -302,11 +304,28 @@ var modified_pages = [];
   }
 
 
+  /** Enable restoring. */
+  function enable_restoring_mode() {
+    restore = true;
+    $('#form-restoring').show();
+    $('#edition-options').hide();
+    $(".plain-text-area").addClass('restore');
+  }
+
+  /** Disable restoring. */
+  function disable_restoring_mode() {
+    restore = false;
+    $('#form-restoring').hide();
+    $('#edition-options').show();
+    $(".plain-text-area").removeClass('restore');
+  }
+
+
   /** Enable the events that allows the edition of text. */
   function enable_edition_mode() {
     $('#add-edition').hide();
     $('#cancel-edition').show();
-    $('#form-edition').show();
+//    $('#form-edition').show();
     editText();
   }
 
@@ -335,6 +354,7 @@ var modified_pages = [];
     var id = window.location.pathname.split('/')[2];
     docviewer.viewers["doc-"+id].api.leaveEditPageTextMode();
     $('.docviewer-textView span').text('Text');
+    $('#form-edition').hide();
     asterisk();
     modified_pages = [];
     $('.docviewer-textInput').val("");
@@ -344,6 +364,7 @@ var modified_pages = [];
     var id = window.location.pathname.split('/')[2];
     docviewer.viewers["doc-"+id].api.endEditPageTextMode();
     $('.docviewer-textView span').text('Text');
+    $('#form-edition').hide();
     asterisk();
   }
 
@@ -369,6 +390,7 @@ var modified_pages = [];
       success: function (payload) {
         animate_msg("Text saved");
         $('.docviewer-textView span').text('Text');
+        $('#form-edition').hide();
         for (var i=0; i<num_page_list.length; i++) {
           var n = num_page_list[i];
           var text = viewer.schema.text[n-1];
@@ -392,7 +414,7 @@ var modified_pages = [];
     $('.docviewer-textInput').val("");
   }
 
-  /** Bind the events for updating the text. */
+  /** Bind the events for u pdating the text. */
   function bind_text_events() {
     $('.plain-text-area.docviewer-editing').live('blur', function (ev) {
       var id = window.location.pathname.split('/')[2];
@@ -406,6 +428,7 @@ var modified_pages = [];
       else {
         if (modified_pages.length == 0) {
           $('.docviewer-textView span').text('Text');
+          $('#form-edition').hide();
           asterisk();
         }
       }
@@ -421,6 +444,7 @@ var modified_pages = [];
       var text = $('#plain-text-area-'+currentPage).text();
       if (viewer.schema.text[currentPage-1] != text) {
         $('.docviewer-textView span').text('Text*');
+        $('#form-edition').show();
         $('.plain-text-area.docviewer-editing').die('keydown');
       }
     });
@@ -458,6 +482,11 @@ var modified_pages = [];
               }})
           })(k);
         }
+        modified_pages = _.range(1, viewer.models.document.totalPages+1);
+//        for (var i = 0; i < modified_pages.length; i++) {
+//            viewer.events.restoreText(i);
+//        }
+        $('.docviewer-textInput').val("");
       },
       dataType: 'json',
       error: function (payload) {
@@ -468,9 +497,6 @@ var modified_pages = [];
         viewer.events.loadText(currentPage-1);
       }
     });
-    
-    modified_pages = [];
-    $('.docviewer-textInput').val("");
   }
 
   /** Bind the event to its respectives elements. */
@@ -507,7 +533,16 @@ var modified_pages = [];
     hide_anno_edit_his_on_page_change();
     
     $(".docviewer-historyLink").live('click', function (ev) {
+      enable_restoring_mode();
       restoreVersion(ev.currentTarget.id);
+    });
+    $("#restore-button").live('click', function (ev) {
+      save_text(modified_pages);
+      disable_restoring_mode();
+    });
+    $("#cancel-restore-button").live('click', function (ev) {
+      restoreVersion('99999999999999999999');
+      disable_restoring_mode();
     });
   });
 

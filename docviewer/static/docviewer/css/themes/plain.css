@@ -20,7 +20,7 @@ span#fixed-div{
   padding: 0px 15px;
   display: none;
 }
-input.docviewer-editInput, .docviewer-editInput, input.docviewer-textInput, .docviewer-textInput {
+input.docviewer-editInput, .docviewer-editInput, input.docviewer-textInput, .docviewer-textInput, input.docviewer-textVersion, .docviewer-textVersion {
   display: block;
   border: 1px solid #999;
   border-radius: 8px; -webkit-border-radius: 8px; -moz-border-radius: 8px;
@@ -43,6 +43,16 @@ input[type="button"].docviewer-editButton {
   text-transform: uppercase;
   color: #000;
 }
+input[type="button"].docviewer-restoreButton {
+  text-decoration: none;
+  font: 10px Arial, Helvetica, sans-serif;
+  text-shadow: 0px 1px 0px #fff;
+  height:26px;
+  border: 1px solid #777;
+  text-transform: uppercase;
+  color: #000;
+  width:100px;
+}
 .docviewer-docViewer .docviewer-searchInput {
 display: block;
 border: 1px solid #777;
@@ -63,14 +73,33 @@ border-radius: 12px;
 .docviewer-editInput:focus, docviewer-textInput:focus {
   background: white;
 }
-.docviewer-editBox{
+.docviewer-editBox {
   text-align: center;
   width: 200px;
 }
+
+
+.docviewer-restoreBox {
+/*  background-color:#FFFFFF;*/
+  color:#333333;
+  font-size:14px;
+  font-family: courier, monotype;
+  line-height:1.4em;
+  overflow: hidden;
+  white-space: pre-wrap;       /* css-3 */
+  white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
+  padding:4px;
+  margin: 46px;
+}
+
+
 ::-webkit-input-placeholder { font-style:italic, font-size:10px; }
 ::-moz-placeholder { font-style:italic }
 input:-moz-placeholder { font-style:italic }
-.docviewer-editButton {
+.docviewer-editButton, .docviewer-restoreButton {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
@@ -81,7 +110,7 @@ input:-moz-placeholder { font-style:italic }
   margin-top: 5px;
   cursor:pointer;
 }
-.docviewer-editButton:hover {
+.docviewer-editButton:hover, .docviewer-restoreButton:hover {
   text-decoration:none;
   color:#666;
   cursor:pointer;
@@ -89,6 +118,18 @@ input:-moz-placeholder { font-style:italic }
 }
 #form-annotation, #cancel-annotation, #form-edition, #cancel-edition {
   display: none;
+}
+
+#form-restoring {
+   display: none;
+/*   position: fixed;*/
+/*   top: 50%;*/
+/*   left: 50%;*/
+/*   width: 100px;*/
+/*   height: 100px;*/
+   margin-top: 46px;
+   margin-left: 46px;
+   margin-bottom: -40px;
 }
 #annotation-area{
   background: #FFE325;

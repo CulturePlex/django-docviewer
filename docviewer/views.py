@@ -112,7 +112,7 @@ def save_text(request, pk):
             )
     
     nines = '9'*20
-    last_edition = Edition.objects.get(date_string=nines)
+    last_edition = document.editions_set.get(date_string=nines)
     last_edition.modified_pages = edition.modified_pages
     
     page.save()

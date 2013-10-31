@@ -69,7 +69,10 @@ docviewer.Schema.events = {
 
     var processText = function(text) {
       var pageNumber = parseInt(pageIndex,10)+1;
-      me.viewer.$('.docviewer-textContents').replaceWith('<pre class="docviewer-textContents plain-text-area" id="plain-text-area-' + pageNumber + '">' + text + '</pre>');
+      var restore = "";
+      if ($('.plain-text-area').hasClass('restore'))
+        restore = " restore";
+      me.viewer.$('.docviewer-textContents').replaceWith('<pre class="docviewer-textContents plain-text-area' + restore + '" id="plain-text-area-' + pageNumber + '">' + text + '</pre>');
       me.viewer.$('.plain-text-area').hide();
       me.viewer.$('#plain-text-area-'+pageNumber).show();
       

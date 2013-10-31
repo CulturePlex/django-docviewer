@@ -33,8 +33,18 @@
           
               </div>
               <div class="docviewer-textPage">
+                
+                <div id="form-restoring" class="docviewer-restoreBox3">
+                  <form action="#" method="post" class="docviewer-restoreText3">
+                    <input id="restore-button" class="docviewer-restoreButton" type="button" value="Restore">
+                    <input id="cancel-restore-button" class="docviewer-restoreButton" type="button" value="Cancel">
+<!--                    <pre id="restore-text-area" class="docviewer-textVersion3 restore-text-area"></pre>-->
+                  </form>
+                </div>
+                
                 <span class="docviewer-textCurrentPage"></span>
                 <pre class="docviewer-textContents" id="plain-text-area"></pre>
+                
               </div>
             </div>
             <%= pages %>
@@ -102,7 +112,7 @@
                 <a href="#">Cancel text edition</a>
               </div>
               <div id="form-edition" class="docviewer-editBox">
-                <form action="#" method="get" class="docviewer-editText">
+                <form action="#" method="post" class="docviewer-editText">
                     <textarea id="edition-content" rows="6" class="docviewer-textInput" placeholder="Description of changes"></textarea>
                     <input id="edition-button" class="docviewer-editButton" type="button" value="Save text">
                 </form>
