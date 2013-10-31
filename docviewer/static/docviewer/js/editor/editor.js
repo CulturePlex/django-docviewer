@@ -376,7 +376,9 @@ var restore = false;
     
     var text_dict = {};
     text_dict['comment'] = $('.docviewer-textInput').val();
-    text_dict['textURI'] = viewer.schema.document.resources.page.text;
+    var rel_art = viewer.schema.document.resources.related_article;
+    var rel_art_len = rel_art.length
+    text_dict['textURI'] = viewer.schema.document.resources.page.text.substring(rel_art_len);
     for (var i=0; i<num_page_list.length; i++) {
       var n = num_page_list[i];
       var text = viewer.schema.text[n-1];
