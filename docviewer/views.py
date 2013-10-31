@@ -119,6 +119,8 @@ def save_text(request, pk):
     edition.save()
     last_edition.save()
     
+    document.regenerate()
+    
     edit = {}
     edit['id'] = edition.id
     edit['date_string'] = edition.date_string

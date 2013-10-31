@@ -192,6 +192,24 @@ class Document(TimeStampedModel, StatusModel):
         )
         all_txt.close()
 
+    def regenerate(self):
+        # reconcatenate all text files
+        all_txt = open("%s/%s.txt" % (self.get_root_path(), self.slug), "w")
+        pages = {}
+        for f in os.listdir(self.get_root_path()):
+            if f[-4:] == '.txt' and f != "%s.txt" % self.slug:
+                m = RE_PAGE.match(f)
+                if m:
+                    k = int(m.group(1))
+                    pages[k] = f
+        for k in pages:
+            f = pages[k]
+            tmp_path = "%s/%s" % (self.get_root_path(), f)
+            tmp_file = open(tmp_path)
+            all_txt.write(tmp_file.read())
+            tmp_file.close()
+        all_txt.close()
+
     def get_thumbnail(self):
         return "%s/%s/%s_%s.%s" % (
             self.get_root_url(), "small", self.slug, 1, IMAGE_FORMAT)
