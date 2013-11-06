@@ -17,7 +17,7 @@ class DocViewerChangeList(ChangeList):
 
 class DocumentAdmin(admin.ModelAdmin):
     form = DocumentForm
-    readonly_fields = ('status', 'page_count', 'task_id', 'task_error', 'task_start')
+    readonly_fields = ('status', 'page_count', 'task_id', 'task_error', 'task_start', 'task_end')
 
     fieldsets = (
         (None, {'fields': (
@@ -26,7 +26,7 @@ class DocumentAdmin(admin.ModelAdmin):
             'download')}),
         ('Meta', {'fields': (
             'status', 'page_count',
-            'task_id', 'task_error', 'task_start')}),
+            'task_id', 'task_error', 'task_start', 'task_end')}),
     )
 
     def get_changelist(self, request, **kwargs):

@@ -130,6 +130,10 @@ def save_text(request, pk):
     edit['author__username'] = edition.author.username
     edit['date_string_formatted'] = format_datetime_string(edition.date_string)
     
+    email = create_email(document)
+    print email['message']
+    print email['recipient_list']
+    
     return HttpResponse(
         simplejson.dumps(
             {'status': 'ok', 'edition': edit}),
@@ -143,7 +147,8 @@ def restore_version(request, pk):
     """
     Restore a document version
     """
-    ts = request.POST.get('ts', '99999999999999999999')
+    nines = '9'*20
+    ts = request.POST.get('ts', nines)
     document = Document.objects.get(id=pk)
     edition = document.editions_set.get(date_string=ts)
     return HttpResponse(

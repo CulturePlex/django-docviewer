@@ -61,6 +61,8 @@ class Document(TimeStampedModel, StatusModel):
         _('Celery error'), null=True, blank=True)
     task_start = models.DateTimeField(
         _('Celery date start'), null=True, blank=True)
+    task_end = models.DateTimeField(
+        _('Celery date end'), null=True, blank=True)
 
     @models.permalink
     def get_absolute_url(self):
@@ -178,14 +180,14 @@ class Document(TimeStampedModel, StatusModel):
             )
         Edition.objects.create(
             document=self.document,
-            author=User.objects.get(id=1), #fix this
+            author=self.document.document.owner,
             comment='Original version',
             modified_pages=mod_pags,
             date_string = zeros
         )
         Edition.objects.create(
             document=self.document,
-            author=User.objects.get(id=1), #fix this
+            author=self.document.document.owner,
             comment='Current version',
             modified_pages=mod_pags,
             date_string = nines

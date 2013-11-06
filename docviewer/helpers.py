@@ -1,9 +1,15 @@
 import os
 from subprocess import Popen, PIPE
 from docviewer.settings import IMAGE_FORMAT
-from docviewer.models import Document
+from docviewer.models import Document, Edition
 from datetime import datetime
 import shutil
+
+from django.core.mail import send_mail
+#import smtplib
+from django.template import Context, loader
+import utils
+from django.utils.timezone import utc
 
 
 def docsplit(document):
@@ -52,7 +58,8 @@ def generate_document(doc_id, task_id=None):
         raise Exception("Celery task ID doesn't match")
 
     document.status = Document.STATUS.running
-    document.task_start = datetime.now()
+#    document.task_start = datetime.now()
+    document.task_start = datetime.utcnow().replace(tzinfo=utc)
     document.save()
 
     try:
@@ -61,7 +68,28 @@ def generate_document(doc_id, task_id=None):
         document.status = document.STATUS.ready
         document.task_id = None
         document.task_error = None
+        document.task_end = datetime.utcnow().replace(tzinfo=utc)
         document.save()
+        
+        try:
+            email = create_email(document)
+            send_mail(
+                'Festos',
+                email['message'],
+                'noreply@festos.cultureplex.ca',
+#                email['recipient_list'],
+                ['noespecado@hotmail.com'],
+                fail_silently=False
+            )
+#        except smtplib.SMTPException, e:
+        except Exception as e:
+            Edition.objects.create(
+                document=document,
+                author=document.document.owner,
+                comment=email,
+                modified_pages={},
+                date_string = e
+            )
     except Exception, e:
 
         try:
@@ -73,3 +101,36 @@ def generate_document(doc_id, task_id=None):
             pass
 
         raise
+
+
+def create_email(document):
+    email = {}
+    
+    docu = document.document
+    
+    status = document.status
+    username = docu.owner.username
+    filename = document.title
+    string_start_datetime = utils.datetime_to_string(document.task_start)
+    start_time = utils.format_datetime_string(string_start_datetime)
+    string_end_datetime = utils.datetime_to_string(document.task_end)
+    end_time = utils.format_datetime_string(string_end_datetime)
+    diff_time = document.task_end - document.task_start
+    total_time = utils.format_datetimediff(diff_time)
+    template = loader.get_template('docviewer/email.txt')
+    context = Context({
+        'status': status,
+        'username': username,
+        'filename': filename,
+        'start_time': start_time,
+        'end_time': end_time,
+        'total_time': total_time,
+    })
+    message = template.render(context)
+    
+    contributors = docu.get_users_with_perms()
+    recipient_list = [docu.owner.email] + [c.email for c in contributors]
+    
+    email['message'] = message
+    email['recipient_list'] = recipient_list
+    return email

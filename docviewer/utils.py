@@ -35,3 +35,43 @@ def format_datetime_string(string):
         second,
     )
     return date
+
+def format_datetimediff(datetimediff):
+    total_seconds = int(datetimediff.total_seconds())
+    seconds = total_seconds % 60
+    total_minutes = total_seconds / 60
+    minutes = total_minutes % 60
+    total_hours = total_minutes / 60
+    hours = total_hours % 24
+    days = total_hours / 24
+    
+    secs_str, mins_str, hous_str, days_str = '', '', '', ''
+    if seconds > 0:
+        plural = ''
+        if seconds > 1:
+            plural = 's'
+        secs_str = '{} second{}'.format(seconds, plural)
+    if minutes > 0:
+        plural = ''
+        if minutes > 1:
+            plural = 's'
+        mins_str = '{} minute{}'.format(minutes, plural)
+    if hours > 0:
+        plural = ''
+        if hours > 1:
+            plural = 's'
+        hous_str = '{} hour{}'.format(hours, plural)
+    if days > 0:
+        plural = ''
+        if days > 1:
+            plural = 's'
+        days_str = '{} day{}'.format(days, plural)
+    
+    all_time_list = [days_str, hous_str, mins_str, secs_str]
+    valid_time_list = [t for t in all_time_list if t]
+    diff = ', '.join(valid_time_list)
+    last_comma = diff.rfind(',')
+    if last_comma != -1:
+        diff = '{} and{}'.format(diff[0:last_comma], diff[last_comma+1:])
+    
+    return diff
