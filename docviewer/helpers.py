@@ -6,10 +6,12 @@ from datetime import datetime
 import shutil
 
 from django.core.mail import send_mail
-#import smtplib
+import smtplib
 from django.template import Context, loader
 import utils
 from django.utils.timezone import utc
+from views import get_absolute_url
+from django.core.urlresolvers import reverse
 
 
 def docsplit(document):
@@ -77,19 +79,11 @@ def generate_document(doc_id, task_id=None):
                 'Festos',
                 email['message'],
                 'noreply@festos.cultureplex.ca',
-#                email['recipient_list'],
-                ['noespecado@hotmail.com'],
+                email['recipient_list'],
                 fail_silently=False
             )
-#        except smtplib.SMTPException, e:
-        except Exception as e:
-            Edition.objects.create(
-                document=document,
-                author=document.document.owner,
-                comment=email,
-                modified_pages={},
-                date_string = e
-            )
+        except smtplib.SMTPException as e:
+            pass
     except Exception, e:
 
         try:
@@ -117,7 +111,12 @@ def create_email(document):
     end_time = utils.format_datetime_string(string_end_datetime)
     diff_time = document.task_end - document.task_start
     total_time = utils.format_datetimediff(diff_time)
-    template = loader.get_template('docviewer/email.txt')
+    doc_url = get_absolute_url(reverse(
+        "docviewer_viewer_view",
+        kwargs={'pk': document.pk, 'slug': document.slug}
+    ))
+    festos_url = get_absolute_url(document.related_url)
+    template = loader.get_template('docviewer/email.html')
     context = Context({
         'status': status,
         'username': username,
@@ -125,6 +124,8 @@ def create_email(document):
         'start_time': start_time,
         'end_time': end_time,
         'total_time': total_time,
+        'doc_url': doc_url,
+        'festos_url': festos_url,
     })
     message = template.render(context)
     
