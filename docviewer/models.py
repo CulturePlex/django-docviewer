@@ -18,6 +18,8 @@ from datetime import datetime
 from docviewer.settings import IMAGE_FORMAT, DOCUMENT_ROOT, DOCUMENT_URL
 from docviewer.tasks import task_generate_document
 
+from taggit.managers import TaggableManager
+
 
 RE_PAGE = re.compile(r'^.*_([0-9]+)\.txt')
 
@@ -63,6 +65,8 @@ class Document(TimeStampedModel, StatusModel):
         _('Celery date start'), null=True, blank=True)
     task_end = models.DateTimeField(
         _('Celery date end'), null=True, blank=True)
+    
+    taggit_tags = TaggableManager()
 
     @models.permalink
     def get_absolute_url(self):
