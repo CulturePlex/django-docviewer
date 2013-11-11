@@ -110,12 +110,12 @@ def save_text(request, pk):
                 '{page}',
                 '{}-{}'.format(k, datetime_to_string(ts))
             )
+            page.save()
     
     nines = '9'*20
     last_edition = document.editions_set.get(date_string=nines)
     last_edition.modified_pages = edition.modified_pages
     
-    page.save()
     edition.save()
     last_edition.save()
     
@@ -129,10 +129,6 @@ def save_text(request, pk):
     edit['author'] = {'username': edition.author.username}
     edit['author__username'] = edition.author.username
     edit['date_string_formatted'] = format_datetime_string(edition.date_string)
-    
-    email = create_email(document)
-    print email['message']
-    print email['recipient_list']
     
     return HttpResponse(
         simplejson.dumps(

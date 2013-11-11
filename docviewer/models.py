@@ -160,7 +160,8 @@ class Document(TimeStampedModel, StatusModel):
             self.page_count += 1
             tmp_path = "%s/%s" % (self.get_root_path(), f)
             tmp_file = open(tmp_path)
-            all_txt.write(tmp_file.read())
+            tmp_text = tmp_file.read()
+            all_txt.write(tmp_text)
             page = Page(
                 document=self,
                 page=RE_PAGE.match(f).group(1),
@@ -212,7 +213,9 @@ class Document(TimeStampedModel, StatusModel):
             f = pages[k]
             tmp_path = "%s/%s" % (self.get_root_path(), f)
             tmp_file = open(tmp_path)
-            all_txt.write(tmp_file.read())
+#            import ipdb; ipdb.set_trace()
+            tmp_text = tmp_file.read()
+            all_txt.write(tmp_text)
             tmp_file.close()
         all_txt.close()
 
