@@ -132,7 +132,7 @@ class Document(TimeStampedModel, StatusModel):
         f.close()
         file.close()
 
-        self.title = self.docfile_basename
+#        self.title = self.docfile_basename
         task = task_generate_document.apply_async(args=[self.pk], countdown=5)
         self.task_id = task.task_id
         self.save()
