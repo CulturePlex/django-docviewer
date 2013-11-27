@@ -12,6 +12,8 @@ import utils
 from django.utils.timezone import utc
 from views import get_absolute_url
 from django.core.urlresolvers import reverse
+import pyPdf
+from documents.utils import count_total_pages
 
 
 def docsplit(document):
@@ -58,7 +60,7 @@ def generate_document(doc_id, task_id=None):
 
     if task_id is not None and document.task_id != task_id:
         raise Exception("Celery task ID doesn't match")
-
+    
     document.status = Document.STATUS.running
 #    document.task_start = datetime.now()
     document.task_start = datetime.utcnow().replace(tzinfo=utc)
@@ -66,6 +68,19 @@ def generate_document(doc_id, task_id=None):
 
     try:
         docsplit(document)
+        
+        try:
+            path = document.docfile.file.name
+            pdf = pyPdf.PdfFileReader(open(path, 'r'))
+            if pdf.getIsEncrypted():
+                pdf.decrypt('')
+            document.page_count = pdf.getNumPages()
+        except:
+            pass
+#            document.page_count = count_total_pages(document)
+#        finally:
+#            document.save()
+        
         document.generate()
         document.status = document.STATUS.ready
         document.task_id = None
@@ -104,7 +119,8 @@ def create_email(document):
     
     status = document.status
     username = docu.owner.username
-    filename = document.title
+    title = document.title
+    filename = document.docfile_basename
     string_start_datetime = utils.datetime_to_string(document.task_start)
     start_time = utils.format_datetime_string(string_start_datetime)
     string_end_datetime = utils.datetime_to_string(document.task_end)
@@ -116,11 +132,11 @@ def create_email(document):
         kwargs={'pk': document.pk, 'slug': document.slug}
     ))
     festos_url = get_absolute_url(document.related_url)
-    template = loader.get_template('docviewer/email.html')
+    template = loader.get_template('docviewer/email.txt')
     context = Context({
         'status': status,
         'username': username,
-        'filename': filename,
+        'document': '{} - {}'.format(title, filename),
         'start_time': start_time,
         'end_time': end_time,
         'total_time': total_time,

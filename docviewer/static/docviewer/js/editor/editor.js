@@ -278,6 +278,7 @@ var restore = false;
       var state = mydocviewer.state;
       if (state !== 'ViewDocument') {
         $('#annotation-options').hide();
+        $('.docviewer-annotationMarker').hide();
         if (state !== 'ViewText') {
           $('#edition-options').hide();
           $('#history-versions').hide();
@@ -288,6 +289,7 @@ var restore = false;
         }
       } else {
         $('#annotation-options').show();
+        $('.docviewer-annotationMarker').show();
         $('#edition-options').hide();
         $('#history-versions').hide();
         var anno = $('#annotation-area');

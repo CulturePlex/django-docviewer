@@ -27,11 +27,15 @@
 .docviewer-storyLink,
 .docviewer-pdfLink,
 .docviewer-textLink,
-.docviewer-printNotesLink,
+/*.docviewer-printNotesLink,*/
 .docviewer-editionLink, .docviewer-historyLink
 .docviewer-annotationLink {
   padding-left: 0;
   padding-bottom: 4px;
+}
+
+.docviewer-printNotesLink {
+  display: none;
 }
 
 .docviewer-storyLink a,

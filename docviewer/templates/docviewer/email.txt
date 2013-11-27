@@ -1,14 +1,14 @@
 Hi {{ username }},
 {% if status == 'ready' %}
-    Your document {{ filename }} has been successfully processed!
+    Your document {{ document }} has been successfully processed!
     Process started at {{ start_time }}
     Process ended at {{ end_time }}
     Total time: {{ total_time }}
     Go to {{ doc_url }}
 {% elif status == 'failed' %}
-    Unfortunately, something went wrong with your document {{ filename }}.
+    Unfortunately, something went wrong with your document {{ document }}.
     Please, try it again!
     Go to {{ festos_url }}
 {% else %}
-    Your document {{ filename }} is still being processed.
+    Your document {{ document }} is still being processed.
 {% endif %}

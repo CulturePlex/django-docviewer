@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 def datetime_to_string(datetime):
     year = '{0:04}'.format(datetime.year)
     month = '{0:02}'.format(datetime.month)
@@ -19,6 +20,7 @@ def datetime_to_string(datetime):
     )
     return string
 
+
 def format_datetime_string(string):
     year = string[0:4]
     month = string[4:6]
@@ -35,6 +37,7 @@ def format_datetime_string(string):
         second,
     )
     return date
+
 
 def format_datetimediff(datetimediff):
     total_seconds = int(datetimediff.total_seconds())

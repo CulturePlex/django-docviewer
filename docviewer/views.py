@@ -152,7 +152,7 @@ def restore_version(request, pk):
             {'status': 'ok', 'modified_pages': edition.modified_pages}),
             content_type="application/json",
         )
-        
+
 
 class SearchDocumentView(View):
 
