@@ -35,7 +35,7 @@ class Document(TimeStampedModel, StatusModel):
     slug = AutoSlugField(
         _('Slug'), max_length=255, unique=True, populate_from='title')
     title = models.CharField(_('Title'), max_length=255)
-    subtitle = models.CharField(_('Subtitle'), max_length=255)
+#    doc_name = models.CharField(_('Name'), max_length=255)
     description = models.TextField(_('Description'), null=True, blank=True)
     source_url = models.URLField(
         _('Source URL of the document'), max_length=1024, null=True,
