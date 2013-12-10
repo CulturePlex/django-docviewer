@@ -22,19 +22,40 @@ def datetime_to_string(datetime):
 
 
 def format_datetime_string(string):
+    months = {
+        1: 'January',
+        2: 'February',
+        3: 'March',
+        4: 'April',
+        5: 'May',
+        6: 'June',
+        7: 'July',
+        8: 'August',
+        9: 'September',
+        10: 'October',
+        11: 'November',
+        12: 'December',
+    }
     year = string[0:4]
     month = string[4:6]
     day = string[6:8]
     hour = string[8:10]
     minute = string[10:12]
     second = string[12:14]
-    date = '{}-{}-{} {}:{}:{}'.format(
-        year,
-        month,
+    hour = int(hour)
+    if hour <= 12:
+        am_pm = 'am'
+    else:
+        am_pm = 'pm'
+    hour = hour % 12
+    date = '{} {}, {} @ {}:{}:{} {}'.format(
+        months[int(month)],
         day,
+        year,
         hour,
         minute,
         second,
+        am_pm,
     )
     return date
 

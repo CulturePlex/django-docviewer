@@ -32,13 +32,13 @@ _.extend(docviewer.Schema.helpers, {
 		var pdfURL = doc.resources.pdf;
 		pdfURL = pdfURL && this.viewer.options.pdf !== false
 				? '<a target="_blank" href="' + pdfURL
-						+ '">Original Document (PDF) &raquo;</a>'
+						+ '">Get original document (.pdf) &raquo;</a>'
 				: '';
 
 		var textURL = doc.resources.text;
 		textURL = textURL && this.viewer.options.text !== false
 				? '<a target="_blank" href="' + textURL
-						+ '">Document text &raquo;</a>'
+						+ '">Export to text (.txt) &raquo;</a>'
 				: '';
 
 		var contributorList = '';
