@@ -116,6 +116,7 @@ _.extend(docviewer.Schema.helpers, {
 		var createEditionInfo = function(id) {
 			var editions = me.viewer.schema.data.editionsById;
 			var edition = editions[id];
+			edition.modified_pages = Object.keys(JSON.parse(edition.modified_pages));
 			var renderedEditionInfo = JST.editionInfo(edition);
 			return renderedEditionInfo;
 		};
