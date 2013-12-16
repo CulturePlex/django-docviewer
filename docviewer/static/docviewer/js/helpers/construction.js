@@ -111,6 +111,22 @@ _.extend(docviewer.Schema.helpers, {
 		docviewer.jQuery("head").append(stylesheet);
 	},
 
+	renderEditionInfo : function(id) {
+	    var me = this;
+		var createEditionInfo = function(id) {
+			var editions = me.viewer.schema.data.editionsById;
+			var edition = editions[id];
+			var renderedEditionInfo = JST.editionInfo(edition);
+			return renderedEditionInfo;
+		};
+		
+		editionInfoView = createEditionInfo(id);
+		
+		var edition_info = this.viewer
+				.$('div.docviewer-edition-info');
+		edition_info.html(editionInfoView);
+	},
+
 	renderNavigation : function() {
 		var me = this;
 		var chapterViews = [], bolds = [], expandIcons = [], expanded = [], navigationExpander = JST

@@ -149,7 +149,7 @@ def restore_version(request, pk):
     edition = document.editions_set.get(date_string=ts)
     return HttpResponse(
         simplejson.dumps(
-            {'status': 'ok', 'modified_pages': edition.modified_pages}),
+            {'status': 'ok', 'id': edition.id, 'comment': edition.comment, 'modified_pages': edition.modified_pages}),
             content_type="application/json",
         )
 

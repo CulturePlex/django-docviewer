@@ -42,3 +42,22 @@
 .restore {
   background-color:#F5F5F5;
 }
+
+.docviewer-edition-content pre {
+padding:4px;
+margin-right: 46px;
+margin-bottom: 1px;
+font-size:12px;
+background: #FFE325;
+background: rgba(255, 227, 37, 0.2);
+font-family: courier, monotype;
+line-height: 15px;
+}
+
+.docviewer-edition-content span{
+/*margin: 0;*/
+}
+
+.docviewer-edition-content span.comment{
+font-style: italic;
+}

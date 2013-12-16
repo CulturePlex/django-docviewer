@@ -200,6 +200,11 @@ docviewer.Api.prototype = {
 //    }
   },
 
+  // Redraw the editions.
+  renderEditionInfo : function(id) {
+    this.viewer.helpers.renderEditionInfo(id);
+  },
+
   getAnnotationsBySortOrder : function() {
     return this.viewer.models.annotations.sortAnnotations();
   },

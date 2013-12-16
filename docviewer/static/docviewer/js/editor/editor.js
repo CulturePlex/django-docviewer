@@ -491,6 +491,10 @@ var restore = false;
 //            viewer.events.restoreText(i);
 //        }
         $('.docviewer-textInput').val("");
+        if(ts != '99999999999999999999' && ts != '00000000000000000000') {
+          $('.docviewer-edition-info').attr('data-edition-id', payload.id);
+          viewer.api.renderEditionInfo(payload.id);
+        }
       },
       dataType: 'json',
       error: function (payload) {
@@ -537,12 +541,20 @@ var restore = false;
     hide_anno_edit_his_on_page_change();
     
     $(".docviewer-historyLink").live('click', function (ev) {
-      enable_restoring_mode();
-      restoreVersion(ev.currentTarget.id);
+      var id = ev.currentTarget.id;
+      if(id != '99999999999999999999') {
+        enable_restoring_mode();
+        restoreVersion(id);
+      }
+      else {
+        restoreVersion(id);
+        disable_restoring_mode();
+      }
     });
     $("#restore-button").live('click', function (ev) {
       save_text(modified_pages);
       disable_restoring_mode();
+      animate_msg("Version restored");
     });
     $("#cancel-restore-button").live('click', function (ev) {
       restoreVersion('99999999999999999999');

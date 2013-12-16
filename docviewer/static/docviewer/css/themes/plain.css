@@ -79,21 +79,21 @@ border-radius: 12px;
 }
 
 
-.docviewer-restoreBox {
-/*  background-color:#FFFFFF;*/
-  color:#333333;
-  font-size:14px;
-  font-family: courier, monotype;
-  line-height:1.4em;
-  overflow: hidden;
-  white-space: pre-wrap;       /* css-3 */
-  white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
-  white-space: -pre-wrap;      /* Opera 4-6 */
-  white-space: -o-pre-wrap;    /* Opera 7 */
-  word-wrap: break-word;       /* Internet Explorer 5.5+ */
-  padding:4px;
-  margin: 46px;
-}
+/*.docviewer-restoreBox {*/
+/*/*  background-color:#FFFFFF;*/*/
+/*  color:#333333;*/
+/*  font-size:14px;*/
+/*  font-family: courier, monotype;*/
+/*  line-height:1.4em;*/
+/*  overflow: hidden;*/
+/*  white-space: pre-wrap;       /* css-3 */*/
+/*  white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */*/
+/*  white-space: -pre-wrap;      /* Opera 4-6 */*/
+/*  white-space: -o-pre-wrap;    /* Opera 7 */*/
+/*  word-wrap: break-word;       /* Internet Explorer 5.5+ */*/
+/*  padding:4px;*/
+/*  margin: 46px;*/
+/*}*/
 
 
 ::-webkit-input-placeholder { font-style:italic, font-size:10px; }

@@ -38,6 +38,7 @@ PIPELINE_JS['docviewer-template'] = {
     'source_filenames': (
         'docviewer/js/views/annotation.jst',
         'docviewer/js/views/annotationNav.jst',
+        'docviewer/js/views/editionInfo.jst',
         'docviewer/js/views/editionNav.jst',
         'docviewer/js/views/chapterNav.jst',
         'docviewer/js/views/descriptionContainer.jst',
