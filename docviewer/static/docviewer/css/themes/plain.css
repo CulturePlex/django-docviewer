@@ -110,17 +110,20 @@ input:-moz-placeholder { font-style:italic }
   margin-top: 5px;
   cursor:pointer;
 }
-.docviewer-editButton:hover, .docviewer-restoreButton:hover {
+.docviewer-editButton:hover {
   text-decoration:none;
   color:#666;
   cursor:pointer;
   border:1px solid #666;
 }
+.docviewer-editionLink:hover {
+  cursor:pointer;
+}
 #form-annotation, #cancel-annotation, #form-edition, #cancel-edition {
   display: none;
 }
 
-#form-restoring {
+.docviewer-edition-info {
    display: none;
 /*   position: fixed;*/
 /*   top: 50%;*/

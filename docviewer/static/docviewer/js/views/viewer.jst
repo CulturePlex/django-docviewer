@@ -20,31 +20,18 @@
           </div>
         </div>
       </div>
-    
       <div class="docviewer-pages <% if (!options.sidebar) { %>docviewer-hide-sidebar<% } %>">
         <div class="docviewer-paper">
           <div class="docviewer-thumbnails"></div>
           <div class="docviewer-pageCollection">
             <div class="docviewer-bar" style=""></div>
-            <div class="docviewer-allAnnotations">
-            </div>
+            <div class="docviewer-allAnnotations"></div>
             <div class="docviewer-text">
-              <div class="docviewer-textSearch docviewer-clearfix">
-          
-              </div>
+              <div class="docviewer-textSearch docviewer-clearfix"></div>
               <div class="docviewer-textPage">
-                <div id="form-restoring" class="docviewer-restoreBox">
-                  <div class="docviewer-edition-info"></div>
-                  <form action="#" method="post" class="docviewer-restoreText">
-                    <input id="restore-button" class="docviewer-restoreButton" type="button" value="Restore">
-                    <input id="cancel-restore-button" class="docviewer-restoreButton" type="button" value="Cancel">
-<!--                    <pre id="restore-text-area" class="docviewer-textVersion3 restore-text-area"></pre>-->
-                  </form>
-                </div>
-                
+                <div class="docviewer-edition-info"></div>
                 <span class="docviewer-textCurrentPage"></span>
                 <pre class="docviewer-textContents" id="plain-text-area"></pre>
-                
               </div>
             </div>
             <%= pages %>

@@ -44,7 +44,8 @@
 }
 
 .docviewer-edition-content pre {
-padding:4px;
+padding:26px;
+padding-bottom:10px;
 margin-right: 46px;
 margin-bottom: 1px;
 font-size:12px;
@@ -55,9 +56,30 @@ line-height: 15px;
 }
 
 .docviewer-edition-content span{
-/*margin: 0;*/
+margin-left: -26px;
 }
 
 .docviewer-edition-content span.comment{
 font-style: italic;
+}
+
+.docviewer-edition-content #restore-button span {
+/*display:none;*/
+}
+
+.docviewer-edition-content div#options {
+height: 5px;
+margin-right: -10px;
+margin-top: -20px;
+}
+
+/*.docviewer-edition-content #cancel-restore-button {*/
+/*margin-top: -15px;*/
+/*}*/
+
+.docviewer-edition-content #restore-button {
+    background: url(../../img/restart.png) no-repeat right;
+    background-size:13px;
+    padding-bottom: 1px;
+    text-indent:-9999px;
 }

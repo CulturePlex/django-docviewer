@@ -309,7 +309,7 @@ var restore = false;
   /** Enable restoring. */
   function enable_restoring_mode() {
     restore = true;
-    $('#form-restoring').show();
+    $('.docviewer-edition-info').show();
     $('#edition-options').hide();
     $(".plain-text-area").addClass('restore');
   }
@@ -317,7 +317,7 @@ var restore = false;
   /** Disable restoring. */
   function disable_restoring_mode() {
     restore = false;
-    $('#form-restoring').hide();
+    $('.docviewer-edition-info').hide();
     $('#edition-options').show();
     $(".plain-text-area").removeClass('restore');
   }
