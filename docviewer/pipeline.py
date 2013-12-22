@@ -47,6 +47,7 @@ PIPELINE_JS['docviewer-template'] = {
         'docviewer/js/views/header.jst',
         'docviewer/js/views/navControls.jst',
         'docviewer/js/views/navigationExpander.jst',
+        'docviewer/js/views/originalVersionInfo.jst',
         'docviewer/js/views/pageAnnotation.jst',
         'docviewer/js/views/pages.jst',
         'docviewer/js/views/thumbnails.jst',

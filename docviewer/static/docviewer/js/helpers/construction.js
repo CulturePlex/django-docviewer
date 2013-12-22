@@ -116,8 +116,33 @@ _.extend(docviewer.Schema.helpers, {
 		var createEditionInfo = function(id) {
 			var editions = me.viewer.schema.data.editionsById;
 			var edition = editions[id];
-			edition.modified_pages = Object.keys(JSON.parse(edition.modified_pages));
-			var renderedEditionInfo = JST.editionInfo(edition);
+			var renderedEditionInfo;
+			if(edition != null) {
+			    var mod_pages = [];
+			    var all_pages_dict = {};
+			    try {
+				    all_pages_dict = JSON.parse(edition.modified_pages);
+			    }
+			    catch (e) {
+			        if(edition.modified_pages instanceof Object)
+			            all_pages_dict = edition.modified_pages;
+			    }
+			    var all_indexes_list = Object.keys(all_pages_dict);
+			    var ts_patt = /\d{20}/;
+			    for(var i=0; i<all_indexes_list.length; i++) {
+			        var index = all_indexes_list[i];
+			        var url = all_pages_dict[index];
+			        var ts = ts_patt.exec(url);
+			        if(ts != null && ts[0] == edition.date_string)
+			            mod_pages.push(index);
+			    }
+			    if(mod_pages.length == 0)
+			        mod_pages = all_indexes_list;
+			    edition.mod_pages = mod_pages;
+			    renderedEditionInfo = JST.editionInfo(edition);
+			}
+			else
+			    renderedEditionInfo = JST.originalVersionInfo();
 			return renderedEditionInfo;
 		};
 		

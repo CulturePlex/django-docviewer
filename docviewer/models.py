@@ -313,7 +313,7 @@ class Edition(models.Model):
         return prev
     
     def __unicode__(self):
-        return '{} -- {}'.format(self.document.title, str(self.date))
+        return '({}) {} -- {}'.format(self.document.docfile_basename, self.document.title, str(self.date))
 
 
 from django.db.models.signals import post_delete, post_save

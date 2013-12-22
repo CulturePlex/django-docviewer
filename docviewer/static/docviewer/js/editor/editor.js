@@ -371,13 +371,13 @@ var restore = false;
   }
 
   /** Ajax request to save text. */
-  function save_text(num_page_list) {
+  function save_text(num_page_list, restore_comment) {
     var id = window.location.pathname.split('/')[2];
     var viewer = docviewer.viewers["doc-"+id];
     var currentPage = viewer.api.currentPage();
     
     var text_dict = {};
-    text_dict['comment'] = $('.docviewer-textInput').val();
+    text_dict['comment'] = restore_comment || $('.docviewer-textInput').val();
     var rel_art = viewer.schema.document.resources.related_article;
     var rel_art_len = rel_art.length
     text_dict['textURI'] = viewer.schema.document.resources.page.text.substring(rel_art_len);
@@ -486,12 +486,12 @@ var restore = false;
               }})
           })(k);
         }
-        modified_pages = _.range(1, viewer.models.document.totalPages+1);
+//        modified_pages = _.range(1, viewer.models.document.totalPages+1);
 //        for (var i = 0; i < modified_pages.length; i++) {
 //            viewer.events.restoreText(i);
 //        }
         $('.docviewer-textInput').val("");
-        if(ts != '99999999999999999999' && ts != '00000000000000000000') {
+        if(ts != '99999999999999999999') {
           $('.docviewer-edition-info').attr('data-edition-id', payload.id);
           viewer.api.renderEditionInfo(payload.id);
         }
@@ -552,7 +552,8 @@ var restore = false;
       }
     });
     $("#restore-button").live('click', function (ev) {
-      save_text(modified_pages);
+      var comment = ev.currentTarget.getAttribute("data-comment");
+      save_text(modified_pages, comment);
       disable_restoring_mode();
       animate_msg("Version restored");
     });
