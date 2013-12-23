@@ -387,7 +387,8 @@ docviewer.Schema.helpers = {
     jump: function(pageIndex, modifier, forceRedraw){
       modifier = (modifier) ? parseInt(modifier, 10) : 0;
       var position = this.models.document.getOffset(parseInt(pageIndex, 10)) + modifier;
-      this.elements.window[0].scrollTop = position;
+//      this.elements.window[0].scrollTop = position;
+      this.elements.window[0].scrollTop = 0;
       this.models.document.setPageIndex(pageIndex);
       if (forceRedraw) this.viewer.pageSet.redraw(true);
       if (this.viewer.state === 'ViewThumbnails') {

@@ -83,3 +83,8 @@ margin-top: -20px;
     padding-bottom: 1px;
     text-indent:-9999px;
 }
+
+.modified-page:hover {
+  text-decoration:underline;
+  cursor: pointer;
+}

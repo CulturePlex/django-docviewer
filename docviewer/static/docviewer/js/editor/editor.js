@@ -454,6 +454,12 @@ var restore = false;
     });
   }
 
+function goToPage(p) {
+    var id = window.location.pathname.split('/')[2];
+    var viewer = docviewer.viewers["doc-"+id];
+    viewer.api.setCurrentPage(p);
+}
+
   /** Restore a document version. */
   function restoreVersion(ts) {
     var id = window.location.pathname.split('/')[2];
@@ -560,6 +566,11 @@ var restore = false;
     $("#cancel-restore-button").live('click', function (ev) {
       restoreVersion('99999999999999999999');
       disable_restoring_mode();
+    });
+    
+    $(".docviewer-edition-content .modified-page").live('click', function (ev) {
+      var id = ev.currentTarget.id;
+      goToPage(id);
     });
   });
 
