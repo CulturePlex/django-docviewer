@@ -516,6 +516,22 @@ function goToPage(p) {
     });
   }
 
+  /** Delete a document version. */
+  function deleteVersion(ts) {
+    var id = window.location.pathname.split('/')[2];
+    var viewer = docviewer.viewers["doc-"+id];
+    $.ajax({
+      type: "POST",
+      url: "delete_version/",
+      data: {'ts': ts},
+      dataType: 'json',
+      success: function (payload) {
+        viewer.schema.removeEdition(payload.id);
+        viewer.api.redrawEditions();
+      }
+    });
+  }
+
   /** Bind the event to its respectives elements. */
   $(document).ready(function () {
     bind_content_events();
@@ -530,7 +546,7 @@ function goToPage(p) {
       ev.preventDefault();
       add_annotation();
     });
-    $(".docviewer-remove").live('click', function (ev) {
+    $(".docviewer-annotation .docviewer-remove").live('click', function (ev) {
       remove_annotation(
         $(ev.target).parents(".docviewer-annotation")[0].dataset.id
       );
@@ -549,8 +565,8 @@ function goToPage(p) {
     
     hide_anno_edit_his_on_page_change();
     
-    $(".docviewer-historyLink").live('click', function (ev) {
-      var id = ev.currentTarget.id;
+    $(".docviewer-historyLink .docviewer-navEditionTimestamp").live('click', function (ev) {
+      var id = ev.currentTarget.parentElement.parentElement.id;
       if(id != '99999999999999999999') {
         enable_restoring_mode();
         restoreVersion(id);
@@ -559,6 +575,10 @@ function goToPage(p) {
         restoreVersion(id);
         disable_restoring_mode();
       }
+    });
+    $(".docviewer-historyLink .docviewer-remove").live('click', function (ev) {
+      var id = ev.currentTarget.parentElement.parentElement.id;
+      deleteVersion(id);
     });
     $("#restore-button").live('click', function (ev) {
       var comment = ev.currentTarget.getAttribute("data-comment");

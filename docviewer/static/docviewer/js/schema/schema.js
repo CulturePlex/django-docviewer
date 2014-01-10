@@ -79,3 +79,8 @@ docviewer.Schema.prototype.loadEdition = function(edit) {
   this.data.editionsById[edit.id] = edit;
   return edit;
 };
+
+// Remove an edition from the Schema
+docviewer.Schema.prototype.removeEdition = function(edit_id) {
+  delete this.data.editionsById[edit_id];
+};

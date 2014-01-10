@@ -154,6 +154,24 @@ def restore_version(request, pk):
         )
 
 
+#@ensure_csrf_cookie
+@csrf_exempt
+def delete_version(request, pk):
+    """
+    Delete a document version
+    """
+    ts = request.POST.get('ts')
+    document = Document.objects.get(id=pk)
+    edition = document.editions_set.get(date_string=ts)
+    edition_id = edition.id
+    edition.delete()
+    return HttpResponse(
+        simplejson.dumps(
+            {'status': 'ok', 'id': edition_id,}),
+            content_type="application/json",
+        )
+
+
 class SearchDocumentView(View):
 
     def get(self, request, **kwargs):
