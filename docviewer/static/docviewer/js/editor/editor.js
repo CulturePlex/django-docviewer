@@ -458,6 +458,7 @@ function goToPage(p) {
     var id = window.location.pathname.split('/')[2];
     var viewer = docviewer.viewers["doc-"+id];
     viewer.api.setCurrentPage(p);
+    viewer.events.loadText(p-1);
 }
 
   /** Restore a document version. */
@@ -507,8 +508,10 @@ function goToPage(p) {
         animate_msg("ajax error restoring version");
       },
       complete: function (payload) {
-        viewer.api.setCurrentPage(currentPage);
-        viewer.events.loadText(currentPage-1);
+        setTimeout(function(){
+          viewer.api.setCurrentPage(currentPage);
+          viewer.events.loadText(currentPage-1);
+        }, 100)
       }
     });
   }
