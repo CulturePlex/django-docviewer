@@ -132,7 +132,7 @@ def create_email(document):
         kwargs={'pk': document.pk, 'slug': document.slug}
     ))
     festos_url = get_absolute_url(document.related_url)
-    template = loader.get_template('docviewer/email.txt')
+    template = loader.get_template('docviewer/email.html')
     context = Context({
         'status': status,
         'username': username,
