@@ -509,7 +509,7 @@ function goToPage(p) {
       },
       complete: function (payload) {
         setTimeout(function(){
-          viewer.api.setCurrentPage(currentPage);
+          viewer.api.setCurrentPageText(currentPage);
           viewer.events.loadText(currentPage-1);
         }, 100)
       }

@@ -16,6 +16,11 @@ docviewer.Api.prototype = {
     this.viewer.helpers.jump(page - 1);
   },
 
+  // Set the current page of the document.
+  setCurrentPageText : function(page) {
+    this.viewer.helpers.jumpText(page - 1);
+  },
+
   // Register a callback for when the page is changed.
   onPageChange : function(callback) {
     this.viewer.models.document.onPageChangeCallbacks.push(callback);

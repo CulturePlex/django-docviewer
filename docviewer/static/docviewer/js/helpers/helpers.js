@@ -28,10 +28,12 @@ docviewer.Schema.helpers = {
       var history         = viewer.history;
       var compiled        = viewer.compiled;
       compiled.next       = this.events.compile('next');
+      var este=this;
+//      compiled.next       = function(){console.log('111');este.events.compile('next');};
       compiled.previous   = this.events.compile('previous');
 
-
       var states = context.states;
+//      viewer.$('.docviewer-navControls').delegate('span.docviewer-next','click', function(){console.log('222');este.events.compile('next');});
       viewer.$('.docviewer-navControls').delegate('span.docviewer-next','click', compiled.next);
       viewer.$('.docviewer-navControls').delegate('span.docviewer-previous','click', compiled.previous);
 
@@ -385,6 +387,18 @@ docviewer.Schema.helpers = {
     },
 
     jump: function(pageIndex, modifier, forceRedraw){
+      modifier = (modifier) ? parseInt(modifier, 10) : 0;
+      var position = this.models.document.getOffset(parseInt(pageIndex, 10)) + modifier;
+      this.elements.window[0].scrollTop = position;
+//      this.elements.window[0].scrollTop = 0;
+      this.models.document.setPageIndex(pageIndex);
+      if (forceRedraw) this.viewer.pageSet.redraw(true);
+      if (this.viewer.state === 'ViewThumbnails') {
+        this.viewer.thumbnails.highlightCurrentPage();
+      }
+    },
+
+    jumpText: function(pageIndex, modifier, forceRedraw){
       modifier = (modifier) ? parseInt(modifier, 10) : 0;
       var position = this.models.document.getOffset(parseInt(pageIndex, 10)) + modifier;
 //      this.elements.window[0].scrollTop = position;
