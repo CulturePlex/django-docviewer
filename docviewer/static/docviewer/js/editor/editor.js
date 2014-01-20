@@ -160,7 +160,7 @@ var restore = false;
       },
       dataType: 'json',
       error: function (payload) {
-        animate_msg("Error en el ajax request");
+        animate_msg("Error updating annotation");
       }
     });
   }
@@ -409,7 +409,7 @@ var restore = false;
         animate_msg("ajax error saving text");
       },
       complete: function (payload) {
-        viewer.api.setCurrentPage(currentPage);
+        viewer.api.setCurrentPageText(currentPage);
         viewer.events.loadText(currentPage-1);
       }
     });
@@ -457,7 +457,7 @@ var restore = false;
 function goToPage(p) {
     var id = window.location.pathname.split('/')[2];
     var viewer = docviewer.viewers["doc-"+id];
-    viewer.api.setCurrentPage(p);
+    viewer.api.setCurrentPageText(p);
     viewer.events.loadText(p-1);
 }
 
@@ -520,16 +520,32 @@ function goToPage(p) {
   function deleteVersion(ts) {
     var id = window.location.pathname.split('/')[2];
     var viewer = docviewer.viewers["doc-"+id];
-    $.ajax({
-      type: "POST",
-      url: "delete_version/",
-      data: {'ts': ts},
-      dataType: 'json',
-      success: function (payload) {
-        viewer.schema.removeEdition(payload.id);
-        viewer.api.redrawEditions();
+    var editions = viewer.schema.data.editionsById;
+    var edition;
+    var ids = Object.keys(editions);
+    var found = false;
+    for (var i = 0; i < ids.length && !found; i++) {
+      var edit_id = ids[i];
+      var edit = editions[edit_id];
+      if (edit.date_string == ts) {
+        edition = edit;
+        found = true;
       }
-    });
+    }
+    if (found) {
+        $.ajax({
+          type: "POST",
+          url: "delete_version/",
+          data: {'ts': ts, 'modified_pages': edition.mod_pages},
+          dataType: 'json',
+          success: function (payload) {
+            viewer.schema.removeEdition(payload.id);
+            viewer.api.redrawEditions();
+          }
+        });
+    }
+    else
+        animate_msg("Error deleting version");
   }
 
   /** Bind the event to its respectives elements. */

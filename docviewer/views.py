@@ -161,10 +161,11 @@ def delete_version(request, pk):
     Delete a document version
     """
     ts = request.POST.get('ts')
+    modified_pages = request.POST.getlist('modified_pages[]')
     document = Document.objects.get(id=pk)
     edition = document.editions_set.get(date_string=ts)
     edition_id = edition.id
-    edition.delete()
+    edition.delete(modified_pages=modified_pages)
     return HttpResponse(
         simplejson.dumps(
             {'status': 'ok', 'id': edition_id,}),

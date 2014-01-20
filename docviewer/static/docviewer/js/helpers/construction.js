@@ -118,27 +118,27 @@ _.extend(docviewer.Schema.helpers, {
 			var edition = editions[id];
 			var renderedEditionInfo;
 			if(edition != null) {
-			    var mod_pages = [];
-			    var all_pages_dict = {};
-			    try {
-				    all_pages_dict = JSON.parse(edition.modified_pages);
-			    }
-			    catch (e) {
-			        if(edition.modified_pages instanceof Object)
-			            all_pages_dict = edition.modified_pages;
-			    }
-			    var all_indexes_list = Object.keys(all_pages_dict);
-			    var ts_patt = /\d{20}/;
-			    for(var i=0; i<all_indexes_list.length; i++) {
-			        var index = all_indexes_list[i];
-			        var url = all_pages_dict[index];
-			        var ts = ts_patt.exec(url);
-			        if(ts != null && ts[0] == edition.date_string)
-			            mod_pages.push(index);
-			    }
-			    if(mod_pages.length == 0)
-			        mod_pages = all_indexes_list;
-			    edition.mod_pages = mod_pages;
+//			    var mod_pages = [];
+//			    var all_pages_dict = {};
+//			    try {
+//				    all_pages_dict = JSON.parse(edition.modified_pages);
+//			    }
+//			    catch (e) {
+//			        if(edition.modified_pages instanceof Object)
+//			            all_pages_dict = edition.modified_pages;
+//			    }
+//			    var all_indexes_list = Object.keys(all_pages_dict);
+//			    var ts_patt = /\d{20}/;
+//			    for(var i=0; i<all_indexes_list.length; i++) {
+//			        var index = all_indexes_list[i];
+//			        var url = all_pages_dict[index];
+//			        var ts = ts_patt.exec(url);
+//			        if(ts != null && ts[0] == edition.date_string)
+//			            mod_pages.push(index);
+//			    }
+//			    if(mod_pages.length == 0)
+//			        mod_pages = all_indexes_list;
+//			    edition.mod_pages = mod_pages;
 			    renderedEditionInfo = JST.editionInfo(edition);
 			}
 			else
@@ -207,6 +207,30 @@ _.extend(docviewer.Schema.helpers, {
 			}
 			return renderedAnnotations.join('');
 		};
+		
+        var calculateModifiedPages = function(edition) {
+            var mod_pages = [];
+            var all_pages_dict = {};
+            try {
+                all_pages_dict = JSON.parse(edition.modified_pages);
+            }
+            catch (e) {
+                if(edition.modified_pages instanceof Object)
+                    all_pages_dict = edition.modified_pages;
+            }
+            var all_indexes_list = Object.keys(all_pages_dict);
+            var ts_patt = /\d{20}/;
+            for(var i=0; i<all_indexes_list.length; i++) {
+                var index = all_indexes_list[i];
+                var url = all_pages_dict[index];
+                var ts = ts_patt.exec(url);
+                if(ts != null && ts[0] == edition.date_string)
+                    mod_pages.push(index);
+            }
+            if(mod_pages.length == 0)
+                mod_pages = all_indexes_list;
+            return mod_pages;
+        };
 
 		var createNavEditions = function() {
 			var renderedEditions = [];
@@ -215,6 +239,8 @@ _.extend(docviewer.Schema.helpers, {
 			
 			for (var k = 0; k < keys.length; k++) {
 				var edition = editions[keys[k]];
+				if (!edition.mod_pages)
+				    edition.mod_pages = calculateModifiedPages(edition);
 				renderedEditions.push(JST.editionNav(edition));
 				bolds.push(" #docviewer-historyMarker-" + edition.id);
 			}

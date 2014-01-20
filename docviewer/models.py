@@ -312,6 +312,17 @@ class Edition(models.Model):
             prev = self
         return prev
     
+    def delete(self, *args, **kwargs):
+        modified_pages = kwargs['modified_pages']
+        for page in modified_pages:
+            path = "%s/%s_%s-%s.txt" % (
+                self.document.get_root_path(),
+                self.document.slug,
+                page,
+                self.date_string)
+            os.remove(path)
+        super(Edition, self).delete()
+    
     def __unicode__(self):
         return '({}) {} -- {}'.format(self.document.docfile_basename, self.document.title, str(self.date))
 
