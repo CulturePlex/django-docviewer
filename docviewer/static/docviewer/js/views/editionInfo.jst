@@ -6,7 +6,7 @@
     <span class="pages">Modified pages:     <% for (p=0; p < leng ; p++) {%><span id="<%= mod_pages[p] %>" class="modified-page"><%= mod_pages[p] %></span>,    <% } %><span id="<%= mod_pages[p] %>" class="modified-page"><%= mod_pages[p] %></span></span>
     <span class="comment"><%= comment %></span>
     <div align="right" id="options">
-      <i id="restore-button" data-comment="Restored from <%= date_string_formatted %> (@<%= author %>)" class="docviewer-editionLink" title="Restore and go to this version">  </i> <i id="cancel-restore-button" class="docviewer-editionLink icon-ban-circle" title="Cancel and go back to the current version"></i>
+      <i id="restore-button" data-ts="<%= date_string %>" data-comment="Restored from <%= date_string_formatted %> (@<%= author %>)" class="docviewer-editionLink" title="Restore and go to this version">  </i> <i id="cancel-restore-button" class="docviewer-editionLink icon-ban-circle" title="Cancel and go back to the current version"></i>
     </div>
   </pre>
 </div>

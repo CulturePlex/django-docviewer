@@ -134,6 +134,11 @@ input:-moz-placeholder { font-style:italic }
    margin-left: 46px;
    margin-bottom: -40px;
 }
+
+.last-edition #restore-button {
+  display: none;
+}
+
 #annotation-area{
   background: #FFE325;
   background: rgba(255, 227, 37, 0.2);

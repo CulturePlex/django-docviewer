@@ -17,6 +17,8 @@
 
 var modified_pages = [];
 var restore = false;
+var original_version = "00000000000000000000";
+var current_version = "99999999999999999999";
 
 (function () {
   "use strict";
@@ -413,7 +415,6 @@ var restore = false;
         viewer.events.loadText(currentPage-1);
       }
     });
-    
     modified_pages = [];
     $('.docviewer-textInput').val("");
   }
@@ -484,24 +485,25 @@ function goToPage(p) {
                 type: 'GET',
                 url: url,
                 success: function (data) {
-                  viewer.schema.text[nump-1] = data;
-                  viewer.models.document.originalPageText[nump] = data;
-                  viewer.events.loadText(nump-1);
+                    viewer.schema.text[nump-1] = data;
+                    viewer.models.document.originalPageText[nump] = data;
+                    viewer.events.loadText(nump-1);
                 },
                 error: function (data) {
                     animate_msg("File not found.")
               }})
           })(k);
         }
-//        modified_pages = _.range(1, viewer.models.document.totalPages+1);
-//        for (var i = 0; i < modified_pages.length; i++) {
-//            viewer.events.restoreText(i);
-//        }
         $('.docviewer-textInput').val("");
-        if(ts != '99999999999999999999') {
-          $('.docviewer-edition-info').attr('data-edition-id', payload.id);
-          viewer.api.renderEditionInfo(payload.id);
+        var editions = viewer.schema.data.editionsById;
+        var ids = Object.keys(editions);
+        var last_version = editions[ids[ids.length-1]];
+        $('.docviewer-edition-info').removeClass('last-edition');
+        if(ts == last_version.date_string) {
+          $('.docviewer-edition-info').addClass('last-edition');
         }
+        $('.docviewer-edition-info').attr('data-edition-id', payload.id);
+        viewer.api.renderEditionInfo(payload.id);
       },
       dataType: 'json',
       error: function (payload) {
@@ -548,6 +550,72 @@ function goToPage(p) {
         animate_msg("Error deleting version");
   }
 
+  /** Calculate modified pages between one version and the current version */
+  function getModifiedPages(ts) {
+    var id = window.location.pathname.split('/')[2];
+    var viewer = docviewer.viewers["doc-"+id];
+    var editions = viewer.schema.data.editionsById;
+    var ids = Object.keys(editions);
+    var last_version = editions[ids[ids.length-1]];
+    last_version.all_pages = modPagFromStringToObject(last_version);
+    var rest_version; //Version that we want to restore
+    var found = false;
+    for (var i = 0; i < ids.length && !found; i++) {
+      var edit_id = ids[i];
+      var edit = editions[edit_id];
+      if (edit.date_string == ts) {
+        rest_version = edit;
+        rest_version.all_pages = modPagFromStringToObject(rest_version);
+        found = true;
+      }
+    }
+    if (!found) {
+      rest_version = createOrigVersion(last_version);
+    }
+    var mod_pages = [];
+    var last_pages = Object.keys(last_version.all_pages);
+    var rest_pages = Object.keys(rest_version.all_pages);
+    for (var i = 0; i < last_pages.length; i++) {
+      var page = last_pages[i];
+      var last_url = last_version.all_pages[page];
+      var rest_url = rest_version.all_pages[page];
+      if (last_url != rest_url)
+        mod_pages.push(page);
+    }
+    return mod_pages;
+  }
+  
+  function createOrigVersion(edition) {
+    var origEdit = $.extend(true, {}, edition);;
+    origEdit['date_string'] = original_version;
+    var origPages = {};
+    var ts_patt = /\d{20}/;
+    var allPages = edition.all_pages;
+    var pages = Object.keys(allPages);
+    for (var i=0; i<pages.length; i++) {
+      var page = pages[i];
+      var url = allPages[page];
+      var ts = ts_patt.exec(url);
+      origPages[page] = url.replace(ts, original_version);
+    }
+    origEdit.all_pages = origPages;
+    return origEdit;
+  }
+  
+  function modPagFromStringToObject(edition) {
+    var all_pages = {}
+    try {
+      all_pages = JSON.parse(edition.modified_pages);
+    }
+    catch (e) {
+      if (edition.modified_pages instanceof Object)
+        all_pages = edition.modified_pages;
+      else
+        console.log("Something went wrong");
+    }
+    return all_pages;
+  }
+
   /** Bind the event to its respectives elements. */
   $(document).ready(function () {
     bind_content_events();
@@ -583,7 +651,7 @@ function goToPage(p) {
     
     $(".docviewer-historyLink .docviewer-navEditionTimestamp").live('click', function (ev) {
       var id = ev.currentTarget.parentElement.parentElement.id;
-      if(id != '99999999999999999999') {
+      if(id != current_version) {
         enable_restoring_mode();
         restoreVersion(id);
       }
@@ -598,12 +666,14 @@ function goToPage(p) {
     });
     $("#restore-button").live('click', function (ev) {
       var comment = ev.currentTarget.getAttribute("data-comment");
+      var ts = ev.currentTarget.getAttribute("data-ts");
+      modified_pages = getModifiedPages(ts);
       save_text(modified_pages, comment);
       disable_restoring_mode();
       animate_msg("Version restored");
     });
     $("#cancel-restore-button").live('click', function (ev) {
-      restoreVersion('99999999999999999999');
+      restoreVersion(current_version);
       disable_restoring_mode();
     });
     
