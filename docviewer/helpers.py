@@ -12,7 +12,7 @@ import utils
 from django.utils.timezone import utc
 from views import get_absolute_url
 from django.core.urlresolvers import reverse
-import pyPdf
+#import pyPdf
 from documents.utils import count_total_pages
 
 
@@ -69,17 +69,14 @@ def generate_document(doc_id, task_id=None):
     try:
         docsplit(document)
         
-        try:
-            path = document.docfile.file.name
-            pdf = pyPdf.PdfFileReader(open(path, 'r'))
-            if pdf.getIsEncrypted():
-                pdf.decrypt('')
-            document.page_count = pdf.getNumPages()
-        except:
-            pass
-#            document.page_count = count_total_pages(document)
-#        finally:
-#            document.save()
+#        try:
+#            path = document.docfile.file.name
+#            pdf = pyPdf.PdfFileReader(open(path, 'r'))
+#            if pdf.getIsEncrypted():
+#                pdf.decrypt('')
+#            document.page_count = pdf.getNumPages()
+#        except:
+#            pass
         
         document.generate()
         document.status = document.STATUS.ready
