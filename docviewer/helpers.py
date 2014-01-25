@@ -94,7 +94,8 @@ def generate_document(doc_id, task_id=None):
                 email['recipient_list'],
                 fail_silently=False
             )
-        except smtplib.SMTPException as e:
+#        except smtplib.SMTPException as e:
+        except:
             pass
     except Exception, e:
 
