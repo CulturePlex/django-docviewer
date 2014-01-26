@@ -22,7 +22,10 @@ from taggit.managers import TaggableManager
 
 
 RE_PAGE = re.compile(r'^.*_([0-9]+)\.txt')
+RE_TS = re.compile(r'^.*([0-9]{20})\.txt')
 
+zeros = '0'*20
+nines = '9'*20
 
 class Document(TimeStampedModel, StatusModel):
 
@@ -152,9 +155,8 @@ class Document(TimeStampedModel, StatusModel):
             if f[-4:] == '.txt' and f != "%s.txt" % self.slug:
                 k = int(RE_PAGE.match(f).group(1))
                 pages[k] = f
-        mod_pags = {}
-        zeros = '0'*20
-        nines = '9'*20
+        mod_pags_orig = {}
+        mod_pags_curr = {}
         for k in pages:
             f = pages[k]
             self.page_count += 1
@@ -179,22 +181,26 @@ class Document(TimeStampedModel, StatusModel):
             shutil.copy2(tmp_path, filepath_orig)
             
             text_url = self.document.text_page_url
-            mod_pags[self.page_count] = text_url.replace(
+            mod_pags_orig[self.page_count] = text_url.replace(
                 '%(page)s',
                 '{}-{}'.format(self.page_count, zeros)
+            )
+            mod_pags_curr[self.page_count] = text_url.replace(
+                '%(page)s',
+                '{}'.format(self.page_count)
             )
         Edition.objects.create(
             document=self.document,
             author=self.document.document.owner,
             comment='Original version',
-            modified_pages=mod_pags,
+            modified_pages=mod_pags_orig,
             date_string = zeros
         )
         Edition.objects.create(
             document=self.document,
             author=self.document.document.owner,
             comment='Current version',
-            modified_pages=mod_pags,
+            modified_pages=mod_pags_curr,
             date_string = nines
         )
         all_txt.close()
@@ -213,7 +219,6 @@ class Document(TimeStampedModel, StatusModel):
             f = pages[k]
             tmp_path = "%s/%s" % (self.get_root_path(), f)
             tmp_file = open(tmp_path)
-#            import ipdb; ipdb.set_trace()
             tmp_text = tmp_file.read()
             all_txt.write(tmp_text)
             tmp_file.close()
@@ -313,15 +318,31 @@ class Edition(models.Model):
         return prev
     
     def delete(self, *args, **kwargs):
-        modified_pages = kwargs['modified_pages']
-        for page in modified_pages:
-            path = "%s/%s_%s-%s.txt" % (
-                self.document.get_root_path(),
-                self.document.slug,
-                page,
-                self.date_string)
-            os.remove(path)
+#        pages = kwargs['modified_pages']
+        pages = self.modified_pages
+        for page in pages:
+            url = pages[page]
+            ts = RE_TS.match(url).group(1)
+            if ts != zeros and not self.there_is_pointing_editions(page):
+                path = "%s/%s_%s-%s.txt" % (
+                    self.document.get_root_path(),
+                    self.document.slug,
+                    page,
+                    ts)
+                os.remove(path)
         super(Edition, self).delete()
+    
+    def there_is_pointing_editions(self, page):
+        result = False
+        this_url = self.modified_pages[page]
+        other_editions_for_this_document = \
+            Edition.objects.filter(document=self.document).exclude(id=self.id)
+        for e in other_editions_for_this_document:
+            url = e.modified_pages[page]
+            if url == this_url:
+                result = True
+                break
+        return result
     
     def __unicode__(self):
         return '({}) {} -- {}'.format(self.document.docfile_basename, self.document.title, str(self.date))

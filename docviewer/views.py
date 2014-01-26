@@ -15,6 +15,8 @@ from utils import datetime_to_string, format_datetime_string
 
 SITE = Site.objects.get_current()
 
+zeros = '0'*20
+nines = '9'*20
 
 def get_absolute_url(relative_url):
     if relative_url and (relative_url[0:7] == 'http://' or relative_url[0:8] == 'https://'):
@@ -112,12 +114,11 @@ def save_text(request, pk):
             )
             page.save()
     
-    nines = '9'*20
-    last_edition = document.editions_set.get(date_string=nines)
-    last_edition.modified_pages = edition.modified_pages
+#    last_edition = document.editions_set.get(date_string=nines)
+#    last_edition.modified_pages = edition.modified_pages
     
     edition.save()
-    last_edition.save()
+#    last_edition.save()
     
     document.regenerate()
     
@@ -143,7 +144,6 @@ def restore_version(request, pk):
     """
     Restore a document version
     """
-    nines = '9'*20
     ts = request.POST.get('ts', nines)
     document = Document.objects.get(id=pk)
     edition = document.editions_set.get(date_string=ts)
@@ -241,8 +241,6 @@ class JsonDocumentView(BaseDetailView):
             annotation['location'] = {"image": annotation['location']}
             annotation['author'] = {'username': annotation['author__username']}
 
-        zeros = '0'*20
-        nines = '9'*20
         editions_all = document.editions_set.exclude(date_string=zeros).exclude(date_string=nines)
         json['editions'] = list(editions_all.values('id', 'date_string', 'modified_pages', 'comment', 'author', 'author__username'))
 
