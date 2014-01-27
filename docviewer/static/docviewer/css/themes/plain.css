@@ -136,7 +136,7 @@ input:-moz-placeholder { font-style:italic }
 }
 
 .last-edition #restore-button {
-  display: none;
+/*  display: none;*/
 }
 
 #annotation-area{

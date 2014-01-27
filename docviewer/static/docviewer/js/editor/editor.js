@@ -499,7 +499,7 @@ function goToPage(p) {
         var ids = Object.keys(editions);
         var last_version = editions[ids[ids.length-1]];
         $('.docviewer-edition-info').removeClass('last-edition');
-        if(ts == last_version.date_string) {
+        if(last_version && ts == last_version.date_string) {
           $('.docviewer-edition-info').addClass('last-edition');
         }
         $('.docviewer-edition-info').attr('data-edition-id', payload.id);
@@ -555,32 +555,49 @@ function goToPage(p) {
     var id = window.location.pathname.split('/')[2];
     var viewer = docviewer.viewers["doc-"+id];
     var editions = viewer.schema.data.editionsById;
-    var ids = Object.keys(editions);
-    var last_version = editions[ids[ids.length-1]];
-    last_version.all_pages = modPagFromStringToObject(last_version);
-    var rest_version; //Version that we want to restore
-    var found = false;
-    for (var i = 0; i < ids.length && !found; i++) {
-      var edit_id = ids[i];
-      var edit = editions[edit_id];
-      if (edit.date_string == ts) {
-        rest_version = edit;
-        rest_version.all_pages = modPagFromStringToObject(rest_version);
-        found = true;
-      }
-    }
-    if (!found) {
-      rest_version = createOrigVersion(last_version);
-    }
     var mod_pages = [];
-    var last_pages = Object.keys(last_version.all_pages);
-    var rest_pages = Object.keys(rest_version.all_pages);
-    for (var i = 0; i < last_pages.length; i++) {
-      var page = last_pages[i];
-      var last_url = last_version.all_pages[page];
-      var rest_url = rest_version.all_pages[page];
-      if (last_url != rest_url)
-        mod_pages.push(page);
+    var ids = Object.keys(editions);
+    if (ids.length != 0) {
+      var last_version = editions[ids[ids.length-1]];
+      last_version.all_pages = modPagFromStringToObject(last_version);
+      var rest_version; //Version that we want to restore
+      var found = false;
+      for (var i = 0; i < ids.length && !found; i++) {
+        var edit_id = ids[i];
+        var edit = editions[edit_id];
+        if (edit.date_string == ts) {
+          rest_version = edit;
+          rest_version.all_pages = modPagFromStringToObject(rest_version);
+          found = true;
+        }
+      }
+      if (!found) {
+        rest_version = createOrigVersion(last_version);
+      }
+      var last_pages = Object.keys(last_version.all_pages);
+      var rest_pages = Object.keys(rest_version.all_pages);
+      for (var i = 0; i < last_pages.length; i++) {
+        (function(index) {
+          var page = last_pages[index];
+          var last_url = last_version.all_pages[page];
+          var rest_url = rest_version.all_pages[page];
+          if (last_url != rest_url) {
+            var last_content = $.ajax({
+              type: 'GET',
+              url: last_url,
+              dataType: 'html',
+              async: false
+            }).responseText;
+            var rest_content = $.ajax({
+              type: 'GET',
+              url: rest_url,
+              dataType: 'html',
+              async: false
+            }).responseText;
+          if (last_content != rest_content)
+            mod_pages.push(page);
+        }})(i);
+      }
     }
     return mod_pages;
   }
@@ -668,9 +685,13 @@ function goToPage(p) {
       var comment = ev.currentTarget.getAttribute("data-comment");
       var ts = ev.currentTarget.getAttribute("data-ts");
       modified_pages = getModifiedPages(ts);
-      save_text(modified_pages, comment);
+      if (modified_pages.length == 0)
+        animate_msg("Version not restored: identical content");
+      else {
+        save_text(modified_pages, comment);
+        animate_msg("Version restored");
+      }
       disable_restoring_mode();
-      animate_msg("Version restored");
     });
     $("#cancel-restore-button").live('click', function (ev) {
       restoreVersion(current_version);
