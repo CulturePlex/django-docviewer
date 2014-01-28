@@ -85,18 +85,18 @@ def generate_document(doc_id, task_id=None):
         document.task_end = datetime.utcnow().replace(tzinfo=utc)
         document.save()
         
-        try:
-            email = create_email(document)
-            send_mail(
-                'Festos',
-                email['message'],
-                'noreply@festos.cultureplex.ca',
-                email['recipient_list'],
-                fail_silently=False
-            )
+#        try:
+        email = create_email(document)
+        send_mail(
+            'Festos',
+            email['message'],
+            'noreply@festos.cultureplex.ca',
+            email['recipient_list'],
+            fail_silently=True
+        )
 #        except smtplib.SMTPException as e:
-        except:
-            pass
+#        except:
+#            pass
     except Exception, e:
 
         try:

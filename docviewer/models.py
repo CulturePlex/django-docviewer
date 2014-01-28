@@ -319,11 +319,16 @@ class Edition(models.Model):
     
     def delete(self, *args, **kwargs):
 #        pages = kwargs['modified_pages']
+        other_editions_for_this_document = \
+            Edition.objects.filter(document=self.document).exclude(id=self.id)
         pages = self.modified_pages
         for page in pages:
             url = pages[page]
             ts = RE_TS.match(url).group(1)
-            if ts != zeros and not self.there_is_pointing_editions(page):
+            if ts != zeros and not self.there_is_pointing_editions(
+                other_editions_for_this_document,
+                page
+            ):
                 path = "%s/%s_%s-%s.txt" % (
                     self.document.get_root_path(),
                     self.document.slug,
@@ -332,12 +337,10 @@ class Edition(models.Model):
                 os.remove(path)
         super(Edition, self).delete()
     
-    def there_is_pointing_editions(self, page):
+    def there_is_pointing_editions(self, other_editions, page):
         result = False
         this_url = self.modified_pages[page]
-        other_editions_for_this_document = \
-            Edition.objects.filter(document=self.document).exclude(id=self.id)
-        for e in other_editions_for_this_document:
+        for e in other_editions:
             url = e.modified_pages[page]
             if url == this_url:
                 result = True
