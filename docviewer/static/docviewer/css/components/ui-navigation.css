@@ -53,6 +53,22 @@
   text-decoration: none;
 }
 
+.docviewer-remove-confirm {
+  font: normal 11px Arial, sans-serif;
+  cursor:default;
+  margin-left: 10px;
+  margin-top: 2px;
+  display:none;
+}
+
+.docviewer-remove-confirm .yes, .docviewer-remove-confirm .no {
+  cursor:pointer;
+}
+
+.docviewer-remove-confirm .yes:hover, .docviewer-remove-confirm .no:hover {
+  text-decoration:underline;
+}
+
 .docviewer-contributor {
   padding-top: 3px;
   color: #333;
