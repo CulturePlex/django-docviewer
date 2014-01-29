@@ -678,16 +678,14 @@ function goToPage(p) {
       }
     });
     $(".docviewer-historyLink .docviewer-remove").live('click', function (ev) {
-      var id = ev.currentTarget.parentElement.lastElementChild.getAttribute('data-edition-id');
-      $("div.docviewer-remove-confirm[data-edition-id='"+id+"']").show();
+      $(this).next().show();
     });
     $(".docviewer-historyLink .docviewer-remove-confirm .yes").live('click', function (ev) {
-      var id = ev.currentTarget.parentElement.getAttribute('data-edition-id');
+      var id = this.parentElement.getAttribute('data-edition-id');
       deleteVersion(id);
     });
     $(".docviewer-historyLink .docviewer-remove-confirm .no").live('click', function (ev) {
-      var id = ev.currentTarget.parentElement.getAttribute('data-edition-id');
-      $("div.docviewer-remove-confirm[data-edition-id='"+id+"']").hide();
+      $(this).parent().hide();
     });
     $("#restore-button").live('click', function (ev) {
       var comment = ev.currentTarget.getAttribute("data-comment");
