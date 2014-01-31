@@ -153,8 +153,10 @@ class Document(TimeStampedModel, StatusModel):
         pages = {}
         for f in os.listdir(self.get_root_path()):
             if f[-4:] == '.txt' and f != "%s.txt" % self.slug:
-                k = int(RE_PAGE.match(f).group(1))
-                pages[k] = f
+                m = RE_PAGE.match(f)
+                if m:
+                    k = int(m.group(1))
+                    pages[k] = f
         mod_pags_orig = {}
         mod_pags_curr = {}
         for k in pages:
