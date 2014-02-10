@@ -55,60 +55,79 @@ def create_document(filepath, doc_attributes):
 
 
 def generate_document(doc_id, task_id=None):
-
-    document = Document.objects.get(pk=doc_id)
-
-    if task_id is not None and document.task_id != task_id:
-        raise Exception("Celery task ID doesn't match")
-    
-    document.status = Document.STATUS.running
-#    document.task_start = datetime.now()
-    document.task_start = datetime.utcnow().replace(tzinfo=utc)
-    document.save()
-
     try:
-        docsplit(document)
+        document = Document.objects.get(pk=doc_id)
+        if task_id is not None and document.task_id != task_id:
+            raise Exception('0')
         
-#        try:
-#            path = document.docfile.file.name
-#            pdf = pyPdf.PdfFileReader(open(path, 'r'))
-#            if pdf.getIsEncrypted():
-#                pdf.decrypt('')
-#            document.page_count = pdf.getNumPages()
-#        except:
-#            pass
-        
-        document.generate()
-        document.status = document.STATUS.ready
-        document.task_id = None
-        document.task_error = None
-        document.task_end = datetime.utcnow().replace(tzinfo=utc)
-        document.save()
-        
-#        try:
-        email = create_email(document)
-        send_mail(
-            'Festos',
-            email['message'],
-            'noreply@festos.cultureplex.ca',
-            email['recipient_list'],
-            fail_silently=True
-        )
-#        except smtplib.SMTPException as e:
-#        except:
-#            pass
-    except Exception, e:
-
         try:
-            document.task_error = "error - it can't save " + str(e)
-            document.status = document.STATUS.failed
+            document.status = Document.STATUS.starting
+            document.task_start = datetime.utcnow().replace(tzinfo=utc)
             document.save()
-
-        except:
-            pass
-
-        raise
-
+        except Exception as e:
+            raise Exception('1', e.message)
+        
+        try:
+            docsplit(document)
+        except Exception as e:
+            raise Exception('2', e.message)
+        
+        try:
+            document.generate()
+        except Exception as e:
+            raise Exception('3', e.message)
+        
+        try:
+            document.status = document.STATUS.ready
+            document.task_error = None
+            document.task_end = datetime.utcnow().replace(tzinfo=utc)
+#            document.save()
+        except Exception as e:
+            raise Exception('4', e.message)
+        
+        try:
+            email = create_email(document)
+        except Exception as e:
+            raise Exception('5', e.message)
+        
+        try:
+            send_mail(
+                'Festos',
+                email['message'],
+                'noreply@festos.cultureplex.ca',
+                email['recipient_list'],
+                fail_silently=False
+            )
+        except Exception as e:
+            raise Exception('6', e.message)
+        
+    except Exception as e:
+        if e.args[0] == '5':
+            document.task_error = 'Error in email data: ' + e.args[1]
+        elif e.args[0] == '6':
+            document.task_error = 'Email could not be sent: ' + e.args[1]
+        else:
+            document.status = document.STATUS.failed
+            if e.args[0] == '0':
+                document.task_error = \
+                    'Celery task ID does not match'
+            elif e.args[0] == '1':
+                document.task_error = \
+                    'Process could not be initialized: ' + e.args[1]
+            elif e.args[0] == '2':
+                document.task_error = \
+                    'Document could not be processed: ' + e.args[1]
+            elif e.args[0] == '3':
+                document.task_error = \
+                    'File system could not be created: ' + e.args[1]
+            elif e.args[0] == '4':
+                document.task_error = \
+                    'Process could not be finalized: ' + e.args[1]
+            else:
+                pass
+    
+    finally:
+        document.save()
 
 def create_email(document):
     email = {}
