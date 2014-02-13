@@ -14,6 +14,7 @@ from views import get_absolute_url
 from django.core.urlresolvers import reverse
 #import pyPdf
 from documents.utils import count_total_pages
+from django.conf import settings
 
 
 def docsplit(document):
@@ -55,27 +56,35 @@ def create_document(filepath, doc_attributes):
 
 
 def generate_document(doc_id, task_id=None):
+    CELERY_ID = 0
+    PROC_INIT = 1
+    PROC_PROC = 2
+    FILE_CREA = 3
+    PROC_FINA = 4
+    MAIL_DATA = 5
+    MAIL_SEND = 6
+    
     try:
         document = Document.objects.get(pk=doc_id)
         if task_id is not None and document.task_id != task_id:
-            raise Exception('0')
+            raise Exception(CELERY_ID)
         
         try:
             document.status = Document.STATUS.starting
             document.task_start = datetime.utcnow().replace(tzinfo=utc)
             document.save()
         except Exception as e:
-            raise Exception('1', e.message)
+            raise Exception(PROC_INIT, e.message)
         
         try:
             docsplit(document)
         except Exception as e:
-            raise Exception('2', e.message)
+            raise Exception(PROC_PROC, e.message)
         
         try:
             document.generate()
         except Exception as e:
-            raise Exception('3', e.message)
+            raise Exception(FILE_CREA, e.message)
         
         try:
             document.status = document.STATUS.ready
@@ -83,48 +92,49 @@ def generate_document(doc_id, task_id=None):
             document.task_end = datetime.utcnow().replace(tzinfo=utc)
 #            document.save()
         except Exception as e:
-            raise Exception('4', e.message)
+            raise Exception(PROC_FINA, e.message)
         
         try:
             email = create_email(document)
         except Exception as e:
-            raise Exception('5', e.message)
+            raise Exception(MAIL_DATA, e.message)
         
         try:
             send_mail(
-                'Festos',
+                prod_settings.PROJECT_NAME,
                 email['message'],
-                'noreply@festos.cultureplex.ca',
+                prod_settings.DEFAULT_FROM_EMAIL,
                 email['recipient_list'],
                 fail_silently=False
             )
         except Exception as e:
-            raise Exception('6', e.message)
+            raise Exception(MAIL_SEND, e.message)
         
     except Exception as e:
-        if e.args[0] == '5':
+        if e.args[0] == MAIL_DATA:
             document.task_error = 'Error in email data: ' + e.args[1]
-        elif e.args[0] == '6':
+        elif e.args[0] == MAIL_SEND:
             document.task_error = 'Email could not be sent: ' + e.args[1]
         else:
             document.status = document.STATUS.failed
-            if e.args[0] == '0':
+            if e.args[0] == CELERY_ID:
                 document.task_error = \
                     'Celery task ID does not match'
-            elif e.args[0] == '1':
+            elif e.args[0] == PROC_INIT:
                 document.task_error = \
                     'Process could not be initialized: ' + e.args[1]
-            elif e.args[0] == '2':
+            elif e.args[0] == PROC_PROC:
                 document.task_error = \
                     'Document could not be processed: ' + e.args[1]
-            elif e.args[0] == '3':
+            elif e.args[0] == FILE_CREA:
                 document.task_error = \
                     'File system could not be created: ' + e.args[1]
-            elif e.args[0] == '4':
+            elif e.args[0] == PROC_FINA:
                 document.task_error = \
                     'Process could not be finalized: ' + e.args[1]
             else:
-                pass
+                document.task_error = \
+                    'Unknown error: ' + e.args[1]
     
     finally:
         document.save()
