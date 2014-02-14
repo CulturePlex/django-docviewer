@@ -53,6 +53,7 @@ docviewer.Schema.prototype.loadAnnotation = function(anno) {
   anno.author = anno.author.username || 'no-author';
   anno.access = anno.access || 'public';
   anno.type   = anno.location && anno.location.image ? 'region' : 'page';
+  anno.user_url = anno.user_url || '';
   if (anno.type === 'region') {
     var loc = docviewer.jQuery.map(anno.location.image.split(','), function(n, i) { return parseInt(n, 10); });
     anno.y1 = loc[0]; anno.x2 = loc[1]; anno.y2 = loc[2]; anno.x1 = loc[3];
@@ -75,6 +76,7 @@ docviewer.Schema.prototype.loadEdition = function(edit) {
   edit.date            = edit.date || '';
   edit.author          = edit.author.username || 'no-author';
   edit.comment         = edit.comment || 'no-comment';
+  edit.user_url        = edit.user_url || '';
   
   this.data.editionsById[edit.id] = edit;
   return edit;

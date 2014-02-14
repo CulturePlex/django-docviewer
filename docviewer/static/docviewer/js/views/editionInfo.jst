@@ -1,7 +1,7 @@
 <!--<link rel='stylesheet' id='sk-style-css'  href='http://glyphicons.com/wp-content/themes/glyphicons/sk/public/css/style-new.css' type='text/css' media='screen, projection' />-->
 <div class="docviewer-edition-content" id="<%= id %>">
   <pre style="padding-top: 26px;">
-    <span class="author">@<%= author %></span>
+    <span class="author"><a href="<%= user_url %>" style="color: #333;">@<%= author %></a></span>
     <span class="date"><%= date_string_formatted %></span><% var leng = mod_pages.length - 1; var p; %>
     <span class="pages">Modified pages:     <% for (p=0; p < leng ; p++) {%><span id="<%= mod_pages[p] %>" class="modified-page"><%= mod_pages[p] %></span>,    <% } %><span id="<%= mod_pages[p] %>" class="modified-page"><%= mod_pages[p] %></span></span>
     <span class="comment"><%= comment %></span>

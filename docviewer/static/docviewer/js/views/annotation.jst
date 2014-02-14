@@ -31,7 +31,7 @@
       </div>
       <div class="docviewer-annotationGoto docviewer-editHidden"><div class="docviewer-trigger">p. <%= pageNumber %></div></div>
       <div class="docviewer-annotationTitle docviewer-editHidden"><%= title %></div>
-      <div class="docviewer-annotationUser docviewer-editHidden">&nbsp;(@<%= author %>)</div>
+      <div class="docviewer-annotationUser docviewer-editHidden">&nbsp;(<a href="<%= user_url %>" style="color:grey;">@<%= author %></a>)</div>
       <input class="docviewer-annotationTitleInput docviewer-editVisible" type="text" placeholder="Annotation Title" value="<%= title.replace(/"/g, '&quot;') %>" />
       <% if (access == 'exclusive') { %>
         <div class="docviewer-annotationDraftLabel docviewer-editHidden docviewer-interface">Draft</div>

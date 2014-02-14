@@ -12,6 +12,7 @@ from haystack.query import SearchQuerySet
 
 from datetime import datetime
 from utils import datetime_to_string, format_datetime_string
+from django.conf import settings
 
 SITE = Site.objects.get_current()
 
@@ -130,6 +131,7 @@ def save_text(request, pk):
     edit['author'] = {'username': edition.author.username}
     edit['author__username'] = edition.author.username
     edit['date_string_formatted'] = format_datetime_string(edition.date_string)
+    edit['user_url'] = settings.USER_URL + edition.author.username
     
     return HttpResponse(
         simplejson.dumps(
@@ -240,6 +242,7 @@ class JsonDocumentView(BaseDetailView):
         for annotation in json['annotations']:
             annotation['location'] = {"image": annotation['location']}
             annotation['author'] = {'username': annotation['author__username']}
+            annotation['user_url'] = settings.USER_URL + annotation['author__username']
 
         editions_all = document.editions_set.exclude(date_string=zeros).exclude(date_string=nines)
         json['editions'] = list(editions_all.values('id', 'date_string', 'modified_pages', 'comment', 'author', 'author__username'))
@@ -247,6 +250,7 @@ class JsonDocumentView(BaseDetailView):
         for edition in json['editions']:
             edition['author'] = {'username': edition['author__username']}
             edition['date_string_formatted'] = format_datetime_string(edition['date_string'])
+            edition['user_url'] = settings.USER_URL + edition['author__username']
 
         return HttpResponse(simplejson.dumps(json), content_type="application/json")
 
