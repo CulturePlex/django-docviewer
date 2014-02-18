@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 
 from model_utils.models import TimeStampedModel, StatusModel
 from model_utils import Choices
@@ -59,7 +60,7 @@ class Document(TimeStampedModel, StatusModel):
         max_length=1024, null=False, blank=True, default='')
     docfile = models.FileField(
         _('PDF Document File'), upload_to='pdfs/%Y/%m/%d', max_length=512,
-        null=False, blank =False)
+        null=False, blank =False, storage=FileSystemStorage())
     task_id = models.CharField(
         _('Celery task ID'), max_length=50, null=True, blank=True)
     task_error = models.TextField(
@@ -109,7 +110,8 @@ class Document(TimeStampedModel, StatusModel):
 
     @property
     def text(self):
-        f = open(self.text_url, 'r')
+        fs = FileSystemStorage()
+        f = fs.open(self.text_url, 'r')
         data = f.read()
         f.close()
         return data
@@ -125,15 +127,17 @@ class Document(TimeStampedModel, StatusModel):
         return "%s/%s" % (self.get_root_path(), self.docfile_basename)
 
     def process_file(self):
-        file = open(os.path.join(settings.MEDIA_ROOT,self.docfile.name), 'r')
+        fs1 = FileSystemStorage()
+        f1 = fs1.open(os.path.join(settings.MEDIA_ROOT,self.docfile.name), 'r')
         filepath = "%s/%s.%s" % (
             self.get_root_path(),
             self.slug,
             self.docfile_basename.split('.')[-1].lower())
-        f = open(filepath, "w")
-        f.write(file.read())
-        f.close()
-        file.close()
+        fs2 = FileSystemStorage()
+        f2 = fs2.open(filepath, "w")
+        f2.write(f1.read())
+        f2.close()
+        f1.close()
 
 #        self.title = self.docfile_basename
         task = task_generate_document.apply_async(args=[self.pk], countdown=5)
@@ -147,7 +151,8 @@ class Document(TimeStampedModel, StatusModel):
     def generate(self):
         # concatenate all text files
         ts = datetime.now()
-        all_txt = open("%s/%s.txt" % (self.get_root_path(), self.slug), "w")
+        fs = FileSystemStorage()
+        all_txt = fs.open("%s/%s.txt" % (self.get_root_path(), self.slug), "w")
         self.page_count = 0
         self.pages_set.all().delete()
         pages = {}
@@ -163,7 +168,8 @@ class Document(TimeStampedModel, StatusModel):
             f = pages[k]
             self.page_count += 1
             tmp_path = "%s/%s" % (self.get_root_path(), f)
-            tmp_file = open(tmp_path)
+            fs_tmp = FileSystemStorage()
+            tmp_file = fs_tmp.open(tmp_path)
             tmp_text = tmp_file.read()
             all_txt.write(tmp_text)
             page = Page(
@@ -209,7 +215,8 @@ class Document(TimeStampedModel, StatusModel):
 
     def regenerate(self):
         # reconcatenate all text files
-        all_txt = open("%s/%s.txt" % (self.get_root_path(), self.slug), "w")
+        fs = FileSystemStorage()
+        all_txt = fs.open("%s/%s.txt" % (self.get_root_path(), self.slug), "w")
         pages = {}
         for f in os.listdir(self.get_root_path()):
             if f[-4:] == '.txt' and f != "%s.txt" % self.slug:
@@ -220,7 +227,8 @@ class Document(TimeStampedModel, StatusModel):
         for k in pages:
             f = pages[k]
             tmp_path = "%s/%s" % (self.get_root_path(), f)
-            tmp_file = open(tmp_path)
+            fs_tmp = FileSystemStorage()
+            tmp_file = fs_tmp.open(tmp_path)
             tmp_text = tmp_file.read()
             all_txt.write(tmp_text)
             tmp_file.close()
