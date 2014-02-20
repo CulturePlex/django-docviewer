@@ -101,9 +101,9 @@ def generate_document(doc_id, task_id=None):
         
         try:
             send_mail(
-                prod_settings.PROJECT_NAME,
+                settings.PROJECT_NAME,
                 email['message'],
-                prod_settings.DEFAULT_FROM_EMAIL,
+                settings.DEFAULT_FROM_EMAIL,
                 email['recipient_list'],
                 fail_silently=False
             )

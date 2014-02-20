@@ -28,6 +28,8 @@ RE_TS = re.compile(r'^.*([0-9]{20})\.txt')
 zeros = '0'*20
 nines = '9'*20
 
+#fs = get_storage_class()()
+
 class Document(TimeStampedModel, StatusModel):
 
     STATUS = Choices('waiting', 'ready', 'running', 'failed', 'starting')
@@ -60,7 +62,7 @@ class Document(TimeStampedModel, StatusModel):
         max_length=1024, null=False, blank=True, default='')
     docfile = models.FileField(
         _('PDF Document File'), upload_to='pdfs/%Y/%m/%d', max_length=512,
-        null=False, blank =False, storage=FileSystemStorage())
+        null=False, blank =False,)# storage=FileSystemStorage())
     task_id = models.CharField(
         _('Celery task ID'), max_length=50, null=True, blank=True)
     task_error = models.TextField(
@@ -110,7 +112,7 @@ class Document(TimeStampedModel, StatusModel):
 
     @property
     def text(self):
-        fs = FileSystemStorage()
+        fs = FileSystemStorage()#fs=get_
         f = fs.open(self.text_url, 'r')
         data = f.read()
         f.close()
