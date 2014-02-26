@@ -96,6 +96,7 @@ PIPELINE_JS['docviewer-base'] = {
         'docviewer/js/controllers/document_viewer.js',
         'docviewer/js/controllers/api.js',
         'docviewer/js/editor/editor.js',
+#        'docviewer/js/translator/zotero_translator.js',
     ),
     'output_filename': 'c/docviewer-base.r?.js',
 }
