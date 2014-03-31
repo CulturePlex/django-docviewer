@@ -58,9 +58,15 @@
               <% if (pdf_url) { %>
                 <div class="docviewer-pdfLink"><%= pdf_url %></div>
               <% } %>
-              <% if (text_url) { %>
-                <div class="docviewer-textLink"><%= text_url %></div>
+              <% if (text_url_a) { %>
+                <div class="docviewer-textLink"><%= text_url_a %></div>
               <% } %>
+              <% if (text_url) { %>
+                <div class="docviewer-textLink"><a id="dropbox-saver" data-url="<%= text_url %>" data-title="<%= doc_title %>" href="<%= text_url %>" class="">Save text to Dropbox &raquo;</a></div>
+              <% } %>
+              
+              
+              
               <% if (print_notes_url) { %>
                 <div class="docviewer-printNotesLink">
                   <a target="_blank" href="<%= print_notes_url %>">Print Notes &raquo;</a>

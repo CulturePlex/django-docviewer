@@ -708,6 +708,24 @@ function goToPage(p) {
       var id = ev.currentTarget.id;
       goToPage(id);
     });
+    
+    $("#dropbox-saver").live('click', function(ev){
+        var url = this.getAttribute("data-url");
+        var title = this.getAttribute("data-title") + ".txt";
+        var options = {
+            files: [{'url': url, 'filename': title},],
+            success: function () {
+                animate_msg("Text was saved to Dropbox successfully!");
+            },
+            error: function (errorMessage) {
+                animate_msg("Text was not saved to Dropbox");
+            }
+        };
+        var button = Dropbox.save(options);
+        ev.preventDefault();
+        
+    });
+    
   });
 
 }());

@@ -260,7 +260,9 @@ class Page(models.Model):
             self.document.get_root_path(),
             self.document.slug,
             self.page,)
-        f = codecs.open(path, 'r')
+#        f = codecs.open(path, 'r')
+        fs = FileSystemStorage()
+        f = fs.open(path)
         data = f.read()
         f.close()
         return data.decode('ascii', 'ignore')
@@ -270,7 +272,9 @@ class Page(models.Model):
             self.document.get_root_path(),
             self.document.slug,
             self.page)
-        f = codecs.open(path, 'w')
+#        f = codecs.open(path, 'r')
+        fs = FileSystemStorage()
+        f = fs.open(path, 'w')
         text = unicode(text).encode('utf-8')
         f.write(text)
         f.close()

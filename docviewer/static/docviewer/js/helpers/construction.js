@@ -36,10 +36,11 @@ _.extend(docviewer.Schema.helpers, {
 				: '';
 
 		var textURL = doc.resources.text;
-		textURL = textURL && this.viewer.options.text !== false
+		var textURLa = textURL && this.viewer.options.text !== false
 				? '<a target="_blank" href="' + textURL
 						+ '">Export to text (.txt) &raquo;</a>'
 				: '';
+		
 
 		var contributorList = '';
 		if (this.viewer.schema.document.contributor !== null
@@ -65,6 +66,8 @@ _.extend(docviewer.Schema.helpers, {
 			footer : footerHTML,
 			pdf_url : pdfURL,
 			text_url : textURL,
+			text_url_a : textURLa,
+			doc_title : doc.title,
 			contributors : contributorList,
 			story_url : storyURL,
 			print_notes_url : printNotesURL,
@@ -95,6 +98,7 @@ _.extend(docviewer.Schema.helpers, {
 		var doc = this.viewer.schema.document;
 		var missing = (!doc.description
 				&& !_.size(this.viewer.schema.data.annotationsById) && !this.viewer.schema.data.sections.length); //&& !_.size(this.viewer.schema.data.annotationsById)
+		missing = false;
 		this.viewer.$('.docviewer-supplemental').toggleClass(
 				'docviewer-noNavigation', missing);
 	},
