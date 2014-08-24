@@ -15,6 +15,7 @@ from django.core.urlresolvers import reverse
 #import pyPdf
 from documents.utils import count_total_pages
 from django.conf import settings
+from docviewer.utils import format_datetimediff
 
 
 def docsplit(document):
@@ -61,7 +62,7 @@ def generate_document(doc_id, task_id=None):
     PROC_PROC = 2
     FILE_CREA = 3
     PROC_FINA = 4
-    MAIL_DATA = 5
+    MAIL_INFO = 5
     MAIL_SEND = 6
     
     try:
@@ -97,7 +98,7 @@ def generate_document(doc_id, task_id=None):
         try:
             email = create_email(document)
         except Exception as e:
-            raise Exception(MAIL_DATA, e.message)
+            raise Exception(MAIL_INFO, e.message)
         
         try:
             send_mail(
@@ -109,34 +110,40 @@ def generate_document(doc_id, task_id=None):
             )
         except Exception as e:
             raise Exception(MAIL_SEND, e.message)
-        
+    
     except Exception as e:
-        if e.args[0] == MAIL_DATA:
-            document.task_error = 'Error in email data: ' + e.args[1]
+        if e.args[1]:
+            msg = ': ' + e.args[1]
+        else:
+            msg = ''
+        
+        if e.args[0] == MAIL_INFO:
+            document.task_error = 'Error in email information' + msg
         elif e.args[0] == MAIL_SEND:
-            document.task_error = 'Email could not be sent: ' + e.args[1]
+            document.task_error = 'Email could not be sent' + msg
         else:
             document.status = document.STATUS.failed
             if e.args[0] == CELERY_ID:
-                document.task_error = \
-                    'Celery task ID does not match'
+                document.task_error = 'Celery task ID does not match'
             elif e.args[0] == PROC_INIT:
-                document.task_error = \
-                    'Process could not be initialized: ' + e.args[1]
+                document.task_error = 'Process could not be initialized' + msg
             elif e.args[0] == PROC_PROC:
-                document.task_error = \
-                    'Document could not be processed: ' + e.args[1]
+                document.task_error = 'Document could not be processed' + msg
             elif e.args[0] == FILE_CREA:
-                document.task_error = \
-                    'File system could not be created: ' + e.args[1]
+                document.task_error = 'File system could not be created' + msg
             elif e.args[0] == PROC_FINA:
-                document.task_error = \
-                    'Process could not be finalized: ' + e.args[1]
+                document.task_error = 'Process could not be finalized' + msg
             else:
-                document.task_error = \
-                    'Unknown error: ' + e.args[1]
+                document.task_error = 'Unknown error' + msg
     
     finally:
+        diff_time = document.task_end - document.task_start
+        total_time = format_datetimediff(diff_time)
+        if document.task_error:
+            sep = ' | '
+        else:
+            sep = ''
+        document.task_error += sep + 'Total processing time: ' + total_time
         document.save()
 
 def create_email(document):
