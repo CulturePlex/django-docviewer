@@ -372,6 +372,24 @@ var current_version = "99999999999999999999";
     asterisk();
   }
 
+  /** Ajax request to save a specific text. */
+  function save_specific_text(ts) {
+    var text_dict = {};
+    text_dict['ts'] = ts || '';
+    $.ajax({
+      type: "POST",
+      url: "save_specific_text/",
+      data: text_dict,
+      success: function (payload) {
+      },
+      dataType: 'json',
+      error: function (payload) {
+      },
+      complete: function (payload) {
+      }
+    });
+  }
+
   /** Ajax request to save text. */
   function save_text(num_page_list, restore_comment) {
     var id = window.location.pathname.split('/')[2];
@@ -724,6 +742,10 @@ function goToPage(p) {
         var button = Dropbox.save(options);
         ev.preventDefault();
         
+    });
+    $("#export-text-button").live('click', function (ev) {
+        var ts = ev.currentTarget.getAttribute("data-ts")
+        save_specific_text(ts)
     });
     
   });

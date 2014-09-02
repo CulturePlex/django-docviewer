@@ -84,6 +84,13 @@ margin-top: -20px;
     text-indent:-9999px;
 }
 
+.docviewer-edition-content #export-dropbox-button {
+    background: url(../../img/dropbox.png) no-repeat right;
+    background-size:13px;
+    padding-bottom: 1px;
+    text-indent:-9999px;
+}
+
 .modified-page:hover {
   text-decoration:underline;
   cursor: pointer;

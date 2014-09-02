@@ -14,6 +14,7 @@ urlpatterns = patterns(
     (r'^(?P<pk>\d+)/add_annotation/$', 'docviewer.views.add_annotation', {}, "docviewer_add_annotation"),
     (r'^(?P<pk>\d+)/remove_annotation/$', 'docviewer.views.remove_annotation', {}, "docviewer_remove_annotation"),
     (r'^(?P<pk>\d+)/save_text/$', 'docviewer.views.save_text', {}, 'docviewer_save_text'),
+    (r'^(?P<pk>\d+)/save_specific_text/$', 'docviewer.views.save_specific_text', {}, 'docviewer_save_specific_text'),
     (r'^(?P<pk>\d+)/restore_version/$', 'docviewer.views.restore_version', {}, 'docviewer_restore_version'),
     (r'^(?P<pk>\d+)/delete_version/$', 'docviewer.views.delete_version', {}, 'docviewer_delete_version'),
 )

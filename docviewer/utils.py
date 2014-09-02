@@ -21,6 +21,26 @@ def datetime_to_string(datetime):
     return string
 
 
+def format_datetime_from_stringts(ts):
+    year = ts[0:4]
+    month = ts[4:6]
+    day = ts[6:8]
+    hour = ts[8:10]
+    minute = ts[10:12]
+    second = ts[12:14]
+    microsecond = ts[14:20]
+    string = '{}-{}-{}-{}-{}-{}-{}'.format(
+        year,
+        month,
+        day,
+        hour,
+        minute,
+        second,
+        microsecond
+    )
+    return string
+
+
 def format_datetime_string(string):
     months = {
         1: 'January',

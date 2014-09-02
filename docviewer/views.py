@@ -11,7 +11,7 @@ from django.views.generic.base import View
 from haystack.query import SearchQuerySet
 
 from datetime import datetime
-from utils import datetime_to_string, format_datetime_string
+from utils import datetime_to_string, format_datetime_string, format_datetime_from_stringts
 from django.conf import settings
 
 SITE = Site.objects.get_current()
@@ -83,6 +83,27 @@ def remove_annotation(request, pk):
 
 
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
+#@ensure_csrf_cookie
+@csrf_exempt
+def save_specific_text(request, pk):
+    """
+    Save the specific text
+    """
+    document = Document.objects.get(id=pk)
+    ts=request.POST['ts']
+    edition = document.editions_set.get(date_string=ts)
+    formated_ts = format_datetime_from_stringts(ts)
+    aux = {}
+    for k in edition.modified_pages:
+        aux[int(k)] = edition.modified_pages[k]
+    files = map(lambda x: x.split('/')[-1], aux.values())
+    document.regenerate_ts(formated_ts, files)
+    
+    return HttpResponse(
+        simplejson.dumps(
+            {'status': 'ok',}),
+            content_type="application/json",
+        )
 #@ensure_csrf_cookie
 @csrf_exempt
 def save_text(request, pk):

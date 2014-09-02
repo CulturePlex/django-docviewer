@@ -236,6 +236,19 @@ class Document(TimeStampedModel, StatusModel):
             tmp_file.close()
         all_txt.close()
 
+    def regenerate_ts(self, ts='', files=[]):
+        # reconcatenate all text files
+        fs = FileSystemStorage()
+        all_txt = fs.open("%s/%s--%s.txt" % (self.get_root_path(), self.slug, ts), "w")
+        for f in files:
+            tmp_path = "%s/%s" % (self.get_root_path(), f)
+            fs_tmp = FileSystemStorage()
+            tmp_file = fs_tmp.open(tmp_path)
+            tmp_text = tmp_file.read()
+            all_txt.write(tmp_text)
+            tmp_file.close()
+        all_txt.close()
+
     def get_thumbnail(self):
         return "%s/%s/%s_%s.%s" % (
             self.get_root_url(), "small", self.slug, 1, IMAGE_FORMAT)
