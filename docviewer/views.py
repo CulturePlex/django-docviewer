@@ -92,12 +92,12 @@ def save_specific_text(request, pk):
     document = Document.objects.get(id=pk)
     ts=request.POST['ts']
     edition = document.editions_set.get(date_string=ts)
-    formated_ts = format_datetime_from_stringts(ts)
+#    formated_ts = format_datetime_from_stringts(ts)
     aux = {}
     for k in edition.modified_pages:
         aux[int(k)] = edition.modified_pages[k]
     files = map(lambda x: x.split('/')[-1], aux.values())
-    document.regenerate_ts(formated_ts, files)
+    document.regenerate_ts(ts, files)
     
     return HttpResponse(
         simplejson.dumps(
