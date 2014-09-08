@@ -80,7 +80,7 @@ _.extend(docviewer.Schema.helpers, {
 			add_tag: "add_taggit_tag",
 			remove_tag: doc.resources.remove_tag_url,
 			add_collaborator: "add_sharer",
-			remove_collaborator: doc.resources.remove_tag_url
+			remove_collaborator: doc.resources.remove_collaborator_url
 		};
 
 		if (this.viewer.options.width && this.viewer.options.height) {
