@@ -251,6 +251,12 @@ class JsonDocumentView(BaseDetailView):
             document.image_page_url % {'page': '{page}', 'size': '{size}'})
         json['resources']['related_article'] = get_absolute_url(document.related_url)
         json['resources']['published_url'] = json['canonical_url']
+        json['resources']['collaborators'] = map(lambda x: x.username, document.document.get_users_with_perms())
+        json['resources']['tags'] = map(lambda x: x, document.document.taggit_tags.names())
+        json['resources']['add_tag_url'] = 'TODO'
+        json['resources']['remove_tag_url'] = reverse('remove_taggit_tag', args=[document.pk, 'replaceme'])
+        json['resources']['add_collaborator_url'] = 'TODO'
+        json['resources']['remove_collaborator_url'] = reverse('remove_sharer', args=[document.pk, 'replaceme'])
 
         json['sections'] = list(document.sections_set.all().values('title', 'page'))
 

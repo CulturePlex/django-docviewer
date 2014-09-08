@@ -55,6 +55,7 @@
             <div class="docviewer-chaptersContainer">
             </div>
             <div class="docviewer-supplemental">
+              <div class="docviewer-actionsHeader">Actions</div>
               <% if (pdf_url) { %>
                 <div class="docviewer-pdfLink"><%= pdf_url %></div>
               <% } %>
@@ -75,12 +76,40 @@
               <div class="docviewer-storyLink" style="<%= story_url ? '' : 'display:none' %>">
                 <a target="_blank" href="<%= story_url %>">Related Article &raquo;</a>
               </div>
-              <% if (contributors) { %>
-                <div class="docviewer-contributor">Contributed by: <%= contributors %></div>
-              <% } %>
             </div>
             
+            <% if (collaborators) { %>
+            <% var leng = collaborators.length; var p; %>
+            <div class="docviewer-supplemental" id="info-options">
+              <div class="docviewer-collaboratorHeader">Collaborators</div>
+                <div class="docviewer-textLink">
+                    <% for (p=0; p<leng; p++) { %>
+                        <% var collaborator = collaborators[p]; %>
+                        <% var remove_collaborator_url = remove_collaborator.replace("replaceme", collaborator); %>
+                        <a class="nolink" href="<%= remove_collaborator_url %>">
+                        <span class="collaborator" data-id="<%= collaborator %>">@<%= collaborator %></span></a>
+                    <% } %>
+                </div>
+            </div>
+            <% } %>
+            
+            <% if (tags) { %>
+            <% var leng = tags.length; var p; %>
+            <div class="docviewer-supplemental" id="info-options">
+              <div class="docviewer-tagHeader">Tags</div>
+                <div class="docviewer-textLink">
+                    <% for (p=0; p<leng; p++) { %>
+                        <% var taggit_tag = tags[p]; %>
+                        <% var remove_tag_url = remove_tag.replace("replaceme", taggit_tag); %>
+                        <a class="nolink" href="<%= remove_tag_url %>">
+                        <span class="taggit_tag" style="padding-top: 0px;"data-id="<%= taggit_tag %>"><%= taggit_tag %></span></a>
+                    <% } %>
+                </div>
+            </div>
+            <% } %>
+            
             <div class="docviewer-supplemental" id="annotation-options">
+              <div class="docviewer-annoHeader">Annotation</div>
               <div class="docviewer-annotationLink" id="add-annotation">
                 <a href="#"> Add Annotation</a>
               </div>

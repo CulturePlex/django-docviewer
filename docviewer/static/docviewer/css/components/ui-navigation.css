@@ -194,7 +194,8 @@ textarea.docviewer-textContents#plain-text-area {
 }
 
 .docviewer-contentsHeader, .docviewer-editionHeader, .docviewer-historyHeader,
-.docviewer-descriptionHead{
+.docviewer-descriptionHead, .docviewer-infoHeader, .docviewer-annoHeader,
+.docviewer-actionsHeader, .docviewer-tagHeader, .docviewer-collaboratorHeader {
   text-transform:uppercase;
   color:#666;
   font-family:Arial,Helvetica,sans-serif;

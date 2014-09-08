@@ -74,7 +74,13 @@ _.extend(docviewer.Schema.helpers, {
 			descriptionContainer : JST.descriptionContainer({
 						description : description
 					}),
-			autoZoom : this.viewer.options.zoom == 'auto'
+			autoZoom : this.viewer.options.zoom == 'auto',
+			collaborators: doc.resources.collaborators,
+			tags: doc.resources.tags,
+			add_tag: "add_taggit_tag",
+			remove_tag: doc.resources.remove_tag_url,
+			add_collaborator: "add_sharer",
+			remove_collaborator: doc.resources.remove_tag_url
 		};
 
 		if (this.viewer.options.width && this.viewer.options.height) {
