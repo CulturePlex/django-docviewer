@@ -11,7 +11,7 @@ from django.views.generic.base import View
 from haystack.query import SearchQuerySet
 
 from datetime import datetime
-from utils import datetime_to_string, format_datetime_string, format_datetime_from_stringts
+from utils import datetime_to_string, format_datetime_string, format_datetime_from_stringts, check_mentions
 from django.conf import settings
 
 SITE = Site.objects.get_current()
@@ -111,10 +111,12 @@ def save_text(request, pk):
     Save the text
     """
     document = Document.objects.get(id=pk)
+    author = request.user
+    comment = request.POST.get('comment', '')
     edition = Edition.objects.create(
         document=document,
-        author=request.user,
-        comment=request.POST.get('comment', ''),
+        author=author,
+        comment=comment,
         modified_pages={},
 #        date=datetime.now(),
     )
@@ -153,6 +155,8 @@ def save_text(request, pk):
     edit['author__username'] = edition.author.username
     edit['date_string_formatted'] = format_datetime_string(edition.date_string)
     edit['user_url'] = settings.USER_URL + edition.author.username
+    
+    check_mentions(comment, author.username, document)
     
     return HttpResponse(
         simplejson.dumps(

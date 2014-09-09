@@ -1,4 +1,11 @@
+import re
+
 from datetime import datetime
+from django.conf import settings
+from django.contrib.sites.models import Site
+from django.core.mail import send_mail
+from django.core.urlresolvers import reverse
+from django.template import Context, loader
 
 
 def datetime_to_string(datetime):
@@ -119,3 +126,52 @@ def format_datetimediff(datetimediff):
         diff = '{} and{}'.format(diff[0:last_comma], diff[last_comma+1:])
     
     return diff
+
+
+def check_mentions(comment, author, document):
+    email_content = create_email(author, document)
+    username_re = re.compile(r'@\w+')
+    users_mentioned = username_re.findall(comment)
+    collaborators = document.document.get_users_with_perms()
+    targets = list(set(users_mentioned).intersection(collaborators))
+    emails = [t.email for t in targets]
+    try:
+        send_mail(
+            settings.PROJECT_NAME,
+            email_content,
+            settings.DEFAULT_FROM_EMAIL,
+            emails,
+            fail_silently=False
+        )
+    except Exception as e:
+        'email could not be sent.'
+
+
+def create_email(author, document):
+    title = document.title
+    filename = document.docfile_basename
+    doc_url = get_absolute_url(reverse(
+        "docviewer_viewer_view",
+        kwargs={'pk': document.pk, 'slug': document.slug}
+    ))
+    template = loader.get_template('docviewer/email.html')
+    context = Context({
+        'username': author,
+        'document': '{} - {}'.format(title, filename),
+        'doc_url': doc_url,
+    })
+    message = template.render(context)
+    return message
+
+
+SITE = Site.objects.get_current()
+
+
+def get_absolute_url(relative_url):
+    if relative_url and (relative_url[0:7] == 'http://' or relative_url[0:8] == 'https://'):
+        return relative_url
+    return "http://%s%s" % (SITE.domain, relative_url)
+
+
+
+
