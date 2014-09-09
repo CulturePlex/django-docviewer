@@ -140,10 +140,9 @@ def generate_document(doc_id, task_id=None):
         diff_time = document.task_end - document.task_start
         total_time = format_datetimediff(diff_time)
         if document.task_error:
-            sep = ' | '
+            document.task_error += ' | Total processing time: ' + total_time
         else:
-            sep = ''
-        document.task_error += sep + 'Total processing time: ' + total_time
+            document.task_error = 'Total processing time: ' + total_time
         document.save()
 
 def create_email(document):
