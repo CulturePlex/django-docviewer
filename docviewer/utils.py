@@ -1,7 +1,7 @@
 import re
-
 from datetime import datetime
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
@@ -129,22 +129,30 @@ def format_datetimediff(datetimediff):
 
 
 def check_mentions(comment, author, document):
-    email_content = create_email(author, document)
     username_re = re.compile(r'@\w+')
     users_mentioned = username_re.findall(comment)
-    collaborators = document.document.get_users_with_perms()
-    targets = list(set(users_mentioned).intersection(collaborators))
-    emails = [t.email for t in targets]
-    try:
-        send_mail(
-            settings.PROJECT_NAME,
-            email_content,
-            settings.DEFAULT_FROM_EMAIL,
-            emails,
-            fail_silently=False
+    if users_mentioned:
+        users_mentioned = map(lambda x: x[1:], username_re.findall(comment))
+        email_content = create_email(author, document)
+        collaborators = document.document.get_users_with_perms()
+        collaborator_names = [c.username for c in collaborators]
+        username_targets = list(
+            set(users_mentioned).intersection(collaborator_names)
         )
-    except Exception as e:
-        'email could not be sent.'
+        user_targets = [
+            User.objects.get(username=name) for name in username_targets
+        ]
+        emails = [u.email for u in user_targets]
+        try:
+            send_mail(
+                settings.PROJECT_NAME,
+                email_content,
+                settings.DEFAULT_FROM_EMAIL,
+                emails,
+                fail_silently=False
+            )
+        except Exception as e:
+            'email could not be sent.'
 
 
 def create_email(author, document):
@@ -154,11 +162,11 @@ def create_email(author, document):
         "docviewer_viewer_view",
         kwargs={'pk': document.pk, 'slug': document.slug}
     ))
-    template = loader.get_template('docviewer/email.html')
+    template = loader.get_template('docviewer/email_mentions.html')
     context = Context({
         'username': author,
         'document': '{} - {}'.format(title, filename),
-        'doc_url': doc_url,
+        'url': doc_url,
     })
     message = template.render(context)
     return message
