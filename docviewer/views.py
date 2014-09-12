@@ -60,6 +60,9 @@ def add_annotation(request, pk):
         annotation.location = request.GET.get('location')
     annotation.author = request.user
     annotation.save()
+    
+    check_mentions(annotation.content, annotation.author.username, document)
+    
     return HttpResponse(
         simplejson.dumps({
             'status': 'ok',
