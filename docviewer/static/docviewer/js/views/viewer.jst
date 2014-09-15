@@ -85,8 +85,7 @@
                 <div class="docviewer-textLink">
                     <% for (p=0; p<leng; p++) { %>
                         <% var collaborator = collaborators[p]; %>
-                        <% var remove_collaborator_url = remove_collaborator.replace("replaceme", collaborator); %>
-                        <a class="nolink" href="<%= remove_collaborator_url %>">
+                        <a class="nolink" href="#">
                         <span class="collaborator" data-id="<%= collaborator %>">@<%= collaborator %></span></a>
                     <% } %>
                 </div>
@@ -100,8 +99,7 @@
                 <div class="docviewer-textLink">
                     <% for (p=0; p<leng; p++) { %>
                         <% var taggit_tag = tags[p]; %>
-                        <% var remove_tag_url = remove_tag.replace("replaceme", taggit_tag); %>
-                        <a class="nolink" href="<%= remove_tag_url %>">
+                        <a class="nolink" href="#">
                         <span class="taggit_tag" style="padding-top: 0px;"data-id="<%= taggit_tag %>"><%= taggit_tag %></span></a>
                     <% } %>
                 </div>
