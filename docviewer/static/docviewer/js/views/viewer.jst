@@ -83,11 +83,14 @@
             <div class="docviewer-supplemental" id="info-options">
               <div class="docviewer-collaboratorHeader">Collaborators</div>
                 <div class="docviewer-textLink">
+                    <span id="sharers" >
                     <% for (p=0; p<leng; p++) { %>
                         <% var collaborator = collaborators[p]; %>
                         <a class="nolink" href="#">
-                        <span class="collaborator" data-id="<%= collaborator %>">@<%= collaborator %></span></a>
+                        <span class="sharer" data-id="<%= collaborator %>" data-remove-collaborator-url="<%= remove_collaborator %>" data-doc-id="<%= doc_id %>">@<%= collaborator %></span></a>
                     <% } %>
+                    </span>
+                    <input id="id_users" type="text" class="picker ui-autocomplete-input" name="user" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="#" >
                 </div>
             </div>
             <% } %>
@@ -97,11 +100,14 @@
             <div class="docviewer-supplemental" id="info-options">
               <div class="docviewer-tagHeader">Tags</div>
                 <div class="docviewer-textLink">
+                    <span id="taggit_tags" >
                     <% for (p=0; p<leng; p++) { %>
                         <% var taggit_tag = tags[p]; %>
                         <a class="nolink" href="#">
-                        <span class="taggit_tag" style="padding-top: 0px;"data-id="<%= taggit_tag %>"><%= taggit_tag %></span></a>
+                        <span class="taggit_tag" style="padding-top: 0px;" data-id="<%= taggit_tag %>" data-remove-tag-url="<%= remove_tag %>" data-doc-id="<%= doc_id %>"><%= taggit_tag %></span></a>
                     <% } %>
+                    </span>
+                    <input id="id_taggit_tags" type="text" class="picker2 ui-autocomplete-input" name="taggit_tag" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="#" >
                 </div>
             </div>
             <% } %>

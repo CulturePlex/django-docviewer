@@ -17,4 +17,10 @@ urlpatterns = patterns(
     (r'^(?P<pk>\d+)/save_specific_text/$', 'docviewer.views.save_specific_text', {}, 'docviewer_save_specific_text'),
     (r'^(?P<pk>\d+)/restore_version/$', 'docviewer.views.restore_version', {}, 'docviewer_restore_version'),
     (r'^(?P<pk>\d+)/delete_version/$', 'docviewer.views.delete_version', {}, 'docviewer_delete_version'),
+    (r'^(?P<pk>\d+)/add_sharer/$', 'docviewer.views.add_sharer', {}, 'docviewer_add_sharer'),
+    (r'^(?P<pk>\d+)/remove_sharer/$', 'docviewer.views.remove_sharer', {}, 'docviewer_remove_sharer'),
+    (r'^(?P<pk>\d+)/add_taggit_tag/$', 'docviewer.views.add_taggit_tag', {}, 'docviewer_add_taggit_tag'),
+    (r'^(?P<pk>\d+)/remove_taggit_tag/$', 'docviewer.views.remove_taggit_tag', {}, 'docviewer_remove_taggit_tag'),
+    (r'^(?P<pk>\d+)/autocomplete_users/$', 'docviewer.views.autocomplete_users', {}, 'docviewer_autocomplete_users'),
+    (r'^(?P<pk>\d+)/autocomplete_taggit_tags/$', 'docviewer.views.autocomplete_taggit_tags', {}, 'docviewer_autocomplete_taggit_tags'),
 )

@@ -13,6 +13,9 @@ docviewer.Schema.states = {
     // Render included components, and hide unused portions of the UI.
     this.helpers.renderComponents();
 
+    // Render collaborators and tags
+    this.helpers.renderCollaboratorsAndTags();
+
     // Render chapters and notes navigation:
     this.helpers.renderNavigation();
 

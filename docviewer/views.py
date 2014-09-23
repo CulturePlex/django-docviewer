@@ -1,3 +1,5 @@
+import documents
+
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.views.generic.detail import BaseDetailView
@@ -8,6 +10,7 @@ from django.http import HttpResponse
 from django.utils import simplejson
 from django.contrib.sites.models import Site
 from django.views.generic.base import View
+from django.conf import settings
 from haystack.query import SearchQuerySet
 
 from datetime import datetime
@@ -203,6 +206,54 @@ def delete_version(request, pk):
         )
 
 
+@csrf_exempt
+def add_sharer(request, pk):
+    """ Add a user that shares the document """
+    post_copy = request.POST.copy()
+    post_copy['doc_id'] = pk
+    request.POST = post_copy
+    return documents.views.add_sharer(request)
+
+
+@csrf_exempt
+def remove_sharer(request, pk):
+    """ Removes a user that shares the document """
+    post_copy = request.POST.copy()
+    post_copy['doc_id'] = pk
+    request.POST = post_copy
+    return documents.views.remove_sharer(request)
+
+
+@csrf_exempt
+def add_taggit_tag(request, pk):
+    """ Add a taggit_tag to the document """
+    post_copy = request.POST.copy()
+    post_copy['doc_id'] = pk
+    request.POST = post_copy
+    return documents.views.add_taggit_tag(request)
+
+
+@csrf_exempt
+def remove_taggit_tag(request, pk):
+    """ Removes a taggit_tag from the document """
+    post_copy = request.POST.copy()
+    post_copy['doc_id'] = pk
+    request.POST = post_copy
+    return documents.views.remove_taggit_tag(request)
+
+
+@csrf_exempt
+def autocomplete_users(request, pk):
+    """ Autocomplete for adding sharers """
+    return documents.views.autocomplete_users(request, pk)
+
+
+@csrf_exempt
+def autocomplete_taggit_tags(request, pk):
+    """ Autocomplete for adding taggit_tags """
+    return documents.views.autocomplete_taggit_tags(request, pk)
+
+
 class SearchDocumentView(View):
 
     def get(self, request, **kwargs):
@@ -260,10 +311,12 @@ class JsonDocumentView(BaseDetailView):
         json['resources']['published_url'] = json['canonical_url']
         json['resources']['collaborators'] = map(lambda x: x.username, document.document.get_users_with_perms())
         json['resources']['tags'] = map(lambda x: x, document.document.taggit_tags.names())
-#        json['resources']['add_tag_url'] = 'TODO'
-#        json['resources']['remove_tag_url'] = reverse('remove_taggit_tag', args=[document.pk, 'replaceme'])
-#        json['resources']['add_collaborator_url'] = 'TODO'
-#        json['resources']['remove_collaborator_url'] = reverse('remove_sharer', args=[document.pk, 'replaceme'])
+        json['resources']['doc_id'] = document.id
+        json['resources']['static_url'] = settings.STATIC_URL
+        json['resources']['add_tag_url'] = 'TODO'
+        json['resources']['remove_tag_url'] = reverse('remove_taggit_tag')
+        json['resources']['add_collaborator_url'] = 'TODO'
+        json['resources']['remove_collaborator_url'] = reverse('remove_sharer')
 
         json['sections'] = list(document.sections_set.all().values('title', 'page'))
 

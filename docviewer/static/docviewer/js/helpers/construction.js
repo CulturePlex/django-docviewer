@@ -77,9 +77,10 @@ _.extend(docviewer.Schema.helpers, {
 			autoZoom : this.viewer.options.zoom == 'auto',
 			collaborators: doc.resources.collaborators,
 			tags: doc.resources.tags,
-			add_tag: "add_taggit_tag",
+			doc_id: doc.resources.doc_id,
+			add_tag: "TODO",
 			remove_tag: doc.resources.remove_tag_url,
-			add_collaborator: "add_sharer",
+			add_collaborator: "TODO",
 			remove_collaborator: doc.resources.remove_collaborator_url
 		};
 
@@ -120,6 +121,15 @@ _.extend(docviewer.Schema.helpers, {
 				+ '\n</style>';
 		docviewer.jQuery("head").append(stylesheet);
 	},
+
+    renderCollaboratorsAndTags : function() {
+		var doc = this.viewer.schema.document
+		var staticURL = doc.resources.static_url
+        var stylesheet = '<link href="' + staticURL + 'docviewer/css/collaborators-tags.css" rel="stylesheet">'
+        var script = '<script type="text/javascript" src="' + staticURL + 'docviewer/js/collaborators-tags.js"></script>'
+        docviewer.jQuery("head").append(stylesheet);
+        docviewer.jQuery("head").append(script);
+    },
 
 	renderEditionInfo : function(id) {
 	    var doc = this.viewer.schema.document;
