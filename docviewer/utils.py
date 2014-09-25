@@ -145,7 +145,7 @@ def check_mentions(comment, author, document):
         emails = [u.email for u in user_targets]
         try:
             send_mail(
-                settings.PROJECT_NAME,
+                settings.PROJECT_NAME + ' - %s has mentioned you' % author,
                 email_content,
                 settings.DEFAULT_FROM_EMAIL,
                 emails,

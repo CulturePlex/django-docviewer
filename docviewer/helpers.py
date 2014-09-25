@@ -102,7 +102,7 @@ def generate_document(doc_id, task_id=None):
         
         try:
             send_mail(
-                settings.PROJECT_NAME,
+                settings.PROJECT_NAME + ' - document processing finished',
                 email['message'],
                 settings.DEFAULT_FROM_EMAIL,
                 email['recipient_list'],
