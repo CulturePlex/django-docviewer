@@ -443,7 +443,8 @@ var current_version = "99999999999999999999";
       var id = window.location.pathname.split('/')[2];
       var viewer = docviewer.viewers["doc-"+id];
       var currentPage = viewer.api.currentPage();
-      var text = $('#plain-text-area-'+currentPage).text();
+      //var text = $('#plain-text-area-'+currentPage).text();
+      var text = $('#plain-text-area-'+currentPage).html().replace(/<\/?br\s*\/?>/ig, "\n")
       if (viewer.schema.text[currentPage-1] != text) {
         viewer.schema.text[currentPage-1] = text;
         modified_pages.push(currentPage);
