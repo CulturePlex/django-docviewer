@@ -730,8 +730,13 @@ function goToPage(p) {
     $("#dropbox-saver").live('click', function(ev){
         var url = this.getAttribute("data-url");
         var title = this.getAttribute("data-title") + ".txt";
+        var humanDate = this.getAttribute("data-human-ts")
+        if (humanDate)
+            humanDate = " - " + humanDate
+        else
+            humanDate = ""
         var options = {
-            files: [{'url': url, 'filename': title},],
+            files: [{'url': url, 'filename': title + humanDate},],
             success: function () {
                 animate_msg("Text was saved to Dropbox successfully!");
             },
