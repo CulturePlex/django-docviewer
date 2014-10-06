@@ -390,8 +390,11 @@ def document_delete(sender, instance, **kwargs):
 
 #receiver(post_save, sender=Document)
 def document_save(sender, instance, created, **kwargs):
-    if created and issubclass(sender, Document):
-        os.makedirs(instance.get_root_path())
-        instance.process_file()
+    if issubclass(sender, Document):
+        if instance.status == u'ready':
+            pass
+        elif created:
+            os.makedirs(instance.get_root_path())
+            instance.process_file()
 
 post_save.connect(document_save, dispatch_uid=str(uuid.uuid1()))
