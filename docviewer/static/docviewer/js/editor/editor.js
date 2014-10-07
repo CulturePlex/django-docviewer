@@ -443,8 +443,8 @@ var current_version = "99999999999999999999";
       var id = window.location.pathname.split('/')[2];
       var viewer = docviewer.viewers["doc-"+id];
       var currentPage = viewer.api.currentPage();
-      //var text = $('#plain-text-area-'+currentPage).text();
-      var text = $('#plain-text-area-'+currentPage).html().replace(/<\/?br\s*\/?>/ig, "\n")
+//      var text = $('#plain-text-area-'+currentPage).text();
+      var text = getTextFromEditableContent($('#plain-text-area-'+currentPage));
       if (viewer.schema.text[currentPage-1] != text) {
         viewer.schema.text[currentPage-1] = text;
         modified_pages.push(currentPage);
@@ -458,6 +458,14 @@ var current_version = "99999999999999999999";
       }
     });
     asterisk();
+  }
+  
+  function getTextFromEditableContent(editableContent) {
+    var text = editableContent.html()
+    text = text.replace(/<\/?br.*\/?>+/ig, "\n")
+    text = text.replace(/<[^\/>]+(>|$)/ig, "\n")
+    text = text.replace(/<\/?[^>]+(>|$)/ig, "")
+    return text
   }
 
   function asterisk() {
@@ -754,15 +762,15 @@ function goToPage(p) {
         save_specific_text(ts)
     });
     
-    $('[contenteditable]').live("keypress", function(e) {console.log('hola')
-        // trap the return key being pressed
-        if (e.keyCode === 13) {
-          // insert 2 br tags (if only one br tag is inserted the cursor won't go to the next line)
-          document.execCommand('insertHTML', false, '<br><br>');
-          // prevent the default behaviour of return key pressed
-          return false;
-        }
-    });
+//    $('[contenteditable]').live("keypress", function(e) {
+//        // trap the return key being pressed
+//        if (e.keyCode === 13) {
+//          // insert 2 br tags (if only one br tag is inserted the cursor won't go to the next line)
+//          document.execCommand('insertHTML', false, '<br><br>');
+//          // prevent the default behaviour of return key pressed
+//          return false;
+//        }
+//    });
     
   });
 
