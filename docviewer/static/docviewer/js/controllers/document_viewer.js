@@ -132,7 +132,8 @@ docviewer.load = function(documentRep, options) {
     var viewer = docviewer.viewers[json.id];
     viewer.schema.importCanonicalDocument(json);
     viewer.loadModels();
-    docviewer.jQuery(function() {
+    viewer.hiddenPages = json.hidden_pages
+    docviewer.jQuery(function(json) {
       viewer.open('InitialLoad');
       if (options.afterLoad) options.afterLoad(viewer);
       if (docviewer.afterLoad) docviewer.afterLoad(viewer);

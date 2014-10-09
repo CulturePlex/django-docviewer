@@ -387,26 +387,36 @@ docviewer.Schema.helpers = {
     },
 
     jump: function(pageIndex, modifier, forceRedraw){
-      modifier = (modifier) ? parseInt(modifier, 10) : 0;
-      var position = this.models.document.getOffset(parseInt(pageIndex, 10)) + modifier;
-      this.elements.window[0].scrollTop = position;
-//      this.elements.window[0].scrollTop = 0;
-      this.models.document.setPageIndex(pageIndex);
-      if (forceRedraw) this.viewer.pageSet.redraw(true);
-      if (this.viewer.state === 'ViewThumbnails') {
-        this.viewer.thumbnails.highlightCurrentPage();
-      }
+          modifier = (modifier) ? parseInt(modifier, 10) : 0;
+          var position = this.models.document.getOffset(parseInt(pageIndex, 10)) + modifier;
+          this.elements.window[0].scrollTop = position;
+//          this.elements.window[0].scrollTop = 0;
+          this.models.document.setPageIndex(pageIndex);
+          if (forceRedraw) this.viewer.pageSet.redraw(true);
+          if (this.viewer.state === 'ViewThumbnails') {
+            this.viewer.thumbnails.highlightCurrentPage();
+          }
     },
 
     jumpText: function(pageIndex, modifier, forceRedraw){
-      modifier = (modifier) ? parseInt(modifier, 10) : 0;
-      var position = this.models.document.getOffset(parseInt(pageIndex, 10)) + modifier;
-//      this.elements.window[0].scrollTop = position;
-      this.elements.window[0].scrollTop = 0;
-      this.models.document.setPageIndex(pageIndex);
-      if (forceRedraw) this.viewer.pageSet.redraw(true);
-      if (this.viewer.state === 'ViewThumbnails') {
-        this.viewer.thumbnails.highlightCurrentPage();
+      if (mydocviewer.hiddenPages.indexOf(pageIndex + 1) != -1) {
+        var newIndex
+        if (mydocviewer.pageSet.currentPage.index > pageIndex + 1)
+          newIndex = pageIndex - 1
+        else
+          newIndex = pageIndex + 1
+        this.jumpText(newIndex, modifier, forceRedraw)
+      }
+      else {
+          modifier = (modifier) ? parseInt(modifier, 10) : 0;
+          var position = this.models.document.getOffset(parseInt(pageIndex, 10)) + modifier;
+//          this.elements.window[0].scrollTop = position;
+          this.elements.window[0].scrollTop = 0;
+          this.models.document.setPageIndex(pageIndex);
+          if (forceRedraw) this.viewer.pageSet.redraw(true);
+          if (this.viewer.state === 'ViewThumbnails') {
+            this.viewer.thumbnails.highlightCurrentPage();
+          }
       }
     },
 

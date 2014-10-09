@@ -319,6 +319,8 @@ class JsonDocumentView(BaseDetailView):
         json['resources']['remove_collaborator_url'] = reverse('remove_sharer')
 
         json['sections'] = list(document.sections_set.all().values('title', 'page'))
+        
+        json['hidden_pages'] = document.get_hidden_pages()
 
         annotations_all = document.annotations_set.all()
 #        annotations_public = annotations_all.exclude(Q(private=True)

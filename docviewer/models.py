@@ -252,6 +252,13 @@ class Document(TimeStampedModel, StatusModel):
     def get_thumbnail(self):
         return "%s/%s/%s_%s.%s" % (
             self.get_root_url(), "small", self.slug, 1, IMAGE_FORMAT)
+    
+    def get_hidden_pages(self):
+        current_version = self.editions_set.latest('date')
+        indexes = current_version.modified_pages.keys()
+        neg_indexes = filter(lambda (x): x.startswith('-'), indexes)
+        hidden_pages = sorted(map(lambda (x): abs(int(x)), neg_indexes))
+        return hidden_pages
 
     class Meta:
         verbose_name = _(u'Document')

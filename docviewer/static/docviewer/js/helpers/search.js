@@ -35,6 +35,45 @@ _.extend(docviewer.Schema.helpers, {
     pageIndex       = (pageIndex < 0) ? 0 : pageIndex;
     pageIndex       = (pageIndex+1 > this.models.document.totalPages) ? this.models.document.totalPages-1 : pageIndex;
     var pageNumber  = pageIndex+1;
+    
+    // Go only to non-hidden pages
+    newPage = pageNumber
+    currentPage = this.models.document.currentPage()
+    if (newPage != currentPage) {
+        totalPages = this.models.document.totalPages
+        while (mydocviewer.hiddenPages.indexOf(newPage) != -1 && 1 <= newPage && newPage <= totalPages) {
+            if (newPage > currentPage)
+                newPage++
+            else if (newPage < currentPage)
+                newPage--
+        }
+        if (!(1 <= newPage && newPage <= totalPages))
+            newPage = currentPage
+        pageNumber = newPage
+        pageIndex = pageNumber - 1
+    }
+    
+    this.elements.currentPage.text(pageNumber);
+    this.viewer.$('.docviewer-pageNumberContainer input').val(pageNumber);
+
+    if(this.viewer.state === 'ViewDocument' ||
+       this.viewer.state === 'ViewThumbnails'){
+      // this.viewer.history.save('document/p'+pageNumber);
+      this.jump(pageIndex);
+    }else if(this.viewer.state === 'ViewText'){
+      // this.viewer.history.save('text/p'+pageNumber);
+      this.events.loadText(pageIndex);
+    }
+
+  },
+  acceptInputCallBackAux: function(){
+    var pageIndex = parseInt(this.elements.currentPage.text(),10) - 1;
+    // sanitize input
+
+    pageIndex       = (pageIndex === '') ? 0 : pageIndex;
+    pageIndex       = (pageIndex < 0) ? 0 : pageIndex;
+    pageIndex       = (pageIndex+1 > this.models.document.totalPages) ? this.models.document.totalPages-1 : pageIndex;
+    var pageNumber  = pageIndex+1;
 
     this.elements.currentPage.text(pageNumber);
     this.viewer.$('.docviewer-pageNumberContainer input').val(pageNumber);

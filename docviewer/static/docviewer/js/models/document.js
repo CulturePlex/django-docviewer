@@ -34,11 +34,21 @@ docviewer.model.Document = function(viewer){
 docviewer.model.Document.prototype = {
 
   setPageIndex : function(index) {
-    this.currentPageIndex = index;
-    this.viewer.elements.currentPage.text(this.currentPage());
-    this.viewer.helpers.setActiveChapter(this.viewer.models.chapters.getChapterId(index));
-    _.each(this.onPageChangeCallbacks, function(c) { c(); });
-    return index;
+//    newPage = index + 1
+//    if (mydocviewer.hiddenPages.indexOf(newPage) != -1) {
+//        currentPage = this.currentPage()
+//        if (newPage < currentPage)
+//            this.setPageIndex(index - 1)
+//        else if (newPage > currentPage)
+//            this.setPageIndex(index + 1)
+//    }
+//    else {
+        this.currentPageIndex = index;
+        this.viewer.elements.currentPage.text(this.currentPage());
+        this.viewer.helpers.setActiveChapter(this.viewer.models.chapters.getChapterId(index));
+        _.each(this.onPageChangeCallbacks, function(c) { c(); });
+        return index;
+//    }
   },
   currentPage : function() {
     return this.currentPageIndex + 1;
