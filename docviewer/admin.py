@@ -37,7 +37,7 @@ admin.site.register(Annotation)
 
 
 class PageAdmin(admin.ModelAdmin):
-    list_display = ('document', 'page', 'modified')
+    list_display = ('document', 'page', 'modified', 'visible')
 
 admin.site.register(Page, PageAdmin)
 admin.site.register(Edition)

@@ -41,6 +41,13 @@ docviewer.Thumbnails.prototype.buildThumbnails = function(startPage, endPage) {
   this.el.html(this.el.html() + thumbnailsHTML);
   this.highlightCurrentPage();
   _.defer(this.loadThumbnails);
+  
+  //Hide hidden pages
+  for (var i = 0; i < this.viewer.hiddenPages.length; i++) {
+    var p = this.viewer.hiddenPages[i]
+    var thumb = this.viewer.$('.docviewer-thumbnail:eq(' + (p-1) + ')')
+    thumb.addClass('docviewer-hidden-page')
+  }
 };
 
 docviewer.Thumbnails.prototype.getCurrentIndex = function() {

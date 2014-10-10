@@ -254,11 +254,7 @@ class Document(TimeStampedModel, StatusModel):
             self.get_root_url(), "small", self.slug, 1, IMAGE_FORMAT)
     
     def get_hidden_pages(self):
-        current_version = self.editions_set.latest('date')
-        indexes = current_version.modified_pages.keys()
-        neg_indexes = filter(lambda (x): x.startswith('-'), indexes)
-        hidden_pages = sorted(map(lambda (x): abs(int(x)), neg_indexes))
-        return hidden_pages
+        return map(lambda x: x.page, self.pages_set.filter(visible=False))
 
     class Meta:
         verbose_name = _(u'Document')
@@ -270,6 +266,7 @@ class Page(models.Model):
     document = models.ForeignKey(Document, related_name='pages_set')
     page = models.PositiveIntegerField()
     modified = models.DateTimeField()
+    visible = models.BooleanField(default=True)
     
     def __unicode__(self):
         return self.document.title + '-' + str(self.page)

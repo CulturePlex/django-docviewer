@@ -5,7 +5,11 @@ docviewer.Schema.events.ViewText = {
     
     currentPage = this.models.document.currentPage()
     if (mydocviewer.hiddenPages.indexOf(currentPage) != -1) {
-        $('span.docviewer-next').click()
+        totalPages = this.models.document.totalPages
+        if (currentPage == totalPages)
+            $('span.docviewer-previous').click()
+        else
+            $('span.docviewer-next').click()
     }
   },
   previous: function(e){
@@ -14,7 +18,11 @@ docviewer.Schema.events.ViewText = {
     
     currentPage = this.models.document.currentPage()
     if (mydocviewer.hiddenPages.indexOf(currentPage) != -1) {
-        $('span.docviewer-previous').click()
+        totalPages = this.models.document.totalPages
+        if (currentPage == 1)
+            $('span.docviewer-next').click()
+        else
+            $('span.docviewer-previous').click()
     }
   },
   search: function(e){

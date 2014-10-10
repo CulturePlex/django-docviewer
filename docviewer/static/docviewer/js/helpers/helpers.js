@@ -91,15 +91,15 @@ docviewer.Schema.helpers = {
       collection.delegate('.docviewer-permalink', 'click', _.bind(this.permalinkAnnotation, this));
 
       // Thumbnails
-      viewer.$('.docviewer-thumbnails').delegate('.docviewer-thumbnail-page', 'click', function(e) {
-        var $thumbnail = viewer.$(e.currentTarget);
-        if (!viewer.openEditor) {
-          var pageIndex = $thumbnail.closest('.docviewer-thumbnail').attr('data-pageNumber') - 1;
-          viewer.models.document.setPageIndex(pageIndex);
-          viewer.open('ViewDocument');
-          // viewer.history.save('document/p'+pageNumber);
-        }
-      });
+//      viewer.$('.docviewer-thumbnails').delegate('.docviewer-thumbnail-page', 'click', function(e) {
+//        var $thumbnail = viewer.$(e.currentTarget);
+//        if (!viewer.openEditor) {
+//          var pageIndex = $thumbnail.closest('.docviewer-thumbnail').attr('data-pageNumber') - 1;
+//          viewer.models.document.setPageIndex(pageIndex);
+//          viewer.open('ViewDocument');
+//          // viewer.history.save('document/p'+pageNumber);
+//        }
+//      });
 
       // Handle iPad / iPhone scroll events...
       _.bindAll(this, 'touchStart', 'touchMove', 'touchEnd');
@@ -399,15 +399,6 @@ docviewer.Schema.helpers = {
     },
 
     jumpText: function(pageIndex, modifier, forceRedraw){
-      if (mydocviewer.hiddenPages.indexOf(pageIndex + 1) != -1) {
-        var newIndex
-        if (mydocviewer.pageSet.currentPage.index > pageIndex + 1)
-          newIndex = pageIndex - 1
-        else
-          newIndex = pageIndex + 1
-        this.jumpText(newIndex, modifier, forceRedraw)
-      }
-      else {
           modifier = (modifier) ? parseInt(modifier, 10) : 0;
           var position = this.models.document.getOffset(parseInt(pageIndex, 10)) + modifier;
 //          this.elements.window[0].scrollTop = position;
@@ -417,7 +408,6 @@ docviewer.Schema.helpers = {
           if (this.viewer.state === 'ViewThumbnails') {
             this.viewer.thumbnails.highlightCurrentPage();
           }
-      }
     },
 
     shift: function(argHash){

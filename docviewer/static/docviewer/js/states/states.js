@@ -37,6 +37,11 @@ docviewer.Schema.states = {
     this.helpers.startCheckTimer();
     this.helpers.handleInitialState();
     _.defer(_.bind(this.helpers.autoZoomPage, this.helpers));
+    
+    
+    currentPage = this.models.document.currentPage()
+    if (mydocviewer.hiddenPages.indexOf(currentPage) != -1)
+        $('span.docviewer-next').click()
   },
 
   ViewAnnotation: function(){

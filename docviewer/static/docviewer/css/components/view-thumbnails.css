@@ -140,3 +140,7 @@
       .docviewer-thumbnails.docviewer-zoom-4 .docviewer-thumbnail-image {
         width: 180px; height: 225px;
       }
+
+.docviewer-hidden-page {
+    opacity: 0.3;
+}

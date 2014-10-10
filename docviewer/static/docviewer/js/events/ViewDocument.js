@@ -4,9 +4,12 @@ docviewer.Schema.events.ViewDocument = {
     this.helpers.jump(nextPage);
     
     currentPage = this.models.document.currentPage()
-    totalPages = this.models.document.totalPages
-    if (mydocviewer.hiddenPages.indexOf(currentPage) != -1 && currentPage < totalPages) {
-        $('span.docviewer-next').click()
+    if (mydocviewer.hiddenPages.indexOf(currentPage) != -1) {
+        totalPages = this.models.document.totalPages
+        if (currentPage == totalPages)
+            $('span.docviewer-previous').click()
+        else
+            $('span.docviewer-next').click()
     }
 
     // this.viewer.history.save('document/p'+(nextPage+1));
@@ -16,9 +19,12 @@ docviewer.Schema.events.ViewDocument = {
     this.helpers.jump(previousPage);
     
     currentPage = this.models.document.currentPage()
-    totalPages = this.models.document.totalPages
-    if (mydocviewer.hiddenPages.indexOf(currentPage) != -1 && 1 < currentPage) {
-        $('span.docviewer-previous').click()
+    if (mydocviewer.hiddenPages.indexOf(currentPage) != -1) {
+        totalPages = this.models.document.totalPages
+        if (currentPage == 1)
+            $('span.docviewer-next').click()
+        else
+            $('span.docviewer-previous').click()
     }
 
     // this.viewer.history.save('document/p'+(previousPage+1));

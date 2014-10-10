@@ -254,6 +254,20 @@ def autocomplete_taggit_tags(request, pk):
     return documents.views.autocomplete_taggit_tags(request, pk)
 
 
+@csrf_exempt
+def change_visibility_page(request, pk):
+    """ Change the visibility of a page """
+    page_n = request.POST['page']
+    doc = documents.models.Document.objects.get(pk=pk)
+    page = doc.pages_set.get(page=page_n)
+    page.visible = not page.visible
+    page.save()
+    return HttpResponse(
+        simplejson.dumps({'status': 'ok', 'page': page_n}),
+        content_type="application/json"
+    )
+
+
 class SearchDocumentView(View):
 
     def get(self, request, **kwargs):
