@@ -131,6 +131,13 @@ _.extend(docviewer.Schema.helpers, {
         docviewer.jQuery("head").append(script);
     },
 
+    renderMoreVersions : function() {
+		var doc = this.viewer.schema.document
+		var staticURL = doc.resources.static_url
+        var script = '<script type="text/javascript" src="' + staticURL + 'docviewer/js/more-versions.js"></script>'
+        docviewer.jQuery("head").append(script);
+    },
+
 	renderEditionInfo : function(id) {
 	    var doc = this.viewer.schema.document;
 	    var me = this;
@@ -242,6 +249,7 @@ _.extend(docviewer.Schema.helpers, {
             return mod_pages;
         };
 
+        var maxShow = 4
 		var createNavEditions = function() {
 			var renderedEditions = [];
 			var editions = me.viewer.schema.data.editionsById;
@@ -251,6 +259,10 @@ _.extend(docviewer.Schema.helpers, {
 				var edition = editions[keys[k]];
 				if (!edition.mod_pages)
 				    edition.mod_pages = calculateModifiedPages(edition);
+			    if (k < maxShow)
+			        edition.more = ""
+		        else
+			        edition.more = "docviewer-historyLink-more"
 				renderedEditions.push(JST.editionNav(edition));
 				bolds.push(" #docviewer-historyMarker-" + edition.id);
 			}
