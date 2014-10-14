@@ -78,6 +78,39 @@
               </div>
             </div>
             
+            <div class="docviewer-supplemental" id="annotation-options">
+              <div class="docviewer-annoHeader">Annotation</div>
+              <div class="docviewer-annotationLink" id="add-annotation">
+                <a href="#"> Add Annotation</a>
+              </div>
+              <div class="docviewer-annotationLink" id="cancel-annotation" >
+                <a href="#"> Cancel "Add Annotation"</a>
+              </div>
+              <div id="form-annotation" class="docviewer-editBox">
+                <form action="#" method="get" class="docviewer-editAnnotation">
+                    <input id="annotation-title" class="docviewer-editInput" type="text"  placeholder="Title of Annotation">
+                    <textarea id="annotation-content" rows="6" class="docviewer-editInput" placeholder="Description"></textarea>
+                    <input id="annotation-button" class="docviewer-editButton" type="button" value="Add Annotation">
+                </form>
+              </div>
+            </div>
+            
+            <div class="docviewer-supplemental" id="edition-options">
+              <div class="docviewer-editionHeader">Edition</div>
+              <div class="docviewer-editionLink" id="add-edition">
+                <a href="#">Edit text</a>
+              </div>
+              <div class="docviewer-editionLink" id="cancel-edition" >
+                <a href="#">Cancel text edition</a>
+              </div>
+              <div id="form-edition" class="docviewer-editBox">
+                <form action="#" method="post" class="docviewer-editText">
+                    <textarea id="edition-content" rows="6" class="docviewer-textInput" placeholder="Description of changes"></textarea>
+                    <input id="edition-button" class="docviewer-editButton" type="button" value="Save text">
+                </form>
+              </div>
+            </div>
+            
             <% if (collaborators.length > 0) { %>
             <% var leng = collaborators.length; var p; %>
             <div class="docviewer-supplemental" id="info-options">
@@ -111,39 +144,6 @@
                 </div>
             </div>
             <% } %>
-            
-            <div class="docviewer-supplemental" id="annotation-options">
-              <div class="docviewer-annoHeader">Annotation</div>
-              <div class="docviewer-annotationLink" id="add-annotation">
-                <a href="#"> Add Annotation</a>
-              </div>
-              <div class="docviewer-annotationLink" id="cancel-annotation" >
-                <a href="#"> Cancel "Add Annotation"</a>
-              </div>
-              <div id="form-annotation" class="docviewer-editBox">
-                <form action="#" method="get" class="docviewer-editAnnotation">
-                    <input id="annotation-title" class="docviewer-editInput" type="text"  placeholder="Title of Annotation">
-                    <textarea id="annotation-content" rows="6" class="docviewer-editInput" placeholder="Description"></textarea>
-                    <input id="annotation-button" class="docviewer-editButton" type="button" value="Add Annotation">
-                </form>
-              </div>
-            </div>
-            
-            <div class="docviewer-supplemental" id="edition-options">
-              <div class="docviewer-editionHeader">Edition</div>
-              <div class="docviewer-editionLink" id="add-edition">
-                <a href="#">Edit text</a>
-              </div>
-              <div class="docviewer-editionLink" id="cancel-edition" >
-                <a href="#">Cancel text edition</a>
-              </div>
-              <div id="form-edition" class="docviewer-editBox">
-                <form action="#" method="post" class="docviewer-editText">
-                    <textarea id="edition-content" rows="6" class="docviewer-textInput" placeholder="Description of changes"></textarea>
-                    <input id="edition-button" class="docviewer-editButton" type="button" value="Save text">
-                </form>
-              </div>
-            </div>
             
             <div class="docviewer-supplemental" id="history-versions">
               <div class="docviewer-historyHeader">History</div>
