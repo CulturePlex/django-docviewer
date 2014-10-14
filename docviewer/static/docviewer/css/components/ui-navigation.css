@@ -376,6 +376,16 @@ textarea.docviewer-textContents#plain-text-area {
 .docviewer-ie .docviewer-pageNumberContainer input{
   margin-top:-5px;
 }
+
+.docviewer-historyLink.docviewer-historyLink-more {
+  display: none;
+}
+
+.docviewer-historyLink#more {
+  display: none;
+}
+
+
 span.tooltip {
       position: absolute;
       width: 100px;
