@@ -372,30 +372,6 @@ var current_version = "99999999999999999999";
     asterisk();
   }
 
-  /** Change visibility of a page. */
-  function changeVisibilityPage(pageNumber) {
-    var data = {}
-    data['page'] = pageNumber
-    $.ajax({
-      type: "POST",
-      url: "change_visibility_page/",
-      data: data,
-      dataType: 'json',
-      success: function (payload) {
-        var thumb = $('.docviewer-thumbnail:eq(' + (payload.page-1) + ')')
-        if (thumb.hasClass('docviewer-hidden-page')) {
-            thumb.removeClass('docviewer-hidden-page')
-            var index = mydocviewer.hiddenPages.indexOf(parseInt(payload.page))
-            mydocviewer.hiddenPages.splice(index, 1)
-        }
-        else {
-            thumb.addClass('docviewer-hidden-page')
-            mydocviewer.hiddenPages.push(parseInt(payload.page))
-        }
-      }
-    });
-  }
-
   /** Ajax request to save a specific text. */
   function save_specific_text(ts) {
     var text_dict = {};
@@ -787,10 +763,10 @@ function goToPage(p) {
     });
     
       // Thumbnails
-      $('.docviewer-thumbnail').live('click', function(e) {
-        var pageNumber = $(e.currentTarget).data('pagenumber')
-        changeVisibilityPage(pageNumber)
-      });
+//      $('.docviewer-thumbnail').live('click', function(e) {debugger
+//        var pageNumber = $(e.currentTarget).data('pagenumber')
+//        changeVisibilityPage(pageNumber)
+//      });
     
 //    $('[contenteditable]').live("keypress", function(e) {
 //        // trap the return key being pressed

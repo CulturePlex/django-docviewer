@@ -91,15 +91,66 @@ docviewer.Schema.helpers = {
       collection.delegate('.docviewer-permalink', 'click', _.bind(this.permalinkAnnotation, this));
 
       // Thumbnails
-//      viewer.$('.docviewer-thumbnails').delegate('.docviewer-thumbnail-page', 'click', function(e) {
-//        var $thumbnail = viewer.$(e.currentTarget);
-//        if (!viewer.openEditor) {
-//          var pageIndex = $thumbnail.closest('.docviewer-thumbnail').attr('data-pageNumber') - 1;
-//          viewer.models.document.setPageIndex(pageIndex);
-//          viewer.open('ViewDocument');
-//          // viewer.history.save('document/p'+pageNumber);
-//        }
-//      });
+        $('.docviewer-thumbnail').live('click', function(e) {
+            var that = this;
+            setTimeout(function() {
+                var dblclick = parseInt($(that).data('double'), 10);
+                if (dblclick > 0) {
+                    $(that).data('double', dblclick-1);
+                } else {
+                    singleClick.call(that, e);
+                }
+            }, 300);
+        }).live('dblclick', function(e) {
+            $(this).data('double', 2);
+            doubleClick.call(this, e);
+        });
+      
+      
+//      viewer.$('.docviewer-thumbnails').delegate('.docviewer-thumbnail-page', 'click', doubleClick)
+//      
+//      $('.docviewer-thumbnail').live('dblclick', singleClick)
+      
+      function singleClick(e) {
+        var $thumbnail = viewer.$(e.currentTarget);
+        if (!viewer.openEditor) {
+          var pageIndex = $thumbnail.closest('.docviewer-thumbnail').attr('data-pageNumber') - 1;
+          viewer.models.document.setPageIndex(pageIndex);
+          viewer.open('ViewDocument');
+          // viewer.history.save('document/p'+pageNumber);
+        }
+      }
+      
+      function doubleClick(e) {
+        var pageNumber = $(e.currentTarget).data('pagenumber')
+        changeVisibilityPage(pageNumber)
+      }
+
+  /** Change visibility of a page. */
+  function changeVisibilityPage(pageNumber) {
+    var data = {}
+    data['page'] = pageNumber
+    $.ajax({
+      type: "POST",
+      url: "change_visibility_page/",
+      data: data,
+      dataType: 'json',
+      success: function (payload) {
+        var thumb = $('.docviewer-thumbnail:eq(' + (payload.page-1) + ')')
+        if (thumb.hasClass('docviewer-hidden-page')) {
+            thumb.removeClass('docviewer-hidden-page')
+            var index = mydocviewer.hiddenPages.indexOf(parseInt(payload.page))
+            mydocviewer.hiddenPages.splice(index, 1)
+        }
+        else {
+            thumb.addClass('docviewer-hidden-page')
+            mydocviewer.hiddenPages.push(parseInt(payload.page))
+        }
+      }
+    });
+  }
+      
+//      var singleClick = function
 
       // Handle iPad / iPhone scroll events...
       _.bindAll(this, 'touchStart', 'touchMove', 'touchEnd');
