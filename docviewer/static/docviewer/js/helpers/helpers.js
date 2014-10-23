@@ -52,6 +52,20 @@ docviewer.Schema.helpers = {
 
         // history.save('text/p'+context.models.document.currentPage());
         context.open('ViewText');
+        
+        MAXHISTORY = 2
+        var versions = $(".docviewer-versionLinks .docviewer-historyLink")
+        versions.removeClass("docviewer-historyLink-more")
+        var more = $(".docviewer-historyLink#more")
+        more.addClass("docviewer-historyLink-more")
+        
+        var hiddenVs = versions.slice(MAXHISTORY)
+        if (hiddenVs.length > 0) {
+            hiddenVs.addClass("docviewer-historyLink-more")
+            more.removeClass("docviewer-historyLink-more")
+        }
+        
+        
       });
       viewer.$('.docviewer-allAnnotations').delegate('.docviewer-annotationGoto .docviewer-trigger','click', docviewer.jQuery.proxy(this.gotoPage, this));
 

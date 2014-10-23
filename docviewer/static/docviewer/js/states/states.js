@@ -17,7 +17,7 @@ docviewer.Schema.states = {
     this.helpers.renderCollaboratorsAndTags();
 
     // Render "more versions"
-    this.helpers.renderMoreVersions()
+//    this.helpers.renderMoreVersions()
 
     // Render chapters and notes navigation:
     this.helpers.renderNavigation();

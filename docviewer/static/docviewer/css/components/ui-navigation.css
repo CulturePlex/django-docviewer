@@ -381,10 +381,6 @@ textarea.docviewer-textContents#plain-text-area {
   display: none;
 }
 
-.docviewer-historyLink#more {
-  display: none;
-}
-
 
 span.tooltip {
       position: absolute;

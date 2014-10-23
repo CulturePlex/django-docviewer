@@ -19,6 +19,7 @@ var modified_pages = [];
 var restore = false;
 var original_version = "00000000000000000000";
 var current_version = "99999999999999999999";
+var MAXHISTORY = 2;
 
 (function () {
   "use strict";
@@ -423,6 +424,7 @@ var current_version = "99999999999999999999";
         end_edition_mode();
         viewer.schema.loadEdition(payload.edition);
         viewer.api.redrawEditions();
+        moreHistory()
       },
       dataType: 'json',
       error: function (payload) {
@@ -435,6 +437,19 @@ var current_version = "99999999999999999999";
     });
     modified_pages = [];
     $('.docviewer-textInput').val("");
+  }
+  
+  function moreHistory() {
+    var versions = $(".docviewer-versionLinks .docviewer-historyLink")
+    versions.removeClass("docviewer-historyLink-more")
+    var more = $(".docviewer-historyLink#more")
+    more.addClass("docviewer-historyLink-more")
+    
+    var hiddenVs = versions.slice(MAXHISTORY)
+    if (hiddenVs.length > 0) {
+        hiddenVs.addClass("docviewer-historyLink-more")
+        more.removeClass("docviewer-historyLink-more")
+    }
   }
 
   /** Bind the events for u pdating the text. */
@@ -570,6 +585,7 @@ function goToPage(p) {
           success: function (payload) {
             viewer.schema.removeEdition(payload.id);
             viewer.api.redrawEditions();
+            moreHistory()
           }
         });
     }
@@ -762,6 +778,13 @@ function goToPage(p) {
         save_specific_text(ts)
     });
     
+    $(".docviewer-historyLink#more").live("click", function(e) {
+        var versions = $(".docviewer-versionLinks .docviewer-historyLink")
+        versions.removeClass("docviewer-historyLink-more")
+        var more = $(".docviewer-historyLink#more")
+        more.addClass("docviewer-historyLink-more")
+    })
+    
       // Thumbnails
 //      $('.docviewer-thumbnail').live('click', function(e) {debugger
 //        var pageNumber = $(e.currentTarget).data('pagenumber')
@@ -777,7 +800,6 @@ function goToPage(p) {
 //          return false;
 //        }
 //    });
-    
   });
 
 }());
