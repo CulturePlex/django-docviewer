@@ -111,7 +111,6 @@
               </div>
             </div>
             
-            <% if (collaborators.length > 0) { %>
             <% var leng = collaborators.length; var p; %>
             <div class="docviewer-supplemental" id="info-options">
               <div class="docviewer-collaboratorHeader">Collaborators</div>
@@ -126,9 +125,7 @@
                     <input id="id_users" type="text" class="picker ui-autocomplete-input" name="user" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="#" >
                 </div>
             </div>
-            <% } %>
             
-            <% if (tags.length > 0) { %>
             <% var leng = tags.length; var p; %>
             <div class="docviewer-supplemental" id="info-options">
               <div class="docviewer-tagHeader">Tags</div>
@@ -143,7 +140,6 @@
                     <input id="id_taggit_tags" type="text" class="picker2 ui-autocomplete-input" name="taggit_tag" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="#" >
                 </div>
             </div>
-            <% } %>
             
             <div class="docviewer-supplemental" id="history-versions">
               <div class="docviewer-historyHeader">History</div>

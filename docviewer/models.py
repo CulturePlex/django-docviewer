@@ -32,7 +32,9 @@ nines = '9'*20
 
 class Document(TimeStampedModel, StatusModel):
 
-    STATUS = Choices('waiting', 'ready', 'running', 'failed', 'starting')
+    STATUS = Choices(
+        'waiting', 'ready', 'running', 'failed', 'starting', 'copied',
+    )
     LANGUAGES = Choices(
         ("eng","English"),
         ("spa","Spanish"),
