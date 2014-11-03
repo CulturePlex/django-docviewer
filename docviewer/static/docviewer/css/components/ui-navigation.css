@@ -28,8 +28,10 @@
 .docviewer-pdfLink,
 .docviewer-textLink,
 /*.docviewer-printNotesLink,*/
-.docviewer-editionLink, .docviewer-historyLink
-.docviewer-annotationLink {
+.docviewer-editionLink,
+.docviewer-historyLink,
+.docviewer-annotationLink,
+.docviewer-historyLink-show-more {
   padding-left: 0;
   padding-bottom: 4px;
 }
@@ -47,10 +49,16 @@
 .docviewer-textLink a,
 .docviewer-printNotesLink a,
 .docviewer-contributor,
-.docviewer-editionLink a, .docviewer-historyLink a,
+.docviewer-editionLink a,
+.docviewer-historyLink a,
 .docviewer-annotationLink a {
   font: normal 11px Arial, sans-serif;
   text-decoration: none;
+}
+.docviewer-historyHeader a {
+  font: normal 11px Arial, sans-serif;
+  text-decoration: none;
+  text-transform: none;
 }
 
 .docviewer-remove-confirm {
@@ -78,7 +86,8 @@
 .docviewer-pdfLink a:hover,
 .docviewer-textLink a:hover,
 .docviewer-printNotesLink a:hover,
-.docviewer-editionLink a:hover, .docviewer-historyLink a:hover,
+.docviewer-editionLink a:hover,
+.docviewer-historyLink a:hover,
 .docviewer-annotationLink a:hover {
   text-decoration:underline;
 }
@@ -379,6 +388,14 @@ textarea.docviewer-textContents#plain-text-area {
 
 .docviewer-historyLink.docviewer-historyLink-more {
   display: none;
+}
+
+.hide #docviewer-list-all, .hide #docviewer-list-latest {
+  display: none;
+}
+
+#docviewer-list-all:hover, #docviewer-list-latest:hover {
+  cursor: pointer;
 }
 
 

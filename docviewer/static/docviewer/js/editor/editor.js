@@ -450,6 +450,9 @@ var MAXHISTORY = 2;
         hiddenVs.addClass("docviewer-historyLink-more")
         more.removeClass("docviewer-historyLink-more")
     }
+    
+    $("#docviewer-list-all").removeClass("hide")
+    $("#docviewer-list-latest").addClass("hide")
   }
 
   /** Bind the events for u pdating the text. */
@@ -783,6 +786,35 @@ function goToPage(p) {
         versions.removeClass("docviewer-historyLink-more")
         var more = $(".docviewer-historyLink#more")
         more.addClass("docviewer-historyLink-more")
+        
+        $("#docviewer-list-all").addClass("hide")
+        $("#docviewer-list-latest").removeClass("hide")
+    })
+    
+    $("#docviewer-list-all").live("click", function(ev) {
+        $(this).addClass("hide")
+        $("#docviewer-list-latest").removeClass("hide")
+        var versions = $(".docviewer-versionLinks .docviewer-historyLink")
+        versions.removeClass("docviewer-historyLink-more")
+        var more = $(".docviewer-historyLink#more")
+        more.addClass("docviewer-historyLink-more")
+        $(".docviewer-historyLink#more").click()
+    })
+    $("#docviewer-list-latest").live("click", function(ev) {
+        $(this).addClass("hide")
+        $("#docviewer-list-all").removeClass("hide")
+        
+        MAXHISTORY = 2
+        var versions = $(".docviewer-versionLinks .docviewer-historyLink")
+        versions.removeClass("docviewer-historyLink-more")
+        var more = $(".docviewer-historyLink#more")
+        more.addClass("docviewer-historyLink-more")
+        
+        var hiddenVs = versions.slice(MAXHISTORY)
+        if (hiddenVs.length > 0) {
+            hiddenVs.addClass("docviewer-historyLink-more")
+            more.removeClass("docviewer-historyLink-more")
+        }
     })
     
       // Thumbnails
