@@ -118,31 +118,55 @@ def generate_document(doc_id, task_id=None):
             msg = ''
         
         if e.args[0] == MAIL_INFO:
-            document.task_error = 'Error in email information' + msg
+            document.add_info(
+                'email',
+                'Error in email information' + msg
+            )
         elif e.args[0] == MAIL_SEND:
-            document.task_error = 'Email could not be sent' + msg
+            document.add_info(
+                'email',
+                'Email could not be sent' + msg
+            )
         else:
             document.status = document.STATUS.failed
             if e.args[0] == CELERY_ID:
-                document.task_error = 'Celery task ID does not match'
+                document.add_info(
+                    'error',
+                    'Celery task ID does not match' + msg
+                )
             elif e.args[0] == PROC_INIT:
-                document.task_error = 'Process could not be initialized' + msg
+                document.add_info(
+                    'error',
+                    'Process could not be initialized' + msg
+                )
             elif e.args[0] == PROC_PROC:
-                document.task_error = 'Document could not be processed' + msg
+                document.add_info(
+                    'error',
+                    'Document could not be processed' + msg
+                )
             elif e.args[0] == FILE_CREA:
-                document.task_error = 'File system could not be created' + msg
+                document.add_info(
+                    'error',
+                    'File system could not be created' + msg
+                )
             elif e.args[0] == PROC_FINA:
-                document.task_error = 'Process could not be finalized' + msg
+                document.add_info(
+                    'error',
+                    'Process could not be finalized' + msg
+                )
             else:
-                document.task_error = 'Unknown error' + msg
+                document.add_info(
+                    'error',
+                    'Unknown error' + msg
+                )
     
     finally:
         diff_time = document.task_end - document.task_start
         total_time = format_datetimediff(diff_time)
-        if document.task_error:
-            document.task_error += ' | Total processing time: ' + total_time
-        else:
-            document.task_error = 'Total processing time: ' + total_time
+        document.add_info(
+            'time',
+            'Total processing time: ' + total_time
+        )
         document.save()
 
 def create_email(document):

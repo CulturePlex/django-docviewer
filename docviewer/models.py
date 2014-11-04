@@ -7,6 +7,7 @@ from django.core.files.storage import FileSystemStorage
 from model_utils.models import TimeStampedModel, StatusModel
 from model_utils import Choices
 from autoslug.fields import AutoSlugField
+import json
 import os
 import re
 import codecs
@@ -258,6 +259,35 @@ class Document(TimeStampedModel, StatusModel):
     def get_hidden_pages(self):
         return map(lambda x: x.page, self.pages_set.filter(visible=False))
 
+    def get_info(self):
+        d = self.get_info_dict()
+        info = ''
+        for k in d:
+            if k == 'cloned':
+                info += 'Click on the info icon to see the original document\n'
+            else:
+                info += d[k] + '\n'
+        info = info.strip()
+        if not info:
+            info = self.task_error
+            if not info:
+                info = ''
+        return info
+
+    def get_info_dict(self):
+        try:
+            info = json.loads(self.task_error)
+        except:
+            info = {}
+        return info
+
+    def add_info(self, key, value):
+        info = self.get_info_dict()
+        if self.task_error and not info:
+            info['old'] = self.task_error
+        info[key] = value
+        self.task_error = json.dumps(info)
+
     class Meta:
         verbose_name = _(u'Document')
         verbose_name_plural = _(u'Document')
@@ -397,7 +427,7 @@ def document_delete(sender, instance, **kwargs):
 #receiver(post_save, sender=Document)
 def document_save(sender, instance, created, **kwargs):
     if issubclass(sender, Document):
-        if instance.status == u'ready':
+        if instance.status in [Document.STATUS.ready, Document.STATUS.copied]:
             pass
         elif created:
             os.makedirs(instance.get_root_path())
