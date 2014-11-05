@@ -453,6 +453,11 @@ var MAXHISTORY = 2;
     
     $("#docviewer-list-all").removeClass("hide")
     $("#docviewer-list-latest").addClass("hide")
+    
+    //Show all/latest
+    var items = $(".docviewer-versionLinks .docviewer-historyLink")
+    if (items.length <= MAXHISTORY)
+        $("#docviewer-list-all, #docviewer-list-latest").addClass("hide")
   }
 
   /** Bind the events for u pdating the text. */
@@ -816,6 +821,7 @@ function goToPage(p) {
             more.removeClass("docviewer-historyLink-more")
         }
     })
+    
     
       // Thumbnails
 //      $('.docviewer-thumbnail').live('click', function(e) {debugger

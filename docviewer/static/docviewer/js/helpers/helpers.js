@@ -66,6 +66,12 @@ docviewer.Schema.helpers = {
         }
         
         
+        //Show all/latest
+        var items = $(".docviewer-versionLinks .docviewer-historyLink")
+        if (items.length <= MAXHISTORY)
+            $("#docviewer-list-all, #docviewer-list-latest").addClass("hide")
+        
+        
       });
       viewer.$('.docviewer-allAnnotations').delegate('.docviewer-annotationGoto .docviewer-trigger','click', docviewer.jQuery.proxy(this.gotoPage, this));
 
