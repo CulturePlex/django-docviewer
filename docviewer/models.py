@@ -34,7 +34,8 @@ nines = '9'*20
 class Document(TimeStampedModel, StatusModel):
 
     STATUS = Choices(
-        'waiting', 'ready', 'running', 'failed', 'starting', 'copied',
+        'waiting', 'ready', 'running', 'failed', 'starting', 'copying',
+        'copied',
     )
     LANGUAGES = Choices(
         ("eng","English"),
@@ -427,7 +428,11 @@ def document_delete(sender, instance, **kwargs):
 #receiver(post_save, sender=Document)
 def document_save(sender, instance, created, **kwargs):
     if issubclass(sender, Document):
-        if instance.status in [Document.STATUS.ready, Document.STATUS.copied]:
+        if instance.status in [
+            Document.STATUS.ready,
+            Document.STATUS.copying,
+            Document.STATUS.copied
+        ]:
             pass
         elif created:
             os.makedirs(instance.get_root_path())
