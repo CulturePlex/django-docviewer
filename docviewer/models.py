@@ -289,6 +289,13 @@ class Document(TimeStampedModel, StatusModel):
         info[key] = value
         self.task_error = json.dumps(info)
 
+    @property
+    def title_ext(self):
+        ext = self.title
+        if self.status == self.STATUS.copied:
+            ext += ' [' + self.STATUS.copied + ']'
+        return ext
+
     class Meta:
         verbose_name = _(u'Document')
         verbose_name_plural = _(u'Document')
