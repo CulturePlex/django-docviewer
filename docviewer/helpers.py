@@ -26,14 +26,15 @@ def docsplit(document):
         "/usr/bin/docsplit text --pages all -l %s --no-clean --output %s %s/%s.pdf" % (
             document.language, path, path, document.slug)]
 
-    print "/usr/bin/docsplit text --pages all -l %s --no-clean--output %s %s/%s.pdf" % (
-            document.language, path, path, document.slug)
+#    print "/usr/bin/docsplit text --pages all -l %s --no-clean--output %s %s/%s.pdf" % (
+#            document.language, path, path, document.slug)
 
     if document.docfile_basename.split('.')[-1].lower() != 'pdf':
         cmd = "/usr/bin/docsplit pdf --output %s %s" % (path, document.get_file_path())
         commands.insert(0, cmd)
 
     for command in commands:
+        print command
         result = Popen(command, shell=True, stdout=PIPE).stdout.read()
 
         if len(result) > 0:
