@@ -22,9 +22,12 @@ from docviewer.tasks import task_generate_document
 
 from taggit.managers import TaggableManager
 
+from subprocess import Popen, PIPE
+
 
 RE_PAGE = re.compile(r'^.*_([0-9]+)\.txt')
 RE_TS = re.compile(r'^.*([0-9]{20})\.txt')
+RE_IMG = re.compile(r'^.*_([0-9]+)\.png')
 
 zeros = '0'*20
 nines = '9'*20
@@ -252,6 +255,47 @@ class Document(TimeStampedModel, StatusModel):
             all_txt.write(tmp_text)
             tmp_file.close()
         all_txt.close()
+
+    def generate_visible(self):
+        visible_pages = [p.page for p in self.pages_set.filter(visible=True)]
+        #txt
+        fs = FileSystemStorage()
+        all_txt = fs.open("%s/%s-visible.txt" % (self.get_root_path(), self.slug), "w")
+        pages = {}
+        for f in os.listdir(self.get_root_path()):
+            if f[-4:] == '.txt' and f != "%s.txt" % self.slug:
+                m = RE_PAGE.match(f)
+                if m:
+                    k = int(m.group(1))
+                    if k in visible_pages:
+                        pages[k] = f
+        for k in pages:
+            f = pages[k]
+            tmp_path = "%s/%s" % (self.get_root_path(), f)
+            fs_tmp = FileSystemStorage()
+            tmp_file = fs_tmp.open(tmp_path)
+            tmp_text = tmp_file.read() +'\n'
+            all_txt.write(tmp_text)
+            tmp_file.close()
+        all_txt.close()
+        #pdf
+        pages = {}
+        for f in os.listdir(os.path.join(self.get_root_path(), 'normal')):
+            m = RE_IMG.match(f)
+            if m:
+                k = int(m.group(1))
+                if k in visible_pages:
+                    pages[k] = f
+        pages_str = ""
+        for k in pages:
+            f = pages[k]
+            tmp_path = "%s" % os.path.join(self.get_root_path(), 'normal', f)
+            pages_str += tmp_path + ' '
+        command = "convert " + pages_str + "%s/%s-visible.pdf" % (
+            self.get_root_path(),
+            self.slug,
+        )
+        Popen(command, shell=True, stdout=PIPE).stdout.read()
 
     def get_thumbnail(self):
         return "%s/%s/%s_%s.%s" % (

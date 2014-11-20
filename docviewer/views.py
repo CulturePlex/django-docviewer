@@ -262,6 +262,10 @@ def change_visibility_page(request, pk):
     page = doc.pages_set.get(page=page_n)
     page.visible = not page.visible
     page.save()
+    try:
+        doc.generate_visible()
+    except:
+        pass
     return HttpResponse(
         simplejson.dumps({'status': 'ok', 'page': page_n}),
         content_type="application/json"
