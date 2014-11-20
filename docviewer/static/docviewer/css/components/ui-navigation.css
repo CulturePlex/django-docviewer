@@ -69,6 +69,19 @@
   display:none;
 }
 
+
+#actions-header input[type="radio"].docviewer-pages-options {
+  width:11px;
+  display: inline-block;
+  margin-left: 5px;
+  margin-bottom: 3px;
+}
+#actions-header span.docviewer-pages-options {
+  font: normal 11px Arial, sans-serif;
+  color:gray;
+  margin-left: 2px;
+}
+
 .docviewer-remove-confirm .yes, .docviewer-remove-confirm .no {
   cursor:pointer;
 }

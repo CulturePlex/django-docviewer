@@ -31,13 +31,13 @@ _.extend(docviewer.Schema.helpers, {
 
 		var pdfURL = doc.resources.pdf;
 		pdfURL = pdfURL && this.viewer.options.pdf !== false
-				? '<a target="_blank" href="' + pdfURL
+				? '<a id="pdf-getter" target="_blank" href="' + pdfURL
 						+ '" download>Get original document (.pdf) &raquo;</a>'
 				: '';
 
 		var textURL = doc.resources.text;
 		var textURLa = textURL && this.viewer.options.text !== false
-				? '<a target="_blank" href="' + textURL
+				? '<a id="text-getter" target="_blank" href="' + textURL
 						+ '"download>Export to text (.txt) &raquo;</a>'
 				: '';
 		

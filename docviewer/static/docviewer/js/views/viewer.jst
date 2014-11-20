@@ -54,8 +54,10 @@
             <div class="docviewer-contentsHeader">Contents</div>
             <div class="docviewer-chaptersContainer">
             </div>
-            <div class="docviewer-supplemental">
-              <div class="docviewer-actionsHeader">Actions</div>
+            <div class="docviewer-supplemental"><div id="actions-header">
+              <div style="display:inline-block" class="docviewer-actionsHeader">Actions</div><div style="margin-left: 15px; display:inline-block">
+                <input id="all" class="docviewer-pages-options" type="radio" name="pages" value="all" checked><span class="docviewer-pages-options">All pages</span>
+                <input id="visible" class="docviewer-pages-options" type="radio" name="pages" value="visible"><span class="docviewer-pages-options">Only visible</span></div></div>
               <% if (pdf_url) { %>
                 <div class="docviewer-pdfLink"><%= pdf_url %></div>
               <% } %>

@@ -822,6 +822,45 @@ function goToPage(p) {
         }
     })
     
+    $("#actions-header #all").live("change", function(ev) {
+        var oldPdf = $("#pdf-getter").attr("href")
+        var oldText = $("#text-getter").attr("href")
+        var oldDropbox = $("#dropbox-saver").attr("href")
+        var newPdf = removeSubstring(oldPdf, "-visible")
+        var newText = removeSubstring(oldText, "-visible")
+        var newDropbox = removeSubstring(oldDropbox, "-visible")
+        $("#pdf-getter").attr("href", newPdf)
+        $("#text-getter").attr("href", newText)
+        $("#dropbox-saver").attr("href", newDropbox)
+        $("#dropbox-saver").attr("data-url", newDropbox)
+    })
+    
+    $("#actions-header #visible").live("change", function(ev) {
+        var oldPdf = $("#pdf-getter").attr("href")
+        var oldText = $("#text-getter").attr("href")
+        var oldDropbox = $("#dropbox-saver").attr("href")
+        var newPdf = addSubstring(oldPdf, "-visible")
+        var newText = addSubstring(oldText, "-visible")
+        var newDropbox = addSubstring(oldDropbox, "-visible")
+        $("#pdf-getter").attr("href", newPdf)
+        $("#text-getter").attr("href", newText)
+        $("#dropbox-saver").attr("href", newDropbox)
+        $("#dropbox-saver").attr("data-url", newDropbox)
+    })
+    
+    function removeSubstring(url, str) {
+        return url.replace(str, "")
+    }
+    
+    function addSubstring(url, str) {
+        var lst = url.split(".")
+        var name = lst[0]
+        var ext = lst[1]
+        url = name + str + "." + ext
+        return url
+    }
+    
+    
     
       // Thumbnails
 //      $('.docviewer-thumbnail').live('click', function(e) {debugger
