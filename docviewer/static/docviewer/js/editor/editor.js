@@ -853,11 +853,11 @@ function goToPage(p) {
     }
     
     function addSubstring(url, str) {
-        var lst = url.split(".")
-        var name = lst[0]
-        var ext = lst[1]
-        url = name + str + "." + ext
-        return url
+        var ind = url.lastIndexOf(".")
+        var domain_name = url.substring(0, ind)
+        var ext = url.substring(ind)
+        var new_url = domain_name + str + ext
+        return new_url
     }
     
     
