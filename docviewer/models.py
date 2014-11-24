@@ -136,17 +136,25 @@ class Document(TimeStampedModel, StatusModel):
         return "%s/%s" % (self.get_root_path(), self.docfile_basename)
 
     def process_file(self):
-        fs1 = FileSystemStorage()
-        f1 = fs1.open(os.path.join(settings.MEDIA_ROOT,self.docfile.name), 'r')
+#        fs1 = FileSystemStorage()
+#        f1 = fs1.open(os.path.join(settings.MEDIA_ROOT,self.docfile.name), 'r')
+#        filepath = "%s/%s.%s" % (
+#            self.get_root_path(),
+#            self.slug,
+#            self.docfile_basename.split('.')[-1].lower())
+#        fs2 = FileSystemStorage()
+#        f2 = fs2.open(filepath, "w")
+#        f2.write(f1.read())
+#        f2.close()
+#        f1.close()
+        
+        fs = FileSystemStorage()
+        f = fs.open(os.path.join(settings.MEDIA_ROOT,self.docfile.name), 'r')
         filepath = "%s/%s.%s" % (
             self.get_root_path(),
             self.slug,
             self.docfile_basename.split('.')[-1].lower())
-        fs2 = FileSystemStorage()
-        f2 = fs2.open(filepath, "w")
-        f2.write(f1.read())
-        f2.close()
-        f1.close()
+        fs.save(filepath, f)
 
 #        self.title = self.docfile_basename
         task = task_generate_document.apply_async(args=[self.pk], countdown=5)
@@ -473,7 +481,10 @@ from django.dispatch.dispatcher import receiver
 
 @receiver(post_delete, sender=Document)
 def document_delete(sender, instance, **kwargs):
-    shutil.rmtree(instance.get_root_path(), ignore_errors=True)
+#    import ipdb;ipdb.set_trace()
+#    shutil.rmtree(instance.get_root_path(), ignore_errors=True)
+    fs = FileSystemStorage()
+    fs.delete(os.path.join(instance.get_root_path(),'*'))
     instance.docfile.delete(False)
 
 #receiver(post_save, sender=Document)
@@ -486,7 +497,7 @@ def document_save(sender, instance, created, **kwargs):
         ]:
             pass
         elif created:
-            os.makedirs(instance.get_root_path())
+#            os.makedirs(instance.get_root_path())
             instance.process_file()
 
 post_save.connect(document_save, dispatch_uid=str(uuid.uuid1()))
