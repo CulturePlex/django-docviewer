@@ -760,7 +760,7 @@ function goToPage(p) {
       goToPage(id);
     });
     
-    $("#dropbox-saver").live('click', function(ev){
+    $("#dropbox-saver-all, #dropbox-saver-visible").live('click', function(ev){
         var url = this.getAttribute("data-url");
         var title = this.getAttribute("data-title");
         var humanDate = this.getAttribute("data-human-ts")
@@ -823,42 +823,54 @@ function goToPage(p) {
     })
     
     $("#actions-header #all").live("change", function(ev) {
-        var oldPdf = $("#pdf-getter").attr("href")
-        var oldText = $("#text-getter").attr("href")
-        var oldDropbox = $("#dropbox-saver").attr("href")
-        var newPdf = removeSubstring(oldPdf, "-visible")
-        var newText = removeSubstring(oldText, "-visible")
-        var newDropbox = removeSubstring(oldDropbox, "-visible")
-        $("#pdf-getter").attr("href", newPdf)
-        $("#text-getter").attr("href", newText)
-        $("#dropbox-saver").attr("href", newDropbox)
-        $("#dropbox-saver").attr("data-url", newDropbox)
+        $("#pdf-getter-visible").hide()
+        $("#txt-getter-visible").hide()
+        $("#dropbox-saver-visible").hide()
+        $("#pdf-getter-all").show()
+        $("#txt-getter-all").show()
+        $("#dropbox-saver-all").show()
+//        var oldPdf = $("#pdf-getter").attr("href")
+//        var oldText = $("#text-getter").attr("href")
+//        var oldDropbox = $("#dropbox-saver").attr("href")
+//        var newPdf = removeSubstring(oldPdf, "-visible")
+//        var newText = removeSubstring(oldText, "-visible")
+//        var newDropbox = removeSubstring(oldDropbox, "-visible")
+//        $("#pdf-getter").attr("href", newPdf)
+//        $("#text-getter").attr("href", newText)
+//        $("#dropbox-saver").attr("href", newDropbox)
+//        $("#dropbox-saver").attr("data-url", newDropbox)
     })
     
     $("#actions-header #visible").live("change", function(ev) {
-        var oldPdf = $("#pdf-getter").attr("href")
-        var oldText = $("#text-getter").attr("href")
-        var oldDropbox = $("#dropbox-saver").attr("href")
-        var newPdf = addSubstring(oldPdf, "-visible")
-        var newText = addSubstring(oldText, "-visible")
-        var newDropbox = addSubstring(oldDropbox, "-visible")
-        $("#pdf-getter").attr("href", newPdf)
-        $("#text-getter").attr("href", newText)
-        $("#dropbox-saver").attr("href", newDropbox)
-        $("#dropbox-saver").attr("data-url", newDropbox)
+        $("#pdf-getter-all").hide()
+        $("#txt-getter-all").hide()
+        $("#dropbox-saver-all").hide()
+        $("#pdf-getter-visible").show()
+        $("#txt-getter-visible").show()
+        $("#dropbox-saver-visible").show()
+//        var oldPdf = $("#pdf-getter").attr("href")
+//        var oldText = $("#text-getter").attr("href")
+//        var oldDropbox = $("#dropbox-saver").attr("href")
+//        var newPdf = addSubstring(oldPdf, "-visible")
+//        var newText = addSubstring(oldText, "-visible")
+//        var newDropbox = addSubstring(oldDropbox, "-visible")
+//        $("#pdf-getter").attr("href", newPdf)
+//        $("#text-getter").attr("href", newText)
+//        $("#dropbox-saver").attr("href", newDropbox)
+//        $("#dropbox-saver").attr("data-url", newDropbox)
     })
     
-    function removeSubstring(url, str) {
-        return url.replace(str, "")
-    }
-    
-    function addSubstring(url, str) {
-        var ind = url.lastIndexOf(".")
-        var domain_name = url.substring(0, ind)
-        var ext = url.substring(ind)
-        var new_url = domain_name + str + ext
-        return new_url
-    }
+//    function removeSubstring(url, str) {
+//        return url.replace(str, "")
+//    }
+//    
+//    function addSubstring(url, str) {
+//        var ind = url.lastIndexOf(".")
+//        var domain_name = url.substring(0, ind)
+//        var ext = url.substring(ind)
+//        var new_url = domain_name + str + ext
+//        return new_url
+//    }
     
     
     

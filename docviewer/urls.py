@@ -25,4 +25,5 @@ urlpatterns = patterns(
     (r'^(?P<pk>\d+)/autocomplete_users/$', 'docviewer.views.autocomplete_users', {}, 'docviewer_autocomplete_users'),
     (r'^(?P<pk>\d+)/autocomplete_taggit_tags/$', 'docviewer.views.autocomplete_taggit_tags', {}, 'docviewer_autocomplete_taggit_tags'),
     (r'^(?P<pk>\d+)/change_visibility_page/$', 'docviewer.views.change_visibility_page', {}, "docviewer_change_visibility_page"),
+    (r'^(?P<pk>\d+)/(?P<type>\w+)/regenerate_document/$', 'docviewer.views.regenerate_document', {}, "docviewer_regenerate_document"),
 )

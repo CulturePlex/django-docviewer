@@ -30,16 +30,16 @@ _.extend(docviewer.Schema.helpers, {
 				});
 
 		var pdfURL = doc.resources.pdf;
-		pdfURL = pdfURL && this.viewer.options.pdf !== false
-				? '<a id="pdf-getter" target="_blank" href="' + pdfURL
-						+ '" download>Get original document (.pdf) &raquo;</a>'
-				: '';
+//		pdfURL = pdfURL && this.viewer.options.pdf !== false
+//				? '<a id="pdf-getter" target="_blank" href="' + pdfURL
+//						+ '" download>Get original document (.pdf) &raquo;</a>'
+//				: '';
 
 		var textURL = doc.resources.text;
-		var textURLa = textURL && this.viewer.options.text !== false
-				? '<a id="text-getter" target="_blank" href="' + textURL
-						+ '"download>Export to text (.txt) &raquo;</a>'
-				: '';
+//		var textURLa = textURL && this.viewer.options.text !== false
+//				? '<a id="text-getter" target="_blank" href="' + textURL
+//						+ '"download>Export to text (.txt) &raquo;</a>'
+//				: '';
 		
 
 		var contributorList = '';
@@ -66,7 +66,7 @@ _.extend(docviewer.Schema.helpers, {
 			footer : footerHTML,
 			pdf_url : pdfURL,
 			text_url : textURL,
-			text_url_a : textURLa,
+//			text_url_a : textURLa,
 			doc_title : doc.title,
 			contributors : contributorList,
 			story_url : storyURL,
@@ -81,7 +81,9 @@ _.extend(docviewer.Schema.helpers, {
 			add_tag: "TODO",
 			remove_tag: doc.resources.remove_tag_url,
 			add_collaborator: "TODO",
-			remove_collaborator: doc.resources.remove_collaborator_url
+			remove_collaborator: doc.resources.remove_collaborator_url,
+			pdf_visible: doc.resources.pdf_visible,
+			txt_visible: doc.resources.txt_visible
 		};
 
 		if (this.viewer.options.width && this.viewer.options.height) {

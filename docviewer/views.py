@@ -1,6 +1,7 @@
 import documents
 
 from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views.generic.detail import BaseDetailView
 from django.core.urlresolvers import reverse
@@ -262,13 +263,26 @@ def change_visibility_page(request, pk):
     page = doc.pages_set.get(page=page_n)
     page.visible = not page.visible
     page.save()
-    try:
-        doc.generate_visible()
-    except:
-        pass
+
     return HttpResponse(
         simplejson.dumps({'status': 'ok', 'page': page_n}),
         content_type="application/json"
+    )
+
+
+@csrf_exempt
+def regenerate_document(request, pk, type):
+    """ Regenerate a document based on its visible pages """
+    doc = documents.models.Document.objects.get(pk=pk)
+    txt, pdf = doc.generate_visible()
+    if type == 'txt':
+        result = txt
+    else: # typ == 'pdf'
+        result = pdf
+
+    return HttpResponseRedirect(
+        result,
+#        content_type="plain/text"
     )
 
 
@@ -335,6 +349,14 @@ class JsonDocumentView(BaseDetailView):
         json['resources']['remove_tag_url'] = reverse('remove_taggit_tag')
         json['resources']['add_collaborator_url'] = 'TODO'
         json['resources']['remove_collaborator_url'] = reverse('remove_sharer')
+        json['resources']['pdf_visible'] = reverse(
+            'docviewer_regenerate_document',
+            kwargs={'pk': document.pk, 'type': 'pdf'}
+        )
+        json['resources']['txt_visible'] = reverse(
+            'docviewer_regenerate_document',
+            kwargs={'pk': document.pk, 'type': 'txt'}
+        )
 
         json['sections'] = list(document.sections_set.all().values('title', 'page'))
         

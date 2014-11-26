@@ -56,16 +56,25 @@
             </div>
             <div class="docviewer-supplemental"><div id="actions-header">
               <div style="display:inline-block" class="docviewer-actionsHeader">Actions</div><div style="margin-left: 15px; display:inline-block">
-                <input id="all" class="docviewer-pages-options" type="radio" name="pages" value="all" checked><span class="docviewer-pages-options">All pages</span>
-                <input id="visible" class="docviewer-pages-options" type="radio" name="pages" value="visible"><span class="docviewer-pages-options">Only visible</span></div></div>
+                <input id="all" class="docviewer-pages-options" type="radio" name="pages" value="all" checked><span class="docviewer-pages-options" for="all">All pages</span>
+                <input id="visible" class="docviewer-pages-options" type="radio" name="pages" value="visible"><span class="docviewer-pages-options" for="visible">Only visible</span></div></div>
               <% if (pdf_url) { %>
-                <div class="docviewer-pdfLink"><%= pdf_url %></div>
-              <% } %>
-              <% if (text_url_a) { %>
-                <div class="docviewer-textLink"><%= text_url_a %></div>
+                <div class="docviewer-pdfLink">
+                <a id="pdf-getter-all" target="_blank" href="<%= pdf_url %>" download>Get document (.pdf) &raquo;</a>
+                <a id="pdf-getter-visible" target="_blank" href="<%= pdf_visible %>" style="display:none;" download>Get document (.pdf) &raquo;</a>
+                </div>
               <% } %>
               <% if (text_url) { %>
-                <div class="docviewer-textLink"><a id="dropbox-saver" data-url="<%= text_url %>" data-title="<%= doc_title %>" href="<%= text_url %>" class="">Save text to Dropbox &raquo;</a></div>
+                <div class="docviewer-textLink">
+                <a id="txt-getter-all" target="_blank" href="<%= text_url %>" download>Export to text (.txt) &raquo;</a>
+                <a id="txt-getter-visible" target="_blank" href="<%= txt_visible %>" style="display:none;" download>Export to text (.txt) &raquo;</a>
+                </div>
+              <% } %>
+              <% if (text_url) { %>
+                <div class="docviewer-textLink">
+                <a id="dropbox-saver-all" data-url="<%= text_url %>" data-title="<%= doc_title %>" href="<%= text_url %>" class="">Save text to Dropbox &raquo;</a>
+                <a id="dropbox-saver-visible" data-url="<%= text_url %>" data-title="<%= doc_title %>" href="<%= txt_visible %>" class="" style="display:none;">Save text to Dropbox &raquo;</a>
+                </div>
               <% } %>
               
               
