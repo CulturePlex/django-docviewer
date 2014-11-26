@@ -76,7 +76,7 @@
   margin-left: 5px;
   margin-bottom: 3px;
 }
-#actions-header span.docviewer-pages-options {
+#actions-header .docviewer-pages-options {
   font: normal 11px Arial, sans-serif;
   color:gray;
   margin-left: 2px;
