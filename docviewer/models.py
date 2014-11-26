@@ -266,9 +266,11 @@ class Document(TimeStampedModel, StatusModel):
 
     def generate_visible(self):
         visible_pages = [p.page for p in self.pages_set.filter(visible=True)]
+        abs_path = '%s/%s' % (self.get_root_path(), self.slug)
+        
         #txt
         fs = FileSystemStorage()
-        all_txt = fs.open("%s/%s-visible.txt" % (self.get_root_path(), self.slug), "w")
+        all_txt = fs.open("%s-visible.txt" % abs_path, "w")
         pages = {}
         for f in os.listdir(self.get_root_path()):
             if f[-4:] == '.txt' and f != "%s.txt" % self.slug:
@@ -286,24 +288,21 @@ class Document(TimeStampedModel, StatusModel):
             all_txt.write(tmp_text)
             tmp_file.close()
         all_txt.close()
+        
         #pdf
-        pages = {}
-        for f in os.listdir(os.path.join(self.get_root_path(), 'normal')):
-            m = RE_IMG.match(f)
-            if m:
-                k = int(m.group(1))
-                if k in visible_pages:
-                    pages[k] = f
-        pages_str = ""
-        for k in pages:
-            f = pages[k]
-            tmp_path = "%s" % os.path.join(self.get_root_path(), 'normal', f)
-            pages_str += tmp_path + ' '
-        command = "convert " + pages_str + "%s/%s-visible.pdf" % (
-            self.get_root_path(),
-            self.slug,
+        pages_str = ' '.join(map(str, visible_pages))
+        command = "pdftk {}.pdf cat {} output {}-visible.pdf".format(
+            abs_path,
+            pages_str,
+            abs_path,
         )
         Popen(command, shell=True, stdout=PIPE).stdout.read()
+        
+        abs_url = '%s/%s' % (self.get_root_url(), self.slug)
+        return (
+            "%s-visible.txt" % abs_url,
+            "%s-visible.pdf" % abs_url,
+        )
 
     def get_thumbnail(self):
         return "%s/%s/%s_%s.%s" % (
