@@ -58,7 +58,8 @@
 .docviewer-viewThumbnails .docviewer-views .docviewer-thumbnailsView span,
 .docviewer-viewAnnotations .docviewer-views .docviewer-annotationView span,
 .docviewer-viewText .docviewer-views .docviewer-textView span,
-.docviewer-viewSearch .docviewer-views .docviewer-textView span{
+.docviewer-viewSearch .docviewer-views .docviewer-textView span,
+.docviewer-viewDual .docviewer-views .docviewer-dualView span {
   background-position: 0 -40px;
   font-weight:bold;
   text-shadow: 0px 1px 0px #fff;

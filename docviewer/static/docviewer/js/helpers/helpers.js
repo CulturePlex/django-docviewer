@@ -37,6 +37,9 @@ docviewer.Schema.helpers = {
       viewer.$('.docviewer-navControls').delegate('span.docviewer-next','click', compiled.next);
       viewer.$('.docviewer-navControls').delegate('span.docviewer-previous','click', compiled.previous);
 
+      viewer.$('.docviewer-dualView').delegate('.docviewer-trigger','click',function(e){
+        context.open('ViewDual')
+      });
       viewer.$('.docviewer-annotationView').delegate('.docviewer-trigger','click',function(e){
         e.preventDefault();
         context.open('ViewAnnotation');
@@ -454,7 +457,7 @@ docviewer.Schema.helpers = {
     // },
 
     toggleContent: function(toggleClassName){
-      this.elements.viewer.removeClass('docviewer-viewText docviewer-viewSearch docviewer-viewDocument docviewer-viewAnnotations docviewer-viewThumbnails').addClass('docviewer-'+toggleClassName);
+      this.elements.viewer.removeClass('docviewer-viewText docviewer-viewSearch docviewer-viewDocument docviewer-viewAnnotations docviewer-viewThumbnails docviewer-viewDual').addClass('docviewer-'+toggleClassName);
     },
 
     jump: function(pageIndex, modifier, forceRedraw){

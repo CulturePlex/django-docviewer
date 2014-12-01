@@ -19,6 +19,7 @@ PIPELINE_CSS['docviewer-base'] = {
         'docviewer/css/components/view-search.css',
         'docviewer/css/components/view-text.css',
         'docviewer/css/components/view-thumbnails.css',
+        'docviewer/css/components/view-dual.css',
         'docviewer/css/components/unsupported.css',
         'docviewer/css/components/minimode.css',
         'docviewer/css/themes/plain.css',),

@@ -71,6 +71,7 @@ docviewer.Schema.states = {
     this.acceptInput.allow();
 
     this.helpers.toggleContent('viewDocument');
+//    this.helpers.toggleContent('viewDual');
 
     this.helpers.setActiveChapter(this.models.chapters.getChapterId(this.models.document.currentIndex()));
 
@@ -116,6 +117,26 @@ docviewer.Schema.states = {
     this.thumbnails = new docviewer.Thumbnails(this);
     this.thumbnails.render();
     return true;
-  }
+  },
+
+  ViewDual: function(){
+    var h = $(".docviewer-pages").height()
+    $(".docviewer-pages").clone().attr('id', 'dual').insertAfter('.docviewer-pages').offset({top: h})
+  
+  
+    this.helpers.reset();
+    
+    this.helpers.addObserver('drawPages');
+    this.dragReporter.setBinding();
+    this.elements.window.mouseleave(docviewer.jQuery.proxy(this.dragReporter.stop, this.dragReporter));
+    this.acceptInput.allow();
+    this.pageSet.zoomText();
+    this.helpers.toggleContent('viewDual');
+    this.helpers.setActiveChapter(this.models.chapters.getChapterId(this.models.document.currentIndex()));
+    this.helpers.jump(this.models.document.currentIndex());
+    this.events.loadText();
+    
+    return true;
+  },
 
 };
