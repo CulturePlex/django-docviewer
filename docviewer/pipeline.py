@@ -85,6 +85,7 @@ PIPELINE_JS['docviewer-base'] = {
         'docviewer/js/events/ViewSearch.js',
         'docviewer/js/events/ViewText.js',
         'docviewer/js/events/ViewThumbnails.js',
+        'docviewer/js/events/ViewDual.js',
         'docviewer/js/events/history.js',
         'docviewer/js/events/navigation.js',
         'docviewer/js/helpers/helpers.js',
@@ -97,7 +98,6 @@ PIPELINE_JS['docviewer-base'] = {
         'docviewer/js/controllers/document_viewer.js',
         'docviewer/js/controllers/api.js',
         'docviewer/js/editor/editor.js',
-#        'docviewer/js/translator/zotero_translator.js',
     ),
     'output_filename': 'c/docviewer-base.r?.js',
 }

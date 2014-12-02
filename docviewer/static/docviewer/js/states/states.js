@@ -63,22 +63,6 @@ docviewer.Schema.states = {
     return true;
   },
 
-  ViewDocument: function(){
-    this.helpers.reset();
-    this.helpers.addObserver('drawPages');
-    this.dragReporter.setBinding();
-    this.elements.window.mouseleave(docviewer.jQuery.proxy(this.dragReporter.stop, this.dragReporter));
-    this.acceptInput.allow();
-
-    this.helpers.toggleContent('viewDocument');
-//    this.helpers.toggleContent('viewDual');
-
-    this.helpers.setActiveChapter(this.models.chapters.getChapterId(this.models.document.currentIndex()));
-
-    this.helpers.jump(this.models.document.currentIndex());
-    return true;
-  },
-
   ViewEntity: function(name, offset, length) {
     this.helpers.reset();
     this.helpers.toggleContent('viewSearch');
@@ -102,6 +86,26 @@ docviewer.Schema.states = {
     return true;
   },
 
+  ViewThumbnails: function() {
+    this.helpers.reset();
+    this.helpers.toggleContent('viewThumbnails');
+    this.thumbnails = new docviewer.Thumbnails(this);
+    this.thumbnails.render();
+    return true;
+  },
+
+  ViewDocument: function(){
+    this.helpers.reset();
+    this.helpers.addObserver('drawPages');
+    this.dragReporter.setBinding();
+    this.elements.window.mouseleave(docviewer.jQuery.proxy(this.dragReporter.stop, this.dragReporter));
+    this.acceptInput.allow();
+    this.helpers.toggleContent('viewDocument');
+    this.helpers.setActiveChapter(this.models.chapters.getChapterId(this.models.document.currentIndex()));
+    this.helpers.jump(this.models.document.currentIndex());
+    return true;
+  },
+
   ViewText: function(){
     this.helpers.reset();
     this.acceptInput.allow();
@@ -111,31 +115,29 @@ docviewer.Schema.states = {
     return true;
   },
 
-  ViewThumbnails: function() {
-    this.helpers.reset();
-    this.helpers.toggleContent('viewThumbnails');
-    this.thumbnails = new docviewer.Thumbnails(this);
-    this.thumbnails.render();
-    return true;
-  },
-
   ViewDual: function(){
-    var h = $(".docviewer-pages").height()
-    $(".docviewer-pages").clone().attr('id', 'dual').insertAfter('.docviewer-pages').offset({top: h})
-  
-  
+    //Both
     this.helpers.reset();
-    
+    //Document
     this.helpers.addObserver('drawPages');
     this.dragReporter.setBinding();
     this.elements.window.mouseleave(docviewer.jQuery.proxy(this.dragReporter.stop, this.dragReporter));
+    //Both
     this.acceptInput.allow();
+    //Text
     this.pageSet.zoomText();
+    //New
     this.helpers.toggleContent('viewDual');
+    //Document
     this.helpers.setActiveChapter(this.models.chapters.getChapterId(this.models.document.currentIndex()));
     this.helpers.jump(this.models.document.currentIndex());
+    //Text
     this.events.loadText();
     
+    $(".docviewer-pages").clone().attr('id', 'lower').insertAfter('#upper')
+    $(".docviewer-pages").addClass("docviewer-dual")
+    $(window).resize(function(){$("#lower").css({top: $("#upper").outerHeight()})})
+    $(window).resize()
     return true;
   },
 

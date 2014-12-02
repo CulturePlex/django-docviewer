@@ -762,7 +762,8 @@ function goToPage(p) {
     
     $("#dropbox-saver-all, #dropbox-saver-visible").live('click', function(ev){
         var url = this.getAttribute("data-url");
-        var title = this.getAttribute("data-title");
+//        var url = 'http://localhost:8000/viewer/10/txt/regenerate_document/'
+        var title = this.getAttribute("data-title"); //+ -visible...
         var humanDate = this.getAttribute("data-human-ts")
         if (humanDate)
             humanDate = " - " + humanDate
