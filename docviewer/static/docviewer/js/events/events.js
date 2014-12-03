@@ -15,7 +15,7 @@ docviewer.Schema.events = {
 
   // Draw (or redraw) the visible pages on the screen.
   drawPages: function() {
-    if (this.viewer.state != 'ViewDocument') return;
+    if (this.viewer.state != 'ViewDocument' && this.viewer.state != 'ViewDual') return;
     var doc           = this.models.document;
     var win           = this.elements.window[0];
     var offsets       = doc.baseHeightsPortionOffsets;
