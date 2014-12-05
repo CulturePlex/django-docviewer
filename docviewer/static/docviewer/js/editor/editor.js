@@ -44,6 +44,10 @@ var MAXHISTORY = 2;
       y_end =   5 + Math.round((anno_offsetY + anno.height()) / zoomfactor),
       x_initial = 7 + Math.round((anno_offsetX) / zoomfactor),
       x_end =   16 + Math.round((anno_offsetX + anno.width()) / zoomfactor);
+      if (mydocviewer.state == 'ViewDual') {
+        y_initial /= 2
+        y_end /= 2
+      }
     return y_initial + "," + x_end + "," + y_end + "," + x_initial;
   }
 
@@ -279,18 +283,7 @@ var MAXHISTORY = 2;
   function hide_anno_edit_his_on_page_change() {
     mydocviewer.states.events.observerPage = function () {
       var state = mydocviewer.state;
-      if (state !== 'ViewDocument') {
-        $('#annotation-options').hide();
-        $('.docviewer-annotationMarker').hide();
-        if (state !== 'ViewText' && state !== 'ViewDual') {
-          $('#edition-options').hide();
-          $('#history-versions').hide();
-        } else {
-          if (restore == false)
-            $('#edition-options').show();
-          $('#history-versions').show();
-        }
-      } else {
+      if (state == 'ViewDocument') {
         $('#annotation-options').show();
         $('.docviewer-annotationMarker').show();
         $('#edition-options').hide();
@@ -304,6 +297,62 @@ var MAXHISTORY = 2;
           anno.hide();
         }
       }
+      else if (state == 'ViewText') {
+        $('#annotation-options').hide();
+        $('.docviewer-annotationMarker').hide();
+        if (restore == false)
+          $('#edition-options').show();
+        $('#history-versions').show();
+      }
+      else if (state == 'ViewDual') {
+        $('#annotation-options').show();
+        $('.docviewer-annotationMarker').show();
+        var anno = $('#annotation-area');
+        if (anno.length !== 0) {
+          if (mydocviewer.api.currentPage() >= annotation_page - 1 &
+            mydocviewer.api.currentPage() <= annotation_page + 1) {
+            anno.show();
+          } else {
+            anno.hide();
+          }
+        }
+        
+        if (restore == false)
+          $('#edition-options').show();
+        $('#history-versions').show();
+      }
+      else {
+        $('#edition-options').hide();
+        $('#history-versions').hide();
+      }
+      
+      
+//      if (state !== 'ViewDocument') {
+//        $('#annotation-options').hide();
+//        $('.docviewer-annotationMarker').hide();
+//        if (state !== 'ViewText') {
+//          $('#edition-options').hide();
+//          $('#history-versions').hide();
+//        } else {
+//          if (restore == false)
+//            $('#edition-options').show();
+//          $('#history-versions').show();
+//        }
+//      } else {
+//        $('#annotation-options').show();
+//        $('.docviewer-annotationMarker').show();
+//        $('#edition-options').hide();
+//        $('#history-versions').hide();
+//        var anno = $('#annotation-area');
+//        if (anno.length === 0) { return; }
+//        if (mydocviewer.api.currentPage() >= annotation_page - 1 &
+//            mydocviewer.api.currentPage() <= annotation_page + 1) {
+//          anno.show();
+//        } else {
+//          anno.hide();
+//        }
+//      }
+
     };
     mydocviewer.states.helpers.addObserver("observerPage");
   }
