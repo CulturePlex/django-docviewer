@@ -74,7 +74,12 @@ docviewer.Schema.events = {
         restore = " restore";
       me.viewer.$('.docviewer-textContents').replaceWith('<pre class="docviewer-textContents plain-text-area' + restore + '" id="plain-text-area-' + pageNumber + '">' + text + '</pre>');
       me.viewer.$('.plain-text-area').hide();
-      me.viewer.$('#plain-text-area-'+pageNumber).show();
+      var selector;
+      if (mydocviewer.state == 'ViewDual')
+        selector = me.viewer.$('#lower #plain-text-area-'+pageNumber)
+      else
+        selector = me.viewer.$('#upper #plain-text-area-'+pageNumber)
+      selector.show();
       
       me.elements.currentPage.text(pageNumber);
       me.elements.textCurrentPage.text('p. '+(pageNumber));

@@ -282,7 +282,7 @@ var MAXHISTORY = 2;
       if (state !== 'ViewDocument') {
         $('#annotation-options').hide();
         $('.docviewer-annotationMarker').hide();
-        if (state !== 'ViewText') {
+        if (state !== 'ViewText' && state !== 'ViewDual') {
           $('#edition-options').hide();
           $('#history-versions').hide();
         } else {
@@ -359,6 +359,7 @@ var MAXHISTORY = 2;
     var id = window.location.pathname.split('/')[2];
     docviewer.viewers["doc-"+id].api.leaveEditPageTextMode();
     $('.docviewer-textView span').text('Text');
+    $('.docviewer-dualView span').text('Dual');
     $('#form-edition').hide();
     asterisk();
     modified_pages = [];
@@ -369,6 +370,7 @@ var MAXHISTORY = 2;
     var id = window.location.pathname.split('/')[2];
     docviewer.viewers["doc-"+id].api.endEditPageTextMode();
     $('.docviewer-textView span').text('Text');
+    $('.docviewer-dualView span').text('Dual');
     $('#form-edition').hide();
     asterisk();
   }
@@ -415,6 +417,7 @@ var MAXHISTORY = 2;
       success: function (payload) {
         animate_msg("Text saved");
         $('.docviewer-textView span').text('Text');
+        $('.docviewer-dualView span').text('Dual');
         $('#form-edition').hide();
         for (var i=0; i<num_page_list.length; i++) {
           var n = num_page_list[i];
@@ -467,7 +470,12 @@ var MAXHISTORY = 2;
       var viewer = docviewer.viewers["doc-"+id];
       var currentPage = viewer.api.currentPage();
 //      var text = $('#plain-text-area-'+currentPage).text();
-      var text = getTextFromEditableContent($('#plain-text-area-'+currentPage));
+      var selector
+      if (viewer.state == 'ViewDual')
+        selector = $('#lower #plain-text-area-'+currentPage)
+      else
+        selector = $('#upper #plain-text-area-'+currentPage)
+      var text = getTextFromEditableContent(selector);
       if (viewer.schema.text[currentPage-1] != text) {
         viewer.schema.text[currentPage-1] = text;
         modified_pages.push(currentPage);
@@ -475,6 +483,7 @@ var MAXHISTORY = 2;
       else {
         if (modified_pages.length == 0) {
           $('.docviewer-textView span').text('Text');
+          $('.docviewer-dualView span').text('Dual');
           $('#form-edition').hide();
           asterisk();
         }
@@ -496,9 +505,22 @@ var MAXHISTORY = 2;
       var id = window.location.pathname.split('/')[2];
       var viewer = docviewer.viewers["doc-"+id];
       var currentPage = viewer.api.currentPage();
-      var text = $('#plain-text-area-'+currentPage).text();
+      var selector
+      if (viewer.state == 'ViewDual')
+        selector = $('#lower #plain-text-area-'+currentPage)
+      else
+        selector = $('#upper #plain-text-area-'+currentPage)
+      var text = selector.text();
       if (viewer.schema.text[currentPage-1] != text) {
-        $('.docviewer-textView span').text('Text*');
+        var selector
+        if (viewer.state == 'ViewDual') {
+          selector = $('.docviewer-dualView span')
+          selector.text('Dual*');
+        }
+        else {
+          selector = $('.docviewer-textView span')
+          selector.text('Text*');
+        }
         $('#form-edition').show();
         $('.plain-text-area.docviewer-editing').die('keydown');
       }

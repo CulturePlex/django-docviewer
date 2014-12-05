@@ -128,16 +128,15 @@ docviewer.Schema.states = {
     this.pageSet.zoomText();
     //New
     this.helpers.toggleContent('viewDual');
+    $(".docviewer-pages").clone().attr('id', 'lower').insertAfter('#upper')
+    $(".docviewer-pages").addClass("docviewer-dual")
+    $(window).resize(function(){$("#lower").css({top: $("#upper").outerHeight()})})
+    $(window).resize()
     //Document
     this.helpers.setActiveChapter(this.models.chapters.getChapterId(this.models.document.currentIndex()));
     this.helpers.jump(this.models.document.currentIndex());
     //Text
     this.events.loadText();
-    
-    $(".docviewer-pages").clone().attr('id', 'lower').insertAfter('#upper')
-    $(".docviewer-pages").addClass("docviewer-dual")
-    $(window).resize(function(){$("#lower").css({top: $("#upper").outerHeight()})})
-    $(window).resize()
     return true;
   },
 
