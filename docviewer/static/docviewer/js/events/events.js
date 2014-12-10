@@ -26,7 +26,11 @@ docviewer.Schema.events = {
     if (offsets[currentPage] == scrollPos) currentPage++ && middlePage++;
     var pageIds       = this.helpers.sortPages(middlePage - 1);
     var total         = doc.totalPages;
-    if (doc.currentPage() != currentPage) doc.setPageIndex(currentPage - 1);
+    if (doc.currentPage() != currentPage) {
+        doc.setPageIndex(currentPage - 1);
+        if (this.viewer.state == 'ViewDual')
+            this.loadText(currentPage - 1)
+    }
     this.drawPageAt(pageIds, middlePage - 1);
   },
 
