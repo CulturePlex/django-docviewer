@@ -44,10 +44,6 @@ var MAXHISTORY = 2;
       y_end =   5 + Math.round((anno_offsetY + anno.height()) / zoomfactor),
       x_initial = 7 + Math.round((anno_offsetX) / zoomfactor),
       x_end =   16 + Math.round((anno_offsetX + anno.width()) / zoomfactor);
-      if (mydocviewer.state == 'ViewDual') {
-        y_initial /= 2
-        y_end /= 2
-      }
     return y_initial + "," + x_end + "," + y_end + "," + x_initial;
   }
 
@@ -130,6 +126,7 @@ var MAXHISTORY = 2;
     adata.title = $('#annotation-title').val();
     adata.content = $('#annotation-content').val();
     adata.location = get_coord_annotation();
+    console.log(adata.location)
     adata.page_id = mydocviewer.api.currentPage();
     $.ajax({
       url: "add_annotation/",
