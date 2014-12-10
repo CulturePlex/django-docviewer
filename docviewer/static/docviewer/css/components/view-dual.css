@@ -1,85 +1,17 @@
+/* DUAL */
 .docviewer-viewDual .docviewer-pages.docviewer-dual {
   border-bottom: 1px solid #aaa;
   height:50%;
 }
 
-.docviewer-viewDual .docviewer-allAnnotations,
-.docviewer-viewDual .docviewer-search,
-.p0,
-.p1,
-.p2 {
-  display:none;
-}
-
-.docviewer-coverVisible .docviewer-viewDual .p0,
-.docviewer-coverVisible .docviewer-viewDual .p1,
-.docviewer-coverVisible .docviewer-viewDual .p2{
-  background:none;
-}
-
-.docviewer-viewDual .docviewer-annotation {
-  height: 0;
-}
-
-.docviewer-viewDual .docviewer-pageNote {
-  height: auto;
-}
-
-.docviewer-viewDual .docviewer-activeAnnotation {
-  height: auto;
-}
-
-.docviewer-viewDual .docviewer-currentAnnotationPrefix,
-.docviewer-viewDual .docviewer-totalAnnotations {
-  display:none;
-}
-
-.docviewer-viewDual .docviewer-currentPagePrefix,
-.docviewer-viewDual .docviewer-totalPages {
-  display:inline;
-}
-
-.docviewer-viewDual .docviewer-coverVisible .docviewer-cover {
-  cursor:pointer !important;
-}
-
-.docviewer-viewDual .docviewer-annotationRegionBorder {
-  display: block;
-}
-
-.docviewer-viewDual .docviewer-sidebar .docviewer-well .docviewer-chaptersContainer div.docviewer-hasChildren div,
-.docviewer-viewDual .docviewer-sidebar .docviewer-well .docviewer-chaptersContainer span.docviewer-expander {
-  display:none !important;
-}
-
-.docviewer-viewDual .docviewer-sidebar .docviewer-well .docviewer-chaptersContainer div.docviewer-hasChildren div.docviewer-first {
-  display:block !important;
-}
-
-.docviewer-viewDual .docviewer-sidebar .docviewer-well .docviewer-chaptersContainer div.docviewer-hasChildren div.docviewer-first .docviewer-trigger {
-  margin-left:-1px;
-}
-
-.docviewer-viewDual .docviewer-annotationMarker,
-.docviewer-viewDual .docviewer-chapter {
-  margin-left:14px;
-}
-
-.docviewer-dualView {
-  display:none;
-}
-
-.docviewer-docViewer.docviewer-searchable .docviewer-dualView {
-  display:inline;
-}
-
-.docviewer-docViewer.docviewer-searchable .docviewer-dualView.docviewer-hide{
-  display:none;
-}
-
-/* Document */
+/* DOCUMENT */
+.docviewer-viewDual #upper .docviewer-allAnnotations,
 .docviewer-viewDual #upper .docviewer-text,
-.docviewer-viewDual #upper .docviewer-thumbnails {
+.docviewer-viewDual #upper .docviewer-search,
+.docviewer-viewDual #upper .docviewer-thumbnails,
+.docviewer-viewDual #upper .p0,
+.docviewer-viewDual #upper .p1,
+.docviewer-viewDual #upper .p2 {
   display:none;
 }
 
@@ -89,16 +21,99 @@
   display:block;
 }
 
-/* Text */
-.docviewer-viewDual #lower .docviewer-pageCollection{
+/*n/a*/
+.docviewer-coverVisible .docviewer-viewDual .p0,
+.docviewer-coverVisible .docviewer-viewDual .p1,
+.docviewer-coverVisible .docviewer-viewDual .p2 {
+  background:none;
+}
+
+.docviewer-viewDual #upper .docviewer-annotation {
+  height: 0;
+}
+.docviewer-viewDual #upper .docviewer-pageNote {
+  height: auto;
+}
+.docviewer-viewDual #upper .docviewer-activeAnnotation {
+  height: auto;
+}
+
+/*another div*/
+.docviewer-viewDual .docviewer-currentAnnotationPrefix,
+.docviewer-viewDual .docviewer-totalAnnotations {
+  display:none;
+}
+
+/*another div*/
+.docviewer-viewDual .docviewer-currentPagePrefix,
+.docviewer-viewDual .docviewer-totalPages {
+  display:inline;
+}
+
+/*n/a*/
+.docviewer-viewDual .docviewer-coverVisible .docviewer-cover {
+  cursor:pointer !important;
+}
+
+/*n/a*/
+.docviewer-viewDual .docviewer-annotationRegionBorder {
+  display: block;
+}
+
+
+/* TEXT */
+.docviewer-viewDual #lower .docviewer-pageCollection {
   cursor: text;
 }
 
 .docviewer-viewDual #lower .docviewer-set,
-.docviewer-viewDual #lower .docviewer-bar {
+.docviewer-viewDual #lower .docviewer-bar,
+.docviewer-viewDual #lower .docviewer-allAnnotations {
   display:none;
 }
 
 .docviewer-viewDual #lower .docviewer-text {
   display:block;
+}
+
+/*another div*/
+.docviewer-viewDual .docviewer-currentAnnotationPrefix,
+.docviewer-viewDual .docviewer-totalAnnotations {
+  display:none;
+}
+
+/*n/a*/
+.docviewer-viewDual .docviewer-sidebar .docviewer-well .docviewer-chaptersContainer div.docviewer-hasChildren div,
+.docviewer-viewDual .docviewer-sidebar .docviewer-well .docviewer-chaptersContainer span.docviewer-expander {
+  display:none !important;
+}
+
+/*n/a*/
+.docviewer-viewDual .docviewer-sidebar .docviewer-well .docviewer-chaptersContainer div.docviewer-hasChildren div.docviewer-first {
+  display:block !important;
+}
+
+.docviewer-viewDual .docviewer-sidebar .docviewer-well .docviewer-chaptersContainer div.docviewer-hasChildren div.docviewer-first .docviewer-trigger {
+  margin-left:-1px;
+}
+
+/*another div*/
+.docviewer-viewDual .docviewer-annotationMarker,
+.docviewer-viewDual .docviewer-chapter {
+  margin-left:14px;
+}
+
+/*another div*/
+.docviewer-textView {
+  display:none;
+}
+
+/*another div*/
+.docviewer-docViewer.docviewer-searchable .docviewer-textView {
+  display:inline;
+}
+
+/*another div*/
+.docviewer-docViewer.docviewer-searchable .docviewer-textView.docviewer-hide {
+  display:none;
 }

@@ -83,6 +83,7 @@ docviewer.Schema.events = {
       
       me.elements.currentPage.text(pageNumber);
       me.elements.textCurrentPage.text('p. '+(pageNumber));
+      $('.docviewer-textCurrentPage').text('p. '+(pageNumber));
       me.models.document.setPageIndex(pageIndex);
       me.helpers.setActiveChapter(me.models.chapters.getChapterId(pageIndex));
 
