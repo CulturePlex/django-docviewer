@@ -1,4 +1,5 @@
 // This manages events for different states activated through docviewer interface actions like clicks, mouseovers, etc.
+
 docviewer.Schema.events = {
   // Change zoom level and causes a reflow and redraw of pages.
   zoom: function(level){
@@ -27,11 +28,14 @@ docviewer.Schema.events = {
     var pageIds       = this.helpers.sortPages(middlePage - 1);
     var total         = doc.totalPages;
     if (doc.currentPage() != currentPage) {
-        doc.setPageIndex(currentPage - 1);
-        if (this.viewer.state == 'ViewDual')
-            this.loadText(currentPage - 1)
+        doc.setPageIndex(currentPage - 1)
+        this.loadText(currentPage - 1)
     }
     this.drawPageAt(pageIds, middlePage - 1);
+    
+    if (this.viewer.state == 'ViewDual' && $('#check-sync').is(':checked')) {
+        $("#lower").scrollTop($("#upper").scrollTop() - offsets[currentPage-1])
+    }
   },
 
   // Draw the page at the given index.
@@ -50,6 +54,15 @@ docviewer.Schema.events = {
       if (last) pages.pop();
       pages[first ? 0 : pages.length - 1].currentPage = true;
       this.viewer.pageSet.draw(pages);
+    }
+  },
+  
+  scrollText: function() {
+    var doc           = this.models.document;
+    var offsets       = doc.baseHeightsPortionOffsets;
+    var currentPage   = doc.currentPage()
+    if (this.viewer.state == 'ViewDual' && $('#check-sync').is(':checked')) {
+        $("#upper").scrollTop($("#lower").scrollTop() + offsets[currentPage-1])
     }
   },
 

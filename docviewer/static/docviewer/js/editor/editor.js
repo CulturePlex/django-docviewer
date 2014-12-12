@@ -958,6 +958,25 @@ function goToPage(p) {
 //          return false;
 //        }
 //    });
+    
+    
+    $('#upper').live("mouseenter", function(ev) {
+        mydocviewer.helpers.removeObserver("scrollText")
+        mydocviewer.helpers.addObserver("drawPages")
+    });
+    $('#lower').live("mouseenter", function(ev) {
+        mydocviewer.helpers.removeObserver("drawPages")
+        mydocviewer.helpers.addObserver("scrollText")
+    });
+    $('.docviewer-navControlsContainer').live("mouseenter", function(ev) {
+        mydocviewer.helpers.removeObserver("drawPages")
+        mydocviewer.helpers.removeObserver("scrollText")
+    });
+    
+    
+    
+    
+    
   });
 
 }());

@@ -470,6 +470,8 @@ _.extend(docviewer.Schema.helpers, {
 		this.removeObserver('drawPages');
 		this.viewer.dragReporter.unBind();
 		this.elements.window.scrollTop(0);
+		
+		this.removeObserver('scrollText')
 	}
 
 });

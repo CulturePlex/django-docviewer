@@ -65,3 +65,27 @@
   text-shadow: 0px 1px 0px #fff;
   border-bottom-color: #a0a0a0;
 }
+
+
+
+.docviewer-dual-sync {
+    display:none;
+/*    display:inline-block;*/
+}
+
+.docviewer-dual-sync input {
+  width: 11px;
+  margin-left: 15px;
+  margin-top: 15px;
+/*  display:inline-block;*/
+}
+
+.docviewer-dual-sync span {
+  color: #333;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:11px;
+  position:fixed;
+  margin-top: -13px;
+  margin-left: 30px;
+/*  display:inline-block;*/
+}

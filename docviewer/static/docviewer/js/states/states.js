@@ -132,6 +132,8 @@ docviewer.Schema.states = {
     $(".docviewer-pages").addClass("docviewer-dual")
     $(window).resize(function(){$("#lower").css({top: $("#upper").outerHeight()})})
     $(window).resize()
+    this.helpers.addObserver('scrollText')
+    $('.docviewer-dual-sync').show()
     //Document
     this.helpers.setActiveChapter(this.models.chapters.getChapterId(this.models.document.currentIndex()));
     this.helpers.jump(this.models.document.currentIndex());
