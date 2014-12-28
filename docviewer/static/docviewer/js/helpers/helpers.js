@@ -460,7 +460,8 @@ docviewer.Schema.helpers = {
       this.elements.viewer.removeClass('docviewer-viewText docviewer-viewSearch docviewer-viewDocument docviewer-viewAnnotations docviewer-viewThumbnails docviewer-viewDual').addClass('docviewer-'+toggleClassName);
       $("#upper.docviewer-pages").removeClass("docviewer-dual")
       $("#lower.docviewer-pages").remove()
-      $('.docviewer-dual-sync').hide()
+//      $('.docviewer-dual-sync').hide()
+      $('.docviewer-dual-sync').fadeOut("fast")
     },
 
     jump: function(pageIndex, modifier, forceRedraw){

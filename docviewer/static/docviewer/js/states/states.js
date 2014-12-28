@@ -133,7 +133,8 @@ docviewer.Schema.states = {
     $(window).resize(function(){$("#lower").css({top: $("#upper").outerHeight()})})
     $(window).resize()
     this.helpers.addObserver('scrollText')
-    $('.docviewer-dual-sync').show()
+//    $('.docviewer-dual-sync').show()
+    $(".docviewer-dual-sync").fadeIn("slow")
     //Document
     this.helpers.setActiveChapter(this.models.chapters.getChapterId(this.models.document.currentIndex()));
     this.helpers.jump(this.models.document.currentIndex());
