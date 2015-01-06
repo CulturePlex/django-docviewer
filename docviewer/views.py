@@ -8,7 +8,8 @@ from django.core.urlresolvers import reverse
 from docviewer.models import Document, Page, Annotation, Edition
 from django.utils.feedgenerator import rfc2822_date
 from django.http import HttpResponse
-from django.utils import simplejson
+#from django.utils import simplejson
+import json
 from django.contrib.sites.models import Site
 from django.views.generic.base import View
 from django.conf import settings
@@ -43,7 +44,7 @@ def update_annotation(request, pk):
         annotation.content = request.GET.get('content')
     annotation.save()
     return HttpResponse(
-        simplejson.dumps({'status': 'ok'}), content_type="application/json")
+        json.dumps({'status': 'ok'}), content_type="application/json")
 
 
 def add_annotation(request, pk):
@@ -68,7 +69,7 @@ def add_annotation(request, pk):
     check_mentions(annotation.content, annotation.author.username, document)
     
     return HttpResponse(
-        simplejson.dumps({
+        json.dumps({
             'status': 'ok',
             'url': document.get_absolute_url() + '#document/p' +
             str(document.pk) + '/a' + str(annotation.pk)}),
@@ -85,7 +86,7 @@ def remove_annotation(request, pk):
 
     annotation.delete()
 
-    return HttpResponse(simplejson.dumps(
+    return HttpResponse(json.dumps(
         {'status': 'ok'}), content_type="application/json")
 
 
@@ -107,7 +108,7 @@ def save_specific_text(request, pk):
     document.regenerate_ts(ts, files)
     
     return HttpResponse(
-        simplejson.dumps(
+        json.dumps(
             {'status': 'ok',}),
             content_type="application/json",
         )
@@ -166,7 +167,7 @@ def save_text(request, pk):
     check_mentions(comment, author.username, document)
     
     return HttpResponse(
-        simplejson.dumps(
+        json.dumps(
             {'status': 'ok', 'edition': edit}),
             content_type="application/json",
         )
@@ -182,7 +183,7 @@ def restore_version(request, pk):
     document = Document.objects.get(id=pk)
     edition = document.editions_set.get(date_string=ts)
     return HttpResponse(
-        simplejson.dumps(
+        json.dumps(
             {'status': 'ok', 'id': edition.id, 'comment': edition.comment, 'modified_pages': edition.modified_pages}),
             content_type="application/json",
         )
@@ -201,7 +202,7 @@ def delete_version(request, pk):
     edition_id = edition.id
     edition.delete(modified_pages=modified_pages)
     return HttpResponse(
-        simplejson.dumps(
+        json.dumps(
             {'status': 'ok', 'id': edition_id,}),
             content_type="application/json",
         )
@@ -265,7 +266,7 @@ def change_visibility_page(request, pk):
     page.save()
 
     return HttpResponse(
-        simplejson.dumps({'status': 'ok', 'page': page_n}),
+        json.dumps({'status': 'ok', 'page': page_n}),
         content_type="application/json"
     )
 
@@ -296,12 +297,12 @@ class SearchDocumentView(View):
             'document_id:%s' % kwargs.get('pk')).auto_query(query)\
             .order_by('document_id')
 
-        json = {
+        myjson = {
             'matches': results.count(),
             'results': [p.page for p in results],
             'query': query}
 
-        return HttpResponse(simplejson.dumps(json), content_type="application/json")
+        return HttpResponse(json.dumps(myjson), content_type="application/json")
 
 
 class JsonDocumentView(BaseDetailView):
@@ -310,76 +311,76 @@ class JsonDocumentView(BaseDetailView):
 
     def get(self, request, **kwargs):
         document = self.get_object()
-        json = {}
-        json['id'] = "doc-%s" % (document.id,)
-        json['title'] = document.title
-        json['pages'] = document.page_count
-        json['description'] = document.description
-        json['source'] = document.source_url
-        json['created_at'] = rfc2822_date(document.created)
-        json['updated_at'] = rfc2822_date(document.modified)
-        json['canonical_url'] = get_absolute_url(reverse(
+        myjson = {}
+        myjson['id'] = "doc-%s" % (document.id,)
+        myjson['title'] = document.title
+        myjson['pages'] = document.page_count
+        myjson['description'] = document.description
+        myjson['source'] = document.source_url
+        myjson['created_at'] = rfc2822_date(document.created)
+        myjson['updated_at'] = rfc2822_date(document.modified)
+        myjson['canonical_url'] = get_absolute_url(reverse(
             "docviewer_viewer_view", kwargs={
             'pk': document.pk, 'slug': document.slug}))
-        json['contributor'] = document.contributor
-        json['contributor_organization'] = document.contributor_organization
-        json['resources'] = {}
+        myjson['contributor'] = document.contributor
+        myjson['contributor_organization'] = document.contributor_organization
+        myjson['resources'] = {}
         if document.download is True:
-            json['resources']['pdf'] = get_absolute_url(document.doc_url)
-        json['resources']['text'] = get_absolute_url(document.text_url)
-        json['resources']['thumbnail'] = get_absolute_url(document.thumbnail_url)
-        json['resources']['search'] = get_absolute_url(
+            myjson['resources']['pdf'] = get_absolute_url(document.doc_url)
+        myjson['resources']['text'] = get_absolute_url(document.text_url)
+        myjson['resources']['thumbnail'] = get_absolute_url(document.thumbnail_url)
+        myjson['resources']['search'] = get_absolute_url(
             reverse("docviewer_search_view", kwargs={
                 'pk': document.pk, 'slug': document.slug})) + '?q={query}'
-        json['resources']['print_annotations'] = get_absolute_url(
+        myjson['resources']['print_annotations'] = get_absolute_url(
             reverse("docviewer_printannotations_view", kwargs={
                 'pk': document.pk, 'slug': document.slug}))
-        json['resources']['page'] = {}
-        json['resources']['page']['text'] = get_absolute_url(
+        myjson['resources']['page'] = {}
+        myjson['resources']['page']['text'] = get_absolute_url(
             document.text_page_url % {'page': '{page}'})
-        json['resources']['page']['image'] = get_absolute_url(
+        myjson['resources']['page']['image'] = get_absolute_url(
             document.image_page_url % {'page': '{page}', 'size': '{size}'})
-        json['resources']['related_article'] = get_absolute_url(document.related_url)
-        json['resources']['published_url'] = json['canonical_url']
-        json['resources']['collaborators'] = map(lambda x: x.username, document.document.get_users_with_perms())
-        json['resources']['tags'] = map(lambda x: x, document.document.taggit_tags.names())
-        json['resources']['doc_id'] = document.id
-        json['resources']['static_url'] = settings.STATIC_URL
-        json['resources']['add_tag_url'] = 'TODO'
-        json['resources']['remove_tag_url'] = reverse('remove_taggit_tag')
-        json['resources']['add_collaborator_url'] = 'TODO'
-        json['resources']['remove_collaborator_url'] = reverse('remove_sharer')
-        json['resources']['pdf_visible'] = reverse(
+        myjson['resources']['related_article'] = get_absolute_url(document.related_url)
+        myjson['resources']['published_url'] = myjson['canonical_url']
+        myjson['resources']['collaborators'] = map(lambda x: x.username, document.document.get_users_with_perms())
+        myjson['resources']['tags'] = map(lambda x: x, document.document.taggit_tags.names())
+        myjson['resources']['doc_id'] = document.id
+        myjson['resources']['static_url'] = settings.STATIC_URL
+        myjson['resources']['add_tag_url'] = 'TODO'
+        myjson['resources']['remove_tag_url'] = reverse('remove_taggit_tag')
+        myjson['resources']['add_collaborator_url'] = 'TODO'
+        myjson['resources']['remove_collaborator_url'] = reverse('remove_sharer')
+        myjson['resources']['pdf_visible'] = reverse(
             'docviewer_regenerate_document',
             kwargs={'pk': document.pk, 'type': 'pdf'}
         )
-        json['resources']['txt_visible'] = reverse(
+        myjson['resources']['txt_visible'] = reverse(
             'docviewer_regenerate_document',
             kwargs={'pk': document.pk, 'type': 'txt'}
         )
 
-        json['sections'] = list(document.sections_set.all().values('title', 'page'))
+        myjson['sections'] = list(document.sections_set.all().values('title', 'page'))
         
-        json['hidden_pages'] = document.get_hidden_pages()
+        myjson['hidden_pages'] = document.get_hidden_pages()
 
         annotations_all = document.annotations_set.all()
 #        annotations_public = annotations_all.exclude(Q(private=True)
 #                                                 & ~Q(author=request.user))
-#        json['annotations'] = list(annotations_public.values('location', 'title', 'id', 'page', 'content', 'author', 'author__username'))
-        json['annotations'] = list(annotations_all.values('location', 'title', 'id', 'page', 'content', 'author', 'author__username'))
+#        myjson['annotations'] = list(annotations_public.values('location', 'title', 'id', 'page', 'content', 'author', 'author__username'))
+        myjson['annotations'] = list(annotations_all.values('location', 'title', 'id', 'page', 'content', 'author', 'author__username'))
 
-        for annotation in json['annotations']:
+        for annotation in myjson['annotations']:
             annotation['location'] = {"image": annotation['location']}
             annotation['author'] = {'username': annotation['author__username']}
             annotation['user_url'] = settings.USER_URL + annotation['author__username']
 
         editions_all = document.editions_set.exclude(date_string=zeros).exclude(date_string=nines)
-        json['editions'] = list(editions_all.values('id', 'date_string', 'modified_pages', 'comment', 'author', 'author__username'))
+        myjson['editions'] = list(editions_all.values('id', 'date_string', 'modified_pages', 'comment', 'author', 'author__username'))
 
-        for edition in json['editions']:
+        for edition in myjson['editions']:
             edition['author'] = {'username': edition['author__username']}
             edition['date_string_formatted'] = format_datetime_string(edition['date_string'])
             edition['user_url'] = settings.USER_URL + edition['author__username']
 
-        return HttpResponse(simplejson.dumps(json), content_type="application/json")
+        return HttpResponse(json.dumps(myjson), content_type="application/myjson")
 

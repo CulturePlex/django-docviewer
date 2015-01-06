@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns
+from django.conf.urls import patterns
 from docviewer.views import JsonDocumentView, SearchDocumentView
 from django.views.generic import DetailView
 from docviewer.models import Document
