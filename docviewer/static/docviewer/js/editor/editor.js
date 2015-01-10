@@ -975,6 +975,20 @@ function goToPage(p) {
     
     
     
+    $(".icon-fullscreen").live("click", function(ev) {
+        $(".navbar").addClass("docviewer-myfullscreen")
+        $(".docviewer-docViewer").removeAttr("style")
+        $(".docviewer-docViewer").addClass("docviewer-myfullscreen")
+        $(".icon-fullscreen").hide()
+        $(".icon-fullscreen-exit").show()
+    })
+    
+    $(".icon-fullscreen-exit").live("click", function(ev) {
+        $(".navbar").removeClass("docviewer-myfullscreen")
+        $(".docviewer-docViewer").removeClass("docviewer-myfullscreen")
+        $(".icon-fullscreen-exit").hide()
+        $(".icon-fullscreen").show()
+    })
     
     
   });

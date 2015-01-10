@@ -31,3 +31,41 @@
   padding: 0 36px;
   position: relative;
 }
+
+.docviewer-docViewer {
+    position: absolute;
+    top: 60px;
+    bottom: 0px;
+    left: 65.5px;
+    right: 65.5px;
+}
+
+.icon-fullscreen {
+    float: right;
+}
+
+.icon-fullscreen:hover {
+    cursor: pointer;
+}
+
+.icon-fullscreen-exit {
+    float: right;
+    height: 12px;
+    width: 12px;
+}
+
+.icon-fullscreen-exit:hover {
+    cursor: pointer;
+}
+
+.navbar.docviewer-myfullscreen {
+    display: none;
+}
+
+.docviewer-docViewer.docviewer-myfullscreen {
+    border: 1px solid #d4d4d4;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+}
