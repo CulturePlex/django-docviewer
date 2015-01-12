@@ -605,7 +605,7 @@ function goToPage(p) {
                 success: function (data) {
                     viewer.schema.text[nump-1] = data;
                     viewer.models.document.originalPageText[nump] = data;
-                    viewer.events.loadText(nump-1);
+//                    viewer.events.loadText(nump-1);
                 },
                 error: function (data) {
                     animate_msg("File not found.")
