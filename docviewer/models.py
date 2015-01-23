@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-from django.core.files.storage import FileSystemStorage
+#from django.core.files.storage import FileSystemStorage
 
 from model_utils.models import TimeStampedModel, StatusModel
 from model_utils import Choices
@@ -11,7 +11,7 @@ import json
 import os
 import re
 import codecs
-import shutil
+#import shutil
 import uuid
 
 from jsonfield import JSONField
@@ -23,6 +23,10 @@ from docviewer.tasks import task_generate_document
 from taggit.managers import TaggableManager
 
 from subprocess import Popen, PIPE
+
+from documents.fss_utils import (
+    open_file, close_file, copy_file, listdir
+)
 
 
 RE_PAGE = re.compile(r'^.*_([0-9]+)\.txt')
@@ -69,7 +73,7 @@ class Document(TimeStampedModel, StatusModel):
         max_length=1024, null=False, blank=True, default='')
     docfile = models.FileField(
         _('PDF Document File'), upload_to='pdfs/%Y/%m/%d', max_length=512,
-        null=False, blank =False,)# storage=FileSystemStorage())
+        null=False, blank =False,)
     task_id = models.CharField(
         _('Celery task ID'), max_length=50, null=True, blank=True)
     task_error = models.TextField(
@@ -119,11 +123,7 @@ class Document(TimeStampedModel, StatusModel):
 
     @property
     def text(self):
-        fs = FileSystemStorage()#fs=get_
-        f = fs.open(self.text_url, 'r')
-        data = f.read()
-        f.close()
-        return data
+        return read_file(self.text_url)
 
 #    def save(self, *args, **kwargs):
 #        create = self.pk is None
@@ -136,27 +136,13 @@ class Document(TimeStampedModel, StatusModel):
         return "%s/%s" % (self.get_root_path(), self.docfile_basename)
 
     def process_file(self):
-#        fs1 = FileSystemStorage()
-#        f1 = fs1.open(os.path.join(settings.MEDIA_ROOT,self.docfile.name), 'r')
-#        filepath = "%s/%s.%s" % (
-#            self.get_root_path(),
-#            self.slug,
-#            self.docfile_basename.split('.')[-1].lower())
-#        fs2 = FileSystemStorage()
-#        f2 = fs2.open(filepath, "w")
-#        f2.write(f1.read())
-#        f2.close()
-#        f1.close()
-        
-        fs = FileSystemStorage()
-        f = fs.open(os.path.join(settings.MEDIA_ROOT,self.docfile.name), 'r')
-        filepath = "%s/%s.%s" % (
+        src = os.path.join(settings.MEDIA_ROOT,self.docfile.name)
+        dst = "%s/%s.%s" % (
             self.get_root_path(),
             self.slug,
             self.docfile_basename.split('.')[-1].lower())
-        fs.save(filepath, f)
+        copy_file(src, dst)
 
-#        self.title = self.docfile_basename
         task = task_generate_document.apply_async(args=[self.pk], countdown=5)
         self.task_id = task.task_id
         self.save()
@@ -168,12 +154,11 @@ class Document(TimeStampedModel, StatusModel):
     def generate(self):
         # concatenate all text files
         ts = datetime.now()
-        fs = FileSystemStorage()
-        all_txt = fs.open("%s/%s.txt" % (self.get_root_path(), self.slug), "w")
+        all_txt = "%s/%s.txt" % (self.get_root_path(), self.slug)
         self.page_count = 0
         self.pages_set.all().delete()
         pages = {}
-        for f in os.listdir(self.get_root_path()):
+        for f in listdir(self.get_root_path())[1]: #[0]: dirs, [1]: files
             if f[-4:] == '.txt' and f != "%s.txt" % self.slug:
                 m = RE_PAGE.match(f)
                 if m:
@@ -184,18 +169,14 @@ class Document(TimeStampedModel, StatusModel):
         for k in pages:
             f = pages[k]
             self.page_count += 1
-            tmp_path = "%s/%s" % (self.get_root_path(), f)
-            fs_tmp = FileSystemStorage()
-            tmp_file = fs_tmp.open(tmp_path)
-            tmp_text = tmp_file.read()
-            all_txt.write(tmp_text)
+            tmp_txt = "%s/%s" % (self.get_root_path(), f)
+            write_file(tmp_txt, all_txt)
             page = Page(
                 document=self,
                 page=RE_PAGE.match(f).group(1),
                 modified=ts,
             )
             page.save()
-            tmp_file.close()
             
             filepath_orig = "%s/%s_%s-%s.txt" % (
                 self.document.get_root_path(),
@@ -203,7 +184,7 @@ class Document(TimeStampedModel, StatusModel):
                 k,
                 zeros
             )
-            shutil.copy2(tmp_path, filepath_orig)
+            copy_file(tmp_file, filepath_orig)
             
             text_url = self.document.text_page_url
             mod_pags_orig[self.page_count] = text_url.replace(
@@ -228,14 +209,13 @@ class Document(TimeStampedModel, StatusModel):
             modified_pages=mod_pags_curr,
             date_string = nines
         )
-        all_txt.close()
+        close_file(all_txt)
 
     def regenerate(self):
         # reconcatenate all text files
-        fs = FileSystemStorage()
-        all_txt = fs.open("%s/%s.txt" % (self.get_root_path(), self.slug), "w")
+        all_txt = "%s/%s.txt" % (self.get_root_path(), self.slug)
         pages = {}
-        for f in os.listdir(self.get_root_path()):
+        for f in listdir(self.get_root_path())[1]: #[0]: dirs, [1]: files
             if f[-4:] == '.txt' and f != "%s.txt" % self.slug:
                 m = RE_PAGE.match(f)
                 if m:
@@ -243,25 +223,16 @@ class Document(TimeStampedModel, StatusModel):
                     pages[k] = f
         for k in pages:
             f = pages[k]
-            tmp_path = "%s/%s" % (self.get_root_path(), f)
-            fs_tmp = FileSystemStorage()
-            tmp_file = fs_tmp.open(tmp_path)
-            tmp_text = tmp_file.read() +'\n'
-            all_txt.write(tmp_text)
-            tmp_file.close()
-        all_txt.close()
+            tmp_txt = "%s/%s" % (self.get_root_path(), f)
+            write_file(tmp_txt, all_txt)
+        close_file(all_txt)
 
     def regenerate_ts(self, ts='', files=[]):
-        # reconcatenate all text files
-        fs = FileSystemStorage()
-        all_txt = fs.open("%s/%s--%s.txt" % (self.get_root_path(), self.slug, ts), "w")
+        # reconcatenate all text files in a specific ts
+        all_txt = "%s/%s--%s.txt" % (self.get_root_path(), self.slug, ts)
         for f in files:
-            tmp_path = "%s/%s" % (self.get_root_path(), f)
-            fs_tmp = FileSystemStorage()
-            tmp_file = fs_tmp.open(tmp_path)
-            tmp_text = tmp_file.read()
-            all_txt.write(tmp_text)
-            tmp_file.close()
+            tmp_txt = "%s/%s" % (self.get_root_path(), f)
+            write_file(tmp_txt, all_txt)
         all_txt.close()
 
     def generate_visible(self):
@@ -269,10 +240,9 @@ class Document(TimeStampedModel, StatusModel):
         abs_path = '%s/%s' % (self.get_root_path(), self.slug)
         
         #txt
-        fs = FileSystemStorage()
         all_txt = fs.open("%s-visible.txt" % abs_path, "w")
         pages = {}
-        for f in os.listdir(self.get_root_path()):
+        for f in listdir(self.get_root_path())[1]: #[0]: dirs, [1]: files
             if f[-4:] == '.txt' and f != "%s.txt" % self.slug:
                 m = RE_PAGE.match(f)
                 if m:
@@ -281,13 +251,9 @@ class Document(TimeStampedModel, StatusModel):
                         pages[k] = f
         for k in pages:
             f = pages[k]
-            tmp_path = "%s/%s" % (self.get_root_path(), f)
-            fs_tmp = FileSystemStorage()
-            tmp_file = fs_tmp.open(tmp_path)
-            tmp_text = tmp_file.read() +'\n'
-            all_txt.write(tmp_text)
-            tmp_file.close()
-        all_txt.close()
+            tmp_txt = "%s/%s" % (self.get_root_path(), f)
+            write_file(tmp_txt, all_txt)
+        close_file(all_txt)
         
         #pdf
         pages_str = ' '.join(map(str, visible_pages))
@@ -368,11 +334,7 @@ class Page(models.Model):
             self.document.get_root_path(),
             self.document.slug,
             self.page,)
-#        f = codecs.open(path, 'r')
-        fs = FileSystemStorage()
-        f = fs.open(path)
-        data = f.read()
-        f.close()
+        data =  read_file(path)
         return data.decode('ascii', 'ignore')
 
     def save_text(self, text, timestamp):
@@ -380,19 +342,16 @@ class Page(models.Model):
             self.document.get_root_path(),
             self.document.slug,
             self.page)
-#        f = codecs.open(path, 'r')
-        fs = FileSystemStorage()
-        f = fs.open(path, 'w')
         text = unicode(text).encode('utf-8')
-        f.write(text)
-        f.close()
+        write_content(text, path)
+        close_file(path)
         
         path_ts = "%s/%s_%s-%s.txt" % (
             self.document.get_root_path(),
             self.document.slug,
             self.page,
             timestamp)
-        shutil.copy2(path, path_ts)
+        copy_file(path, path_ts)
 
     def get_image(self, size):
         return "%s/%s/%s_%s.%s" % (
@@ -480,11 +439,12 @@ from django.dispatch.dispatcher import receiver
 
 @receiver(post_delete, sender=Document)
 def document_delete(sender, instance, **kwargs):
-#    import ipdb;ipdb.set_trace()
-#    shutil.rmtree(instance.get_root_path(), ignore_errors=True)
-    fs = FileSystemStorage()
-    fs.delete(os.path.join(instance.get_root_path(),'*'))
-    instance.docfile.delete(False)
+    if issubclass(sender, Document) or sender == Document:
+#        import ipdb;ipdb.set_trace()
+        shutil.rmtree(instance.get_root_path(), ignore_errors=True)
+    #    fs = FileSystemStorage()
+    #    fs.delete(os.path.join(instance.get_root_path(),'*'))
+        instance.docfile.delete(False)
 
 #receiver(post_save, sender=Document)
 def document_save(sender, instance, created, **kwargs):
@@ -496,7 +456,6 @@ def document_save(sender, instance, created, **kwargs):
         ]:
             pass
         elif created:
-#            os.makedirs(instance.get_root_path())
             instance.process_file()
 
 post_save.connect(document_save, dispatch_uid=str(uuid.uuid1()))
