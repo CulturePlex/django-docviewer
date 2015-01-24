@@ -3,7 +3,6 @@ from subprocess import Popen, PIPE
 from docviewer.settings import IMAGE_FORMAT
 from docviewer.models import Document, Edition
 from datetime import datetime
-import shutil
 
 from django.core.mail import send_mail
 import smtplib
@@ -13,13 +12,13 @@ from django.utils.timezone import utc
 from views import get_absolute_url
 from django.core.urlresolvers import reverse
 #import pyPdf
+from documents import fss
 from documents.utils import count_total_pages
 from django.conf import settings
 from docviewer.utils import format_datetimediff
 
 
 def docsplit(document):
-
     path = document.get_root_path()
     commands = [
         "/usr/bin/docsplit images --size 700x,1000x,180x --format %s --output %s %s/%s.pdf" % (IMAGE_FORMAT, path, path, document.slug),
@@ -41,13 +40,8 @@ def docsplit(document):
             raise Exception(result)
 
     # rename directories
-    shutil.rmtree("%s/%s" % (path, "large"), ignore_errors=True)
     os.rename("%s/%s" % (path, "1000x"), "%s/%s" % (path, "large"))
-
-    shutil.rmtree("%s/%s" % (path, "normal"), ignore_errors=True)
     os.rename("%s/%s" % (path, "700x"), "%s/%s" % (path, "normal"))
-
-    shutil.rmtree("%s/%s" % (path, "small"), ignore_errors=True)
     os.rename("%s/%s" % (path, "180x"), "%s/%s" % (path, "small"))
 
 
