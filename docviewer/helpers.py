@@ -12,7 +12,7 @@ from django.utils.timezone import utc
 from views import get_absolute_url
 from django.core.urlresolvers import reverse
 #import pyPdf
-from documents import fss
+from documents import fss_utils as fss
 from documents.utils import count_total_pages
 from django.conf import settings
 from docviewer.utils import format_datetimediff

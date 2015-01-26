@@ -21,7 +21,7 @@ from taggit.managers import TaggableManager
 
 from subprocess import Popen, PIPE
 
-from documents import fss
+from documents import fss_utils as fss
 
 
 RE_PAGE = re.compile(r'^.*_([0-9]+)\.txt')
