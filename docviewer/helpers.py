@@ -68,7 +68,6 @@ def generate_document(doc_id, task_id=None):
         try:
             document.status = Document.STATUS.starting
             document.task_start = datetime.utcnow().replace(tzinfo=utc)
-            document.save()
         except Exception as e:
             raise Exception(PROC_INIT, e.message)
         
@@ -86,7 +85,12 @@ def generate_document(doc_id, task_id=None):
             document.status = document.STATUS.ready
             document.task_error = None
             document.task_end = datetime.utcnow().replace(tzinfo=utc)
-#            document.save()
+            diff_time = document.task_end - document.task_start
+            total_time = format_datetimediff(diff_time)
+            document.add_info(
+                'time',
+                'Total processing time: ' + total_time
+            )
         except Exception as e:
             raise Exception(PROC_FINA, e.message)
         
@@ -156,12 +160,6 @@ def generate_document(doc_id, task_id=None):
                 )
     
     finally:
-        diff_time = document.task_end - document.task_start
-        total_time = format_datetimediff(diff_time)
-        document.add_info(
-            'time',
-            'Total processing time: ' + total_time
-        )
         document.save()
 
 def create_email(document):
