@@ -139,6 +139,7 @@ class Document(TimeStampedModel, StatusModel):
         fss.copy_file(src, dst)
 
         task = task_generate_document.apply_async(args=[self.pk], countdown=5)
+        self = Document.objects.get(id=self.id)
         self.task_id = task.task_id
         self.save()
 
