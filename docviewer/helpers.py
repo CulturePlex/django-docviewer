@@ -21,15 +21,15 @@ from docviewer.utils import format_datetimediff
 def docsplit(document):
     path = document.get_root_path()
     commands = [
-        "/usr/local/bin/docsplit images --size 700x,1000x,180x --format %s --output %s %s/%s.pdf" % (IMAGE_FORMAT, path, path, document.slug),
-        "/usr/local/bin/docsplit text --pages all -l %s --no-clean --output %s %s/%s.pdf" % (
+        settings.DOCSPLIT + " images --size 700x,1000x,180x --format %s --output %s %s/%s.pdf" % (IMAGE_FORMAT, path, path, document.slug),
+        settings.DOCSPLIT + " text --pages all -l %s --no-clean --output %s %s/%s.pdf" % (
             document.language, path, path, document.slug)]
 
 #    print "/usr/bin/docsplit text --pages all -l %s --no-clean--output %s %s/%s.pdf" % (
 #            document.language, path, path, document.slug)
 
     if document.docfile_basename.split('.')[-1].lower() != 'pdf':
-        cmd = "/usr/local/bin/docsplit pdf --output %s %s" % (path, document.get_file_path())
+        cmd = settings.DOCSPLIT + " pdf --output %s %s" % (path, document.get_file_path())
         commands.insert(0, cmd)
 
     for command in commands:
